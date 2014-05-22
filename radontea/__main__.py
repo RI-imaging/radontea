@@ -14,15 +14,18 @@ from ._Radon import radon
 if __name__ == "__main__":
     from matplotlib import pylab as plt
     from matplotlib import cm
-    from ttui import stdout
-    
-    ui = stdout()
-    
+    try:
+        from ttui import stdout
+        ui = stdout()
+    except:
+        ui = None
+        
     N=55
     It=7
     A=13
     angles = np.linspace(0,np.pi,A)
     im = get_original(N)
+    
     sino = radon(im, angles, user_interface=ui)
     fbp = backproject(sino, angles, user_interface=ui)
     fintp = fourier_interp(sino, angles, user_interface=ui)

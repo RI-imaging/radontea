@@ -140,7 +140,7 @@ def art(sinogram, angles, initial=None, iterations=1,
 
     if user_interface is not None:
         pid = user_interface.progress_new(steps=iterations*len(angles),
-                                          task="ART")
+                                         task="ART.{}".format(os.getpid()))
 
     for iteration in np.arange(iterations):
         #
@@ -330,7 +330,7 @@ def sart(sinogram, angles, initial=None, iterations=1,
     
     if user_interface is not None:
         pid = user_interface.progress_new(steps=iterations*len(angles),
-                                          task="SART")
+                                        task="SART.{}".format(os.getpid()))
 
     for k in np.arange(iterations):
         #

@@ -9,8 +9,8 @@
 from __future__ import division
 
 import numpy as np
+import os
 import scipy.interpolate as intp
-import sys
 import warnings
 
 __all__= ["backproject", "fourier_interp", "sum"]
@@ -122,7 +122,7 @@ def backproject(sinogram, angles, filtering="ramp",
     xv, yv = np.meshgrid(x,x)
     if user_interface is not None:
         pid = user_interface.progress_new(steps=len(angles),
-                                    task="backprojection")
+                           task="backprojection.{}".format(os.getpid()))
         
     for i in np.arange(len(angles)):
         #xproj = np.linspace(-n/2.0, n/2.0, N, endpoint=False)
@@ -210,7 +210,7 @@ def fourier_interp(sinogram, angles, intp_method="cubic",
     """
     if user_interface is not None:
         pid = user_interface.progress_new(steps=1, 
-                                           task="Fourier_interpolation")
+                    task="Fourier_interpolation.{}".format(os.getpid()))
     if len(sinogram[0]) %2 == 0:
         warnings.warn("Fourier interpolation with slices that have"+
                       " even dimensions leads to image distortions!")
@@ -448,7 +448,8 @@ def sum(sinogram, angles, user_interface=None):
     P = np.fft.fft(np.fft.ifftshift(sinogram, axes=-1))/np.sqrt(2*np.pi)
 
     if user_interface is not None:
-        pid = user_interface.progress_new(steps=lenf, task="summation")
+        pid = user_interface.progress_new(steps=lenf,
+                                task="summation.{}".format(os.getpid()))
 
     for j in xrange(lenf):
         # Get r (We compute f(r) in this for-loop)

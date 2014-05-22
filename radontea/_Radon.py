@@ -9,13 +9,10 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-import numpy
-import math
+import os
 import scipy
 import scipy.ndimage
-from scipy.ndimage import _ni_support, affine_transform
-import scipy.interpolate as intp
-import sys
+
 
 __all__ = ["radon"]
 
@@ -64,7 +61,7 @@ def radon(arr, angles, user_interface=None):
     outarr = np.zeros((len(angles),len(arr)))
     if user_interface is not None:
         pid = user_interface.progress_new(steps=len(angles),
-                                    task="projection")
+                               task="projection.{}".format(os.getpid()))
     for i in np.arange(len(angles)):
         rotated = scipy.ndimage.rotate(arr, angles[i]/np.pi*180, order=3,
                   reshape=False, mode="constant", cval=0) #black corner
