@@ -8,7 +8,11 @@
 from __future__ import division
 
 import numpy as np
-from ._Radon import radon
+
+if __name__ == "__main__":
+    from _Radon import radon
+else:
+    from ._Radon import radon
 
 
 def logo(x,y,N):

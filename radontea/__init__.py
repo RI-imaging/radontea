@@ -4,8 +4,8 @@
     There are several methods to compute the inverse *Radon* transform.
     The module *radontea* implements some of them. I focussed on code
     readability and thorough comments. The result is a collection of
-    scripts that are suitable for *tea*\ching the basics of computerized
-    tomography.
+    algorithms that are suitable for *tea*\ching the basics of
+    computerized tomography.
 """
 
 from ._Back import *
