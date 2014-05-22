@@ -1,4 +1,4 @@
 radontea
 ========
 
-Collection of functions to compute the inerse Radon transform
+Collection of functions to compute the inverse Radon transform
