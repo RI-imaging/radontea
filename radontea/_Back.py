@@ -204,7 +204,7 @@ def fourier_interp(sinogram, angles, intp_method="cubic",
 
         See Also
         --------
-        radontea.backproject : implementation by backprojection
+        backproject : implementation by backprojection
         sum : implementation by summation in real space
         scipy.interpolate.griddata : the used interpolation method
     """

@@ -33,8 +33,8 @@ def art(sinogram, angles, initial=None, iterations=1,
         one pixel to iteratively solve the system of linear equations
         that describe the projection process. The binary weighting
         factors are
-        - 1, if the center of the a pixel is within the *ray*
-        - 0, else
+            - 1, if the center of the a pixel is within the *ray*
+            - 0, else
 
 
         Parameters
@@ -70,7 +70,7 @@ def art(sinogram, angles, initial=None, iterations=1,
         *"ART reconstrutions usually suffer from salt and pepper noise,
         which is caused by the inconsitencies introuced in the set of
         equations by the approximations commonly used for* 
-        :math:`w_{ik}` 's."
+        :math:`w_{ik}` *'s."*
     """
     # make sure `iterations` is an integer
     iterations = int(iterations)
@@ -285,17 +285,18 @@ def sart(sinogram, angles, initial=None, iterations=1,
         struction region.
         
         For theoretical backround, see
-        Kak, A. C., & Slaney, M. (2001). 
-        Principles of Computerized Tomographic Imaging, Sec. 7.4:
+        Kak, A. C., & Slaney, M.. *Principles of Computerized
+        Tomographic Imaging*, SIAM, (2001)
         
-        "[SART] seems to combine the best of ART and SIRT. [...] Here
-         are the main features if SART: First, [...] the traditional
-         pixel basis is abandonded in favor of bilinear elements
-         [e.g. interpolation]. Also, for a circular reconstruction
-         region, only partial weights are assigned to the first and last
-         picture elements on the individual rays. To further reduce the
-         noise [...], the correction terms are simultaneously applied
-         for all the rays in one projection [...]."
+        Sec 7.4:
+        *"[SART] seems to combine the best of ART and SIRT. [...] Here
+        are the main features if SART: First, [...] the traditional
+        pixel basis is abandonded in favor of bilinear elements
+        [e.g. interpolation]. Also, for a circular reconstruction
+        region, only partial weights are assigned to the first and last
+        picture elements on the individual rays. To further reduce the
+        noise [...], the correction terms are simultaneously applied
+        for all the rays in one projection [...]."*
     """
     N = len(sinogram[0])
     # Meshgrid for weigths
