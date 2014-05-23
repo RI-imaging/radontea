@@ -12,7 +12,7 @@ Installation
 ============
 The package can be installed from the Python package index.
 
-    pip install multipletau
+    pip install radontea
     
 
 Usage
