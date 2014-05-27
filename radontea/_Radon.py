@@ -17,7 +17,7 @@ import scipy.ndimage
 __all__ = ["radon"]
 
 
-def radon(arr, angles, user_interface=None):
+def radon(arr, angles, trigger=None, **kwargs):
     """ 
         Compute the Radon transform (sinogram) of a circular image.
         
@@ -33,9 +33,12 @@ def radon(arr, angles, user_interface=None):
             the input image.
         angles : ndarray, length A
             angles or projections in radians
-        user_interface : instance of `ttui.ui`, optional
-            The user interface to which progress should be reported.
-            The default is to output nothing.
+        trigger : callable, optional
+            If set, the function `trigger` is called on a regular basis
+            throughout this algorithm.
+            Number of function calls: A+1
+        **kwargs : dict, optional
+            Keyword arguments for trigger (e.g. "pid" of process).
 
 
         Returns
@@ -59,17 +62,15 @@ def radon(arr, angles, user_interface=None):
     # outarray: x-axis: projection
     #           y-axis: 
     outarr = np.zeros((len(angles),len(arr)))
-    if user_interface is not None:
-        pid = user_interface.progress_new(steps=len(angles),
-                               task="projection.{}".format(os.getpid()))
+    if trigger is not None:
+        trigger(**kwargs)
     for i in np.arange(len(angles)):
         rotated = scipy.ndimage.rotate(arr, angles[i]/np.pi*180, order=3,
                   reshape=False, mode="constant", cval=0) #black corner
         # sum along some axis.
         outarr[i] = rotated.sum(axis=0)
         percent = i/len(angles)*100
-        if user_interface is not None:
-            user_interface.progress_iterate(pid)
-    if user_interface is not None:
-        user_interface.progress_finalize(pid)
+        if trigger is not None:
+            trigger(**kwargs)
+
     return outarr

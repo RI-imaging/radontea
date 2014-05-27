@@ -17,7 +17,7 @@ __all__= ["backproject", "fourier_interp", "sum"]
 
 
 def backproject(sinogram, angles, filtering="ramp",
-                user_interface=None):
+                trigger=None, **kwargs):
     """
         Computes the inverse of the radon transform using filtered
         backprojection.
@@ -45,9 +45,12 @@ def backproject(sinogram, angles, filtering="ramp",
             
             ``hann``
             
-        user_interface : instance of `ttui.ui`, optional
-            The user interface to which progress should be reported.
-            The default is to output nothing.
+        trigger : callable, optional
+            If set, the function `trigger` is called on a regular basis
+            throughout this algorithm.
+            Number of function calls: A+1
+        **kwargs : dict, optional
+            Keyword arguments for trigger (e.g. "pid" of process).
 
 
         Returns
@@ -72,7 +75,6 @@ def backproject(sinogram, angles, filtering="ramp",
                [ 0.02658797,  0.11375576,  0.41525594,  0.17170226,  0.0074889 ],
                [ 0.04008672,  0.11139209,  0.27650193,  0.16933859,  0.02098764],
                [ 0.02140445,  0.0334597 ,  0.07691547,  0.0914062 ,  0.00230537]])
-
 
 
         See Also
@@ -109,6 +111,8 @@ def backproject(sinogram, angles, filtering="ramp",
         kx[1:] = 2*np.pi
     else:
         raise ValueError("Unknown filter: %s" % filter)
+    if trigger is not None:
+        trigger(**kwargs)
     # Resize f so we can multiply it with the sinogram.
     kx = kx.reshape(1,-1)
     projection = np.fft.fft(sino, axis=-1) * kx
@@ -120,9 +124,6 @@ def backproject(sinogram, angles, filtering="ramp",
     outarr = np.zeros((ln,ln),dtype=np.float64)
     # Meshgrid for output array
     xv, yv = np.meshgrid(x,x)
-    if user_interface is not None:
-        pid = user_interface.progress_new(steps=len(angles),
-                           task="backprojection.{}".format(os.getpid()))
         
     for i in np.arange(len(angles)):
         #xproj = np.linspace(-n/2.0, n/2.0, N, endpoint=False)
@@ -146,21 +147,20 @@ def backproject(sinogram, angles, filtering="ramp",
         #        # yp = -xv*np.sin(phi) + yv*np.cos(phi)
         #        projval = projinterp(xp)
         #        outarr[j][k] += projval
-        if user_interface is not None:
-            user_interface.progress_iterate(pid)
+        if trigger is not None:
+            trigger(**kwargs)
     # Normalize output (we assume that the projections are equidistant)
     # We measure angles in degrees
     dphi = np.pi/len(angles)
     # The factor of 2π comes from the choice of the unitary angular
     # frequency Fourier transform.
     outarr *= dphi / (2*np.pi)
-    if user_interface is not None:
-        user_interface.progress_finalize(pid)
+
     return outarr
 
     
 def fourier_interp(sinogram, angles, intp_method="cubic",
-                   user_interface=None):
+                   trigger=None, **kwargs):
     """
         Computes the inverse of the radon transform using Fourier
         interpolation.
@@ -191,9 +191,12 @@ def fourier_interp(sinogram, angles, intp_method="cubic",
             ``cubic``
               interpolate using a two-dimensional poolynimial surface.
               
-        user_interface : instance of `ttui.ui`, optional
-            The user interface to which progress should be reported.
-            The default is to output nothing. 
+        trigger : callable, optional
+            If set, the function `trigger` is called on a regular basis
+            throughout this algorithm.
+            Number of function calls: 4
+        **kwargs : dict, optional
+            Keyword arguments for trigger (e.g. "pid" of process).
 
 
         Returns
@@ -208,9 +211,8 @@ def fourier_interp(sinogram, angles, intp_method="cubic",
         sum : implementation by summation in real space
         scipy.interpolate.griddata : the used interpolation method
     """
-    if user_interface is not None:
-        pid = user_interface.progress_new(steps=1, 
-                    task="Fourier_interpolation.{}".format(os.getpid()))
+    if trigger is not None:
+        trigger(**kwargs)
     if len(sinogram[0]) %2 == 0:
         warnings.warn("Fourier interpolation with slices that have"+
                       " even dimensions leads to image distortions!")
@@ -268,7 +270,6 @@ def fourier_interp(sinogram, angles, intp_method="cubic",
     fx = np.fft.fftfreq(len(p_x[0]))
 
     #fx = np.linspace(-np.max(fx), np.max(fx), len(p_x[0]))
-    df = np.abs(fx[1]-fx[0])/2
     fx = fx.reshape(1, -1)
     # fy is zero
     
@@ -276,9 +277,6 @@ def fourier_interp(sinogram, angles, intp_method="cubic",
     fyl =  (fx)*np.sin(ang)
     # now fxl, fyl, and P_fx have same shape
     
-    # DEBUG: save fourier transform
-    #proc_arr2im(np.fft.fftshift(1.*P_fx.real), scale=True).save("./SIN_Fourier.bmp")
-
     # DEBUG: plot coordinates of positions of projections in fourier domain
     #from matplotlib import pylab as plt
     #plt.figure()
@@ -295,6 +293,9 @@ def fourier_interp(sinogram, angles, intp_method="cubic",
     # rintp defines the interpolation grid
     rintp = np.fft.fftshift(fx.reshape(-1))
 
+    if trigger is not None:
+        trigger(**kwargs)
+        
     ## The code block yields the same result as griddata (below)
     # interpolation coordinates
     #Rf = np.zeros((len(Xf),2))
@@ -322,32 +323,27 @@ def fourier_interp(sinogram, angles, intp_method="cubic",
     # The actual interpolation
     Fcomp = intp.griddata((Xf, Yf), Zf, (rintp[None,:], rintp[:,None]),
                           method=intp_method)
-
+                          
+    if trigger is not None:
+        trigger(**kwargs)
     # removed nans
     Fcomp[np.where(np.isnan(Fcomp))] = 0
 
     f = np.fft.fftshift( np.fft.ifft2(np.fft.ifftshift(Fcomp)) )
 
-
-    # DEBUG: save absolute value of real part of fourier image
-    #proc_arr2im(np.abs(Fcomp.real), scale=True).save("./Fourier_abs.bmp")
-    # DEBUG: save real part of fourier image
-    #proc_arr2im(Fcomp.real, scale=True).save("./Fourier.bmp")
-    # DEBUG: save space domain image
-    #proc_arr2im(f.real, scale=True).save("./Space.bmp")
-
+    if trigger is not None:
+        trigger(**kwargs)
     #q = np.arctan2(np.sum(np.abs(f.real)),np.sum(np.abs(f.imag)))
     #quality = ((q*2/np.pi-.5)*2)*100
     
     # Negative quality means too much imaginary stuff
     # 0% Quality means real and imaginary stuff are equal (not good).
     # Postive quality 100% means no imaginary stuff.
-    if user_interface is not None:
-        user_interface.progress_finalize(pid)
+
     return f
     
     
-def sum(sinogram, angles, user_interface=None):
+def sum(sinogram, angles, trigger=None, **kwargs):
     """
         Computes the inverse of the radon transform by computing the
         integral in real space.
@@ -360,9 +356,12 @@ def sum(sinogram, angles, user_interface=None):
         angles : (A,) ndarray
             Angular positions of the `sinogram` in radians equally 
             distributed from zero to PI.
-        user_interface : instance of `ttui.ui`, optional
-            The user interface to which progress should be reported.
-            The default is to output nothing.
+        trigger : callable, optional
+            If set, the function `trigger` is called on a regular basis
+            throughout this algorithm.
+            Number of function calls: approx. N²/10
+        **kwargs : dict, optional
+            Keyword arguments for trigger (e.g. "pid" of process).
             
 
         Returns
@@ -447,17 +446,13 @@ def sum(sinogram, angles, user_interface=None):
     # because axis -1 is always used.
     P = np.fft.fft(np.fft.ifftshift(sinogram, axes=-1))/np.sqrt(2*np.pi)
 
-    if user_interface is not None:
-        pid = user_interface.progress_new(steps=lenf,
-                                task="summation.{}".format(os.getpid()))
+    if trigger is not None:
+        trigger()
 
     for j in xrange(lenf):
         # Get r (We compute f(r) in this for-loop)
         r[0][:] = points[j][0] #x
         r[1][:] = points[j][1] #y
-        # Display how far we are
-        if user_interface is not None:
-            user_interface.progress_iterate(pid)
 
         # Integrand changes with r, so we have to create a new
         # array:
@@ -482,16 +477,18 @@ def sum(sinogram, angles, user_interface=None):
         
         # For quality control: Add up values for imaginary and
         # real values of f.
-        freal += np.abs(np.real(f[j]))
-        fimag += np.abs(np.imag(f[j]))
+        #freal += np.abs(np.real(f[j]))
+        #fimag += np.abs(np.imag(f[j]))
+        
+        # Display how far we are
+        if trigger is not None and j%10 == 0:
+            trigger(**kwargs)
 
-    q = np.arctan2(freal,fimag)
-    quality = ((q*2/np.pi-.5)*2)*100
+    #q = np.arctan2(freal,fimag)
+    #quality = ((q*2/np.pi-.5)*2)*100
     # Negative quality means too much imaginary stuff
     # 0% Quality means real and imaginary stuff are equal (not good).
     # Postive quality 100% means no imaginary stuff.
-    if user_interface is not None:
-        user_interface.progress_finalize(pid)
         
     return f.real.reshape((N,N))
 
