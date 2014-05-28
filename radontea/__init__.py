@@ -15,4 +15,4 @@ from ._Radon import *
 __version__ = "0.1.0"
 __author__ = "Paul Mueller"
 __email__ = "paul.mueller@biotec.tu-dresden.de"
-__license__ = "OpenBSD"
+__license__ = "BSD (3-Clause)"

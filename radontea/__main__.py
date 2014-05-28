@@ -14,28 +14,34 @@ from ._Radon import radon
 if __name__ == "__main__":
     from matplotlib import pylab as plt
     from matplotlib import cm
-    try:
-        from ttui import stdout
-        ui = stdout()
-    except:
-        ui = None
         
     N=55
     It=7
     A=13
+
+    # If available, use uilayer to display progress
+    try:
+        from uilayer import stdout
+        steps = ((A+1)*2 + 4 + A*It+1)*2
+        ui = stdout(show_warnings=False, steps=steps)
+        trigger = ui.Iterate
+    except:
+        ui = None
+        trigger = None
+
     angles = np.linspace(0,np.pi,A)
     im = get_original(N)
     
-    sino = radon(im, angles, user_interface=ui)
-    fbp = backproject(sino, angles, user_interface=ui)
-    fintp = fourier_interp(sino, angles, user_interface=ui)
-    alg = sart(sino, angles, iterations=It, user_interface=ui)
+    sino = radon(im, angles, trigger=trigger)
+    fbp = backproject(sino, angles, trigger=trigger)
+    fintp = fourier_interp(sino, angles, trigger=trigger)
+    alg = sart(sino, angles, iterations=It, trigger=trigger)
 
     im2 = ( im >= (im.max()/5) ) * 255
-    sino2 = radon(im2, angles, user_interface=ui)
-    fbp2 = backproject(sino2, angles, user_interface=ui)
-    fintp2 = fourier_interp(sino2, angles, user_interface=ui)
-    alg2 = sart(sino2, angles, iterations=It, user_interface=ui)
+    sino2 = radon(im2, angles, trigger=trigger)
+    fbp2 = backproject(sino2, angles, trigger=trigger)
+    fintp2 = fourier_interp(sino2, angles, trigger=trigger)
+    alg2 = sart(sino2, angles, iterations=It, trigger=trigger)
 
     plt.figure(figsize=(15,8))
     

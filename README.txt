@@ -1,4 +1,4 @@
-This package includes several algorithms to compute the inverse Radon
+This package contains several algorithms to compute the inverse Radon
 trannsform (e.g. SART, backprojection, Fourier interpolation).
 `radontea` is featured by a lot of doc strings and code comments, which
 makes it particularly usefull for teaching purposes.

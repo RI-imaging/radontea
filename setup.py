@@ -19,7 +19,9 @@ setup(
     description='Collection of algorithms to compute the inverse Radon transform',
     long_description=open(join(dirname(__file__), 'README.txt')).read(),
     install_requires=[ "NumPy >= 1.5.1",
-                       "SciPy >= 0.8.0"  ],
+                       "SciPy >= 0.8.0",
+                       "uilayer"
+                     ],
     keywords=["tomography", "ct", "radon"],
     extras_require={
                     'doc': ['sphinx']
