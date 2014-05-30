@@ -9,13 +9,13 @@ import radontea
 
 setup(
     name='radontea',
-    author='Paul Mueller',
-    author_email='paul.mueller@biotec.tu-dresden.de',
-    url='https://github.com/paulmueller/radontea',
+    author=radontea.__author__,
+    author_email=radontea.__email__,
     version=radontea.__version__,
+    license=radontea.__license__,
+    url='https://github.com/paulmueller/radontea',
     packages=['radontea'],
     package_dir={'radontea': 'radontea'},
-    license="OpenBSD",
     description='Collection of algorithms to compute the inverse Radon transform',
     long_description=open(join(dirname(__file__), 'README.txt')).read(),
     install_requires=[ "NumPy >= 1.5.1",
