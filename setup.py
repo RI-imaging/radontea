@@ -7,15 +7,17 @@ from warnings import warn
 
 import radontea
 
+name='radontea'
+
 setup(
-    name='radontea',
+    name=name,
     author=radontea.__author__,
     author_email=radontea.__email__,
     version=radontea.__version__,
     license=radontea.__license__,
     url='https://github.com/paulmueller/radontea',
-    packages=['radontea'],
-    package_dir={'radontea': 'radontea'},
+    packages=[name],
+    package_dir={name: name},
     description='Collection of algorithms to compute the inverse Radon transform',
     long_description=open(join(dirname(__file__), 'README.txt')).read(),
     install_requires=[ "NumPy >= 1.5.1",
