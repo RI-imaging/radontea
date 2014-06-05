@@ -13,74 +13,75 @@ import os
 import scipy.interpolate as intp
 import warnings
 
-__all__= ["backproject", "fourier_interp", "sum"]
+__all__= ["backproject", "fourier_map", "sum"]
 
 
 def backproject(sinogram, angles, filtering="ramp",
                 trigger=None, **kwargs):
-    """
-        Computes the inverse of the radon transform using filtered
-        backprojection.
+    """ 2D backprojection with the Fourier slice theorem
+    
+    Computes the inverse of the radon transform using filtered
+    backprojection.
 
 
-        Parameters
-        ----------
-        sinogram : ndarray, shape (A,N)
-            Two-dimensional sinogram of line recordings.
-        angles : (A,) ndarray
-            Angular positions of the `sinogram` in radians equally
-            distributed from zero to PI.
-        filtering : {'ramp', 'shepp-logan', 'cosine', 'hamming', \
-                     'hann'}, optional
-            Specifies the Fourier filter. Either of
-            
-            ``ramp``
-              mathematically correct reconstruction
-              
-            ``shepp-logan``
-            
-            ``cosine``
-            
-            ``hamming``
-            
-            ``hann``
-            
-        trigger : callable, optional
-            If set, the function `trigger` is called on a regular basis
-            throughout this algorithm.
-            Number of function calls: A+1
-        **kwargs : dict, optional
-            Keyword arguments for trigger (e.g. "pid" of process).
+    Parameters
+    ----------
+    sinogram : ndarray, shape (A,N)
+        Two-dimensional sinogram of line recordings.
+    angles : (A,) ndarray
+        Angular positions of the `sinogram` in radians equally
+        distributed from zero to PI.
+    filtering : {'ramp', 'shepp-logan', 'cosine', 'hamming', \
+                 'hann'}, optional
+        Specifies the Fourier filter. Either of
+        
+        ``ramp``
+          mathematically correct reconstruction
+          
+        ``shepp-logan``
+        
+        ``cosine``
+        
+        ``hamming``
+        
+        ``hann``
+        
+    trigger : callable, optional
+        If set, the function `trigger` is called on a regular basis
+        throughout this algorithm.
+        Number of function calls: A+1
+    **kwargs : dict, optional
+        Keyword arguments for trigger (e.g. "pid" of process).
 
 
-        Returns
-        -------
-        out : ndarray
-            The reconstructed image.
+    Returns
+    -------
+    out : ndarray
+        The reconstructed image.
 
 
-        Examples
-        --------
-        >>> import numpy as np
-        >>> from radontea import backproject
-        >>> N = 5
-        >>> A = 7
-        >>> x = np.linspace(-N/2, N/2, N)
-        >>> projection = np.exp(-x**2)
-        >>> sinogram = np.tile(projection, A).reshape(A,N)
-        >>> angles = np.linspace(0, np.pi, A, endpoint=False)
-        >>> backproject(sinogram, angles)
-        array([[ 0.03813283, -0.01972347, -0.02221885,  0.03822303,  0.01903376],
-               [ 0.04033526, -0.01591647,  0.02262173,  0.04203002,  0.02123619],
-               [ 0.02658797,  0.11375576,  0.41525594,  0.17170226,  0.0074889 ],
-               [ 0.04008672,  0.11139209,  0.27650193,  0.16933859,  0.02098764],
-               [ 0.02140445,  0.0334597 ,  0.07691547,  0.0914062 ,  0.00230537]])
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from radontea import backproject
+    >>> N = 5
+    >>> A = 7
+    >>> x = np.linspace(-N/2, N/2, N)
+    >>> projection = np.exp(-x**2)
+    >>> sinogram = np.tile(projection, A).reshape(A,N)
+    >>> angles = np.linspace(0, np.pi, A, endpoint=False)
+    >>> backproject(sinogram, angles)
+    array([[ 0.03813283, -0.01972347, -0.02221885,  0.03822303,  0.01903376],
+           [ 0.04033526, -0.01591647,  0.02262173,  0.04203002,  0.02123619],
+           [ 0.02658797,  0.11375576,  0.41525594,  0.17170226,  0.0074889 ],
+           [ 0.04008672,  0.11139209,  0.27650193,  0.16933859,  0.02098764],
+           [ 0.02140445,  0.0334597 ,  0.07691547,  0.0914062 ,  0.00230537]])
 
 
-        See Also
-        --------
-        fourier_interp : implementation by Fourier interpolation
-        sum : implementation by summation in real space
+    See Also
+    --------
+    fourier_map : implementation by Fourier interpolation
+    sum : implementation by summation in real space
     """
     ln = len(sinogram[0])
     la = len(angles)
@@ -159,57 +160,58 @@ def backproject(sinogram, angles, filtering="ramp",
     return outarr
 
     
-def fourier_interp(sinogram, angles, intp_method="cubic",
+def fourier_map(sinogram, angles, intp_method="cubic",
                    trigger=None, **kwargs):
-    """
-        Computes the inverse of the radon transform using Fourier
-        interpolation.
-        Warning: This is the naive reconstruction that assumes that
-        the image is rotated through the upper left pixel nearest to
-        the actual center of the image. We do not have this problem for
-        odd images, only for even images.
+    """ 2D Fourier mapping with the Fourier slice theorem
+    
+    Computes the inverse of the radon transform using Fourier
+    interpolation.
+    Warning: This is the naive reconstruction that assumes that
+    the image is rotated through the upper left pixel nearest to
+    the actual center of the image. We do not have this problem for
+    odd images, only for even images.
 
+    
+    Parameters
+    ----------
+    sinogram : (A,N) ndarray
+        Two-dimensional sinogram of line recordings.
+    angles : (A,) ndarray
+        Angular positions of the `sinogram` in radians equally
+        distributed from zero to PI.
+    intp_method : {'cubic', 'nearest', 'linear'}, optional
+        Method of interpolation. For more information see
+        `scipy.interpolate.griddata`. One of
         
-        Parameters
-        ----------
-        sinogram : (A,N) ndarray
-            Two-dimensional sinogram of line recordings.
-        angles : (A,) ndarray
-            Angular positions of the `sinogram` in radians equally
-            distributed from zero to PI.
-        intp_method : {'cubic', 'nearest', 'linear'}, optional
-            Method of interpolation. For more information see
-            `scipy.interpolate.griddata`. One of
-            
-            ``nearest``
-              instead of interpolating, use the points closest to
-              the input data.
+        ``nearest``
+          instead of interpolating, use the points closest to
+          the input data.
 
-            ``linear``
-              bilinear interpolation between data points.
-              
-            ``cubic``
-              interpolate using a two-dimensional poolynimial surface.
-              
-        trigger : callable, optional
-            If set, the function `trigger` is called on a regular basis
-            throughout this algorithm.
-            Number of function calls: 4
-        **kwargs : dict, optional
-            Keyword arguments for trigger (e.g. "pid" of process).
+        ``linear``
+          bilinear interpolation between data points.
+          
+        ``cubic``
+          interpolate using a two-dimensional poolynimial surface.
+          
+    trigger : callable, optional
+        If set, the function `trigger` is called on a regular basis
+        throughout this algorithm.
+        Number of function calls: 4
+    **kwargs : dict, optional
+        Keyword arguments for trigger (e.g. "pid" of process).
 
 
-        Returns
-        -------
-        out : ndarray
-            The reconstructed image.
+    Returns
+    -------
+    out : ndarray
+        The reconstructed image.
 
 
-        See Also
-        --------
-        backproject : implementation by backprojection
-        sum : implementation by summation in real space
-        scipy.interpolate.griddata : the used interpolation method
+    See Also
+    --------
+    backproject : implementation by backprojection
+    sum : implementation by summation in real space
+    scipy.interpolate.griddata : the used interpolation method
     """
     if trigger is not None:
         trigger(**kwargs)
@@ -344,36 +346,37 @@ def fourier_interp(sinogram, angles, intp_method="cubic",
     
     
 def sum(sinogram, angles, trigger=None, **kwargs):
-    """
-        Computes the inverse of the radon transform by computing the
-        integral in real space.
+    """ 2D sum-reconstruction with the Fourier slice theorem
+
+    Computes the inverse of the radon transform by computing the
+    integral in real space.
 
 
-        Parameters
-        ----------
-        sinogram : (A,N) ndarray
-            Two-dimensional sinogram of line recordings.
-        angles : (A,) ndarray
-            Angular positions of the `sinogram` in radians equally 
-            distributed from zero to PI.
-        trigger : callable, optional
-            If set, the function `trigger` is called on a regular basis
-            throughout this algorithm.
-            Number of function calls: approx. N²/10
-        **kwargs : dict, optional
-            Keyword arguments for trigger (e.g. "pid" of process).
-            
+    Parameters
+    ----------
+    sinogram : (A,N) ndarray
+        Two-dimensional sinogram of line recordings.
+    angles : (A,) ndarray
+        Angular positions of the `sinogram` in radians equally 
+        distributed from zero to PI.
+    trigger : callable, optional
+        If set, the function `trigger` is called on a regular basis
+        throughout this algorithm.
+        Number of function calls: approx. N²/10
+    **kwargs : dict, optional
+        Keyword arguments for trigger (e.g. "pid" of process).
+        
 
-        Returns
-        -------
-        out : ndarray
-            The reconstructed image.
+    Returns
+    -------
+    out : ndarray
+        The reconstructed image.
 
 
-        See Also
-        --------
-        backproject : implementation by backprojection
-        fourier_interp : implementation by summation in real space
+    See Also
+    --------
+    backproject : implementation by backprojection
+    fourier_map : implementation by summation in real space
     """
     # In the script we used the unitary angular frequency (uaf) Fourier
     # Transform. The discrete Fourier transform is equivalent to the
