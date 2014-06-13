@@ -5,7 +5,7 @@
 """
 import numpy as np
 
-from ._Back import backproject, fourier_interp
+from ._Back import backproject, fourier_map
 from ._Back_iterative import sart
 from ._logo import get_original
 from ._Radon import radon

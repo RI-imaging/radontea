@@ -17,7 +17,7 @@ __all__= ["backproject", "fourier_map", "sum"]
 
 
 def backproject(sinogram, angles, filtering="ramp",
-                trigger=None, **kwargs):
+                trigger=None, trigger_kwargs={}):
     """ 2D backprojection with the Fourier slice theorem
     
     Computes the inverse of the radon transform using filtered
@@ -50,7 +50,7 @@ def backproject(sinogram, angles, filtering="ramp",
         If set, the function `trigger` is called on a regular basis
         throughout this algorithm.
         Number of function calls: A+1
-    **kwargs : dict, optional
+    trigger_kwargs : dict, optional
         Keyword arguments for trigger (e.g. "pid" of process).
 
 
@@ -113,7 +113,7 @@ def backproject(sinogram, angles, filtering="ramp",
     else:
         raise ValueError("Unknown filter: %s" % filter)
     if trigger is not None:
-        trigger(**kwargs)
+        trigger(**trigger_kwargs)
     # Resize f so we can multiply it with the sinogram.
     kx = kx.reshape(1,-1)
     projection = np.fft.fft(sino, axis=-1) * kx
@@ -149,7 +149,7 @@ def backproject(sinogram, angles, filtering="ramp",
         #        projval = projinterp(xp)
         #        outarr[j][k] += projval
         if trigger is not None:
-            trigger(**kwargs)
+            trigger(**trigger_kwargs)
     # Normalize output (we assume that the projections are equidistant)
     # We measure angles in degrees
     dphi = np.pi/len(angles)
@@ -161,7 +161,7 @@ def backproject(sinogram, angles, filtering="ramp",
 
     
 def fourier_map(sinogram, angles, intp_method="cubic",
-                   trigger=None, **kwargs):
+                   trigger=None, trigger_kwargs={}):
     """ 2D Fourier mapping with the Fourier slice theorem
     
     Computes the inverse of the radon transform using Fourier
@@ -197,7 +197,7 @@ def fourier_map(sinogram, angles, intp_method="cubic",
         If set, the function `trigger` is called on a regular basis
         throughout this algorithm.
         Number of function calls: 4
-    **kwargs : dict, optional
+    trigger_kwargs : dict, optional
         Keyword arguments for trigger (e.g. "pid" of process).
 
 
@@ -214,7 +214,7 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     scipy.interpolate.griddata : the used interpolation method
     """
     if trigger is not None:
-        trigger(**kwargs)
+        trigger(**trigger_kwargs)
     if len(sinogram[0]) %2 == 0:
         warnings.warn("Fourier interpolation with slices that have"+
                       " even dimensions leads to image distortions!")
@@ -296,7 +296,7 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     rintp = np.fft.fftshift(fx.reshape(-1))
 
     if trigger is not None:
-        trigger(**kwargs)
+        trigger(**trigger_kwargs)
         
     ## The code block yields the same result as griddata (below)
     # interpolation coordinates
@@ -327,25 +327,19 @@ def fourier_map(sinogram, angles, intp_method="cubic",
                           method=intp_method)
                           
     if trigger is not None:
-        trigger(**kwargs)
+        trigger(**trigger_kwargs)
     # removed nans
     Fcomp[np.where(np.isnan(Fcomp))] = 0
 
     f = np.fft.fftshift( np.fft.ifft2(np.fft.ifftshift(Fcomp)) )
 
     if trigger is not None:
-        trigger(**kwargs)
-    #q = np.arctan2(np.sum(np.abs(f.real)),np.sum(np.abs(f.imag)))
-    #quality = ((q*2/np.pi-.5)*2)*100
-    
-    # Negative quality means too much imaginary stuff
-    # 0% Quality means real and imaginary stuff are equal (not good).
-    # Postive quality 100% means no imaginary stuff.
+        trigger(**trigger_kwargs)
 
     return f
     
     
-def sum(sinogram, angles, trigger=None, **kwargs):
+def sum(sinogram, angles, trigger=None, trigger_kwargs={}):
     """ 2D sum-reconstruction with the Fourier slice theorem
 
     Computes the inverse of the radon transform by computing the
@@ -363,7 +357,7 @@ def sum(sinogram, angles, trigger=None, **kwargs):
         If set, the function `trigger` is called on a regular basis
         throughout this algorithm.
         Number of function calls: approx. N²/10
-    **kwargs : dict, optional
+    trigger_kwargs : dict, optional
         Keyword arguments for trigger (e.g. "pid" of process).
         
 
@@ -478,20 +472,9 @@ def sum(sinogram, angles, trigger=None, **kwargs):
         integrand.sort()
         f[j] = np.sum(integrand)
         
-        # For quality control: Add up values for imaginary and
-        # real values of f.
-        #freal += np.abs(np.real(f[j]))
-        #fimag += np.abs(np.imag(f[j]))
-        
         # Display how far we are
         if trigger is not None and j%10 == 0:
-            trigger(**kwargs)
-
-    #q = np.arctan2(freal,fimag)
-    #quality = ((q*2/np.pi-.5)*2)*100
-    # Negative quality means too much imaginary stuff
-    # 0% Quality means real and imaginary stuff are equal (not good).
-    # Postive quality 100% means no imaginary stuff.
+            trigger(**trigger_kwargs)
         
-    return f.real.reshape((N,N))
+    return f.reshape((N,N))
 

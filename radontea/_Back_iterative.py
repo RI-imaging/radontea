@@ -25,7 +25,7 @@ __all__ = ["art", "sart"]
 
 
 def art(sinogram, angles, initial=None, iterations=1,
-        trigger=None, **kwargs):
+        trigger=None, trigger_kwargs={}):
     """ 
         The Algebraic Reconstruction Technique (ART) iteratively
         computes the inverse of the Radon transform in two dimensions.
@@ -54,7 +54,7 @@ def art(sinogram, angles, initial=None, iterations=1,
             If set, the function `trigger` is called on a regular basis
             throughout this algorithm.
             Number of function calls: A*iterations+1
-        **kwargs : dict, optional
+        trigger_kwargs : dict, optional
             Keyword arguments for trigger (e.g. "pid" of process).
 
 
@@ -142,7 +142,7 @@ def art(sinogram, angles, initial=None, iterations=1,
     f = f.flatten()
 
     if trigger is not None:
-        trigger(**kwargs)
+        trigger(**trigger_kwargs)
 
     for iteration in np.arange(iterations):
         #
@@ -222,7 +222,7 @@ def art(sinogram, angles, initial=None, iterations=1,
                  # #if i%10 == 1:
                  # #    image = f.reshape((N,N))[::-1]
             if trigger is not None:
-                trigger(**kwargs)
+                trigger(**trigger_kwargs)
 
                  # #    proc_arr2im(image, cut=True).save(os.path.join(DIR,"test/Elephantulus_small_art_%02d_%04d_%08d.bmp" % (iteration,k,i)))
     # By slicing in-place [::-1] we get rid of the inversion of the
@@ -232,7 +232,7 @@ def art(sinogram, angles, initial=None, iterations=1,
 
 
 def sart(sinogram, angles, initial=None, iterations=1,
-         trigger=None, **kwargs):
+         trigger=None, trigger_kwargs={}):
     """ The simultaneous algebraic reconstruction technique (SART)
         computes an inverse of the Radon transform in two dimensions.
         The reconstruction technique uses "rays" of the diameter of
@@ -260,7 +260,7 @@ def sart(sinogram, angles, initial=None, iterations=1,
             If set, the function `trigger` is called on a regular basis
             throughout this algorithm.
             Number of function calls: A*iterations+1
-        **kwargs : dict, optional
+        trigger_kwargs : dict, optional
             Keyword arguments for trigger (e.g. "pid" of process).
             
         
@@ -333,7 +333,7 @@ def sart(sinogram, angles, initial=None, iterations=1,
     g = g.flatten()
     
     if trigger is not None:
-        trigger(**kwargs)
+        trigger(**trigger_kwargs)
 
     for k in np.arange(iterations):
         #
@@ -494,7 +494,7 @@ def sart(sinogram, angles, initial=None, iterations=1,
             dg[np.where(ai_sum != 0)] /= ai_sum[np.where(ai_sum != 0)]
             del ai_sum
             if trigger is not None:
-                trigger(**kwargs)
+                trigger(**trigger_kwargs)
 
         ## Only apply the average from all differences dgall
         ## ->leads to slower convergence then ART, but is more accurate
