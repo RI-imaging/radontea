@@ -20,7 +20,7 @@ setup(
     package_dir={name: name},
     description='Collection of algorithms to compute the inverse Radon transform',
     long_description=open(join(dirname(__file__), 'README.txt')).read(),
-    install_requires=[ "NumPy >= 1.5.1", "SciPy >= 0.8.0"]
+    install_requires=[ "NumPy >= 1.5.1", "SciPy >= 0.8.0"],
     keywords=["tomography", "ct", "radon"],
     extras_require={
                     'doc': ['sphinx']
