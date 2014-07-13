@@ -17,7 +17,7 @@ import scipy.ndimage
 __all__ = ["radon"]
 
 
-def radon(arr, angles, trigger=None, **kwargs):
+def radon(arr, angles, callback=None, cb_kwargs={}):
     """ 
         Compute the Radon transform (sinogram) of a circular image.
         
@@ -33,12 +33,12 @@ def radon(arr, angles, trigger=None, **kwargs):
             the input image.
         angles : ndarray, length A
             angles or projections in radians
-        trigger : callable, optional
-            If set, the function `trigger` is called on a regular basis
+        callback : callable, optional
+            If set, the function `callback` is called on a regular basis
             throughout this algorithm.
             Number of function calls: A+1
-        **kwargs : dict, optional
-            Keyword arguments for trigger (e.g. "pid" of process).
+        cb_kwargs : dict, optional
+            Keyword arguments for `callback` (e.g. "pid" of process).
 
 
         Returns
@@ -62,15 +62,15 @@ def radon(arr, angles, trigger=None, **kwargs):
     # outarray: x-axis: projection
     #           y-axis: 
     outarr = np.zeros((len(angles),len(arr)))
-    if trigger is not None:
-        trigger(**kwargs)
+    if callback is not None:
+        callback(**cb_kwargs)
     for i in np.arange(len(angles)):
         rotated = scipy.ndimage.rotate(arr, angles[i]/np.pi*180, order=3,
                   reshape=False, mode="constant", cval=0) #black corner
         # sum along some axis.
         outarr[i] = rotated.sum(axis=0)
         percent = i/len(angles)*100
-        if trigger is not None:
-            trigger(**kwargs)
+        if callback is not None:
+            callback(**cb_kwargs)
 
     return outarr

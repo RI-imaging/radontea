@@ -17,7 +17,7 @@ __all__= ["backproject", "fourier_map", "sum"]
 
 
 def backproject(sinogram, angles, filtering="ramp",
-                trigger=None, trigger_kwargs={}):
+                callback=None, cb_kwargs={}):
     """ 2D backprojection with the Fourier slice theorem
     
     Computes the inverse of the radon transform using filtered
@@ -46,12 +46,12 @@ def backproject(sinogram, angles, filtering="ramp",
         
         ``hann``
         
-    trigger : callable, optional
-        If set, the function `trigger` is called on a regular basis
+    callback : callable, optional
+        If set, the function `callback` is called on a regular basis
         throughout this algorithm.
         Number of function calls: A+1
-    trigger_kwargs : dict, optional
-        Keyword arguments for trigger (e.g. "pid" of process).
+    cb_kwargs : dict, optional
+        Keyword arguments for `callback` (e.g. "pid" of process).
 
 
     Returns
@@ -112,8 +112,8 @@ def backproject(sinogram, angles, filtering="ramp",
         kx[1:] = 2*np.pi
     else:
         raise ValueError("Unknown filter: %s" % filter)
-    if trigger is not None:
-        trigger(**trigger_kwargs)
+    if callback is not None:
+        callback(**cb_kwargs)
     # Resize f so we can multiply it with the sinogram.
     kx = kx.reshape(1,-1)
     projection = np.fft.fft(sino, axis=-1) * kx
@@ -148,8 +148,8 @@ def backproject(sinogram, angles, filtering="ramp",
         #        # yp = -xv*np.sin(phi) + yv*np.cos(phi)
         #        projval = projinterp(xp)
         #        outarr[j][k] += projval
-        if trigger is not None:
-            trigger(**trigger_kwargs)
+        if callback is not None:
+            callback(**cb_kwargs)
     # Normalize output (we assume that the projections are equidistant)
     # We measure angles in degrees
     dphi = np.pi/len(angles)
@@ -161,7 +161,7 @@ def backproject(sinogram, angles, filtering="ramp",
 
     
 def fourier_map(sinogram, angles, intp_method="cubic",
-                   trigger=None, trigger_kwargs={}):
+                   callback=None, cb_kwargs={}):
     """ 2D Fourier mapping with the Fourier slice theorem
     
     Computes the inverse of the radon transform using Fourier
@@ -193,12 +193,12 @@ def fourier_map(sinogram, angles, intp_method="cubic",
         ``cubic``
           interpolate using a two-dimensional poolynimial surface.
           
-    trigger : callable, optional
-        If set, the function `trigger` is called on a regular basis
+    callback : callable, optional
+        If set, the function `callback` is called on a regular basis
         throughout this algorithm.
         Number of function calls: 4
-    trigger_kwargs : dict, optional
-        Keyword arguments for trigger (e.g. "pid" of process).
+    cb_kwargs : dict, optional
+        Keyword arguments for `callback` (e.g. "pid" of process).
 
 
     Returns
@@ -213,8 +213,8 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     sum : implementation by summation in real space
     scipy.interpolate.griddata : the used interpolation method
     """
-    if trigger is not None:
-        trigger(**trigger_kwargs)
+    if callback is not None:
+        callback(**cb_kwargs)
     if len(sinogram[0]) %2 == 0:
         warnings.warn("Fourier interpolation with slices that have"+
                       " even dimensions leads to image distortions!")
@@ -295,8 +295,8 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     # rintp defines the interpolation grid
     rintp = np.fft.fftshift(fx.reshape(-1))
 
-    if trigger is not None:
-        trigger(**trigger_kwargs)
+    if callback is not None:
+        callback(**cb_kwargs)
         
     ## The code block yields the same result as griddata (below)
     # interpolation coordinates
@@ -326,20 +326,20 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     Fcomp = intp.griddata((Xf, Yf), Zf, (rintp[None,:], rintp[:,None]),
                           method=intp_method)
                           
-    if trigger is not None:
-        trigger(**trigger_kwargs)
+    if callback is not None:
+        callback(**cb_kwargs)
     # removed nans
     Fcomp[np.where(np.isnan(Fcomp))] = 0
 
     f = np.fft.fftshift( np.fft.ifft2(np.fft.ifftshift(Fcomp)) )
 
-    if trigger is not None:
-        trigger(**trigger_kwargs)
+    if callback is not None:
+        callback(**cb_kwargs)
 
     return f
     
     
-def sum(sinogram, angles, trigger=None, trigger_kwargs={}):
+def sum(sinogram, angles, callback=None, cb_kwargs={}):
     """ 2D sum-reconstruction with the Fourier slice theorem
 
     Computes the inverse of the radon transform by computing the
@@ -353,12 +353,12 @@ def sum(sinogram, angles, trigger=None, trigger_kwargs={}):
     angles : (A,) ndarray
         Angular positions of the `sinogram` in radians equally 
         distributed from zero to PI.
-    trigger : callable, optional
-        If set, the function `trigger` is called on a regular basis
+    callback : callable, optional
+        If set, the function `callback` is called on a regular basis
         throughout this algorithm.
         Number of function calls: approx. N²/10
-    trigger_kwargs : dict, optional
-        Keyword arguments for trigger (e.g. "pid" of process).
+    cb_kwargs : dict, optional
+        Keyword arguments for `callback` (e.g. "pid" of process).
         
 
     Returns
@@ -443,8 +443,8 @@ def sum(sinogram, angles, trigger=None, trigger_kwargs={}):
     # because axis -1 is always used.
     P = np.fft.fft(np.fft.ifftshift(sinogram, axes=-1))/np.sqrt(2*np.pi)
 
-    if trigger is not None:
-        trigger()
+    if callback is not None:
+        callback()
 
     for j in xrange(lenf):
         # Get r (We compute f(r) in this for-loop)
@@ -473,8 +473,8 @@ def sum(sinogram, angles, trigger=None, trigger_kwargs={}):
         f[j] = np.sum(integrand)
         
         # Display how far we are
-        if trigger is not None and j%10 == 0:
-            trigger(**trigger_kwargs)
+        if callback is not None and j%10 == 0:
+            callback(**cb_kwargs)
         
     return f.reshape((N,N))
 

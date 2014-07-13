@@ -12,6 +12,8 @@ from ._Radon import radon
 
 
 if __name__ == "__main__":
+    import matplotlib
+    matplotlib.use("wxagg")
     from matplotlib import pylab as plt
     from matplotlib import cm
         
@@ -24,24 +26,24 @@ if __name__ == "__main__":
         from uilayer import stdout
         steps = ((A+1)*2 + 4 + A*It+1)*2
         ui = stdout(show_warnings=False, steps=steps)
-        trigger = ui.Iterate
+        callback = ui.Iterate
     except:
         ui = None
-        trigger = None
+        callback = None
 
     angles = np.linspace(0,np.pi,A)
     im = get_original(N)
     
-    sino = radon(im, angles, trigger=trigger)
-    fbp = backproject(sino, angles, trigger=trigger)
-    fintp = fourier_map(sino, angles, trigger=trigger)
-    alg = sart(sino, angles, iterations=It, trigger=trigger)
+    sino = radon(im, angles, callback=callback)
+    fbp = backproject(sino, angles, callback=callback)
+    fintp = fourier_map(sino, angles, callback=callback)
+    alg = sart(sino, angles, iterations=It, callback=callback)
 
     im2 = ( im >= (im.max()/5) ) * 255
-    sino2 = radon(im2, angles, trigger=trigger)
-    fbp2 = backproject(sino2, angles, trigger=trigger)
-    fintp2 = fourier_map(sino2, angles, trigger=trigger)
-    alg2 = sart(sino2, angles, iterations=It, trigger=trigger)
+    sino2 = radon(im2, angles, callback=callback)
+    fbp2 = backproject(sino2, angles, callback=callback)
+    fintp2 = fourier_map(sino2, angles, callback=callback)
+    alg2 = sart(sino2, angles, iterations=It, callback=callback)
 
     plt.figure(figsize=(15,8))
     
