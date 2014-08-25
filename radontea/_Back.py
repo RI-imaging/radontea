@@ -18,7 +18,7 @@ __all__= ["backproject", "fourier_map", "sum"]
 
 def backproject(sinogram, angles, filtering="ramp",
                 callback=None, cb_kwargs={}):
-    """ 2D backprojection with the Fourier slice theorem
+    u""" 2D backprojection with the Fourier slice theorem
     
     Computes the inverse of the radon transform using filtered
     backprojection.
@@ -162,7 +162,7 @@ def backproject(sinogram, angles, filtering="ramp",
     
 def fourier_map(sinogram, angles, intp_method="cubic",
                    callback=None, cb_kwargs={}):
-    """ 2D Fourier mapping with the Fourier slice theorem
+    u""" 2D Fourier mapping with the Fourier slice theorem
     
     Computes the inverse of the radon transform using Fourier
     interpolation.
@@ -340,7 +340,7 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     
     
 def sum(sinogram, angles, callback=None, cb_kwargs={}):
-    """ 2D sum-reconstruction with the Fourier slice theorem
+    u""" 2D sum-reconstruction with the Fourier slice theorem
 
     Computes the inverse of the radon transform by computing the
     integral in real space.

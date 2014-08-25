@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    _Back_iterative.py
 
-    Investigation of non-diffraction tomography methods.
+_Back_iterative.py
 
-    - perform algebraic reconstruction of a sinogram taken from angles
-      that are not equidistant
+Investigation of non-diffraction tomography methods.
 
-    - Algebraic reconstruction technique (ART)
+- perform algebraic reconstruction of a sinogram taken from angles
+  that are not equidistant
 
-    - Simultaneous algebraic reconstruction technique (SART)
-      - no hamming window
-      - not parallelized
+- Algebraic reconstruction technique (ART)
+
+- Simultaneous algebraic reconstruction technique (SART)
+  - no hamming window
+  - not parallelized
 
 """
 from __future__ import division, print_function
@@ -26,54 +27,56 @@ __all__ = ["art", "sart"]
 
 def art(sinogram, angles, initial=None, iterations=1,
         callback=None, cb_kwargs={}):
-    """ 
-        The Algebraic Reconstruction Technique (ART) iteratively
-        computes the inverse of the Radon transform in two dimensions.
-        The reconstruction technique uses *rays* of the diameter of
-        one pixel to iteratively solve the system of linear equations
-        that describe the projection process. The binary weighting
-        factors are
-            - 1, if the center of the a pixel is within the *ray*
-            - 0, else
+    u""" Algebraic Reconstruction Technique
+    
+    The Algebraic Reconstruction Technique (ART) iteratively
+    computes the inverse of the Radon transform in two dimensions.
+    The reconstruction technique uses *rays* of the diameter of
+    one pixel to iteratively solve the system of linear equations
+    that describe the projection process. The binary weighting
+    factors are
+    
+     - 1, if the center of the a pixel is within the *ray*
+     - 0, else
 
 
-        Parameters
-        ----------
-        sinogram : ndarrayy, shape (A,N)
-            Two-dimensional sinogram of line recordings.
-        angles : ndarray, length A
-            Angular positions of the `sinogram` in radians. The angles
-            at which the sinogram slices were recorded do not have to be
-            distributed equidistantly as in :func:`backproject`.
-            The angles are internaly converted to modulo PI.
-        initial : ndarray, shape (N,N), optional
-            The initial guess for the solution.
-        iterations : int
-            Number of iterations to perform.
-        callback : callable, optional
-            If set, the function `callback` is called on a regular basis
-            throughout this algorithm.
-            Number of function calls: A*iterations+1
-        cb_kwargs : dict, optional
-            Keyword arguments for `callback` (e.g. "pid" of process).
+    Parameters
+    ----------
+    sinogram : ndarrayy, shape (A,N)
+        Two-dimensional sinogram of line recordings.
+    angles : ndarray, length A
+        Angular positions of the `sinogram` in radians. The angles
+        at which the sinogram slices were recorded do not have to be
+        distributed equidistantly as in :func:`backproject`.
+        The angles are internaly converted to modulo PI.
+    initial : ndarray, shape (N,N), optional
+        The initial guess for the solution.
+    iterations : int
+        Number of iterations to perform.
+    callback : callable, optional
+        If set, the function `callback` is called on a regular basis
+        throughout this algorithm.
+        Number of function calls: A*iterations+1
+    cb_kwargs : dict, optional
+        Keyword arguments for `callback` (e.g. "pid" of process).
 
 
-        See Also
-        --------
-        sart : simultaneous algebraic reconstruction technique
+    See Also
+    --------
+    sart : simultaneous algebraic reconstruction technique
 
 
-        Notes
-        -----
-        For theoretical backround, see
-        Kak, A. C., & Slaney, M.. *Principles of Computerized
-        Tomographic Imaging*, SIAM, (2001)
-        
-        Sec. 7.2:
-        *"ART reconstrutions usually suffer from salt and pepper noise,
-        which is caused by the inconsitencies introuced in the set of
-        equations by the approximations commonly used for* 
-        :math:`w_{ik}` *'s."*
+    Notes
+    -----
+    For theoretical backround, see
+    Kak, A. C., & Slaney, M.. *Principles of Computerized
+    Tomographic Imaging*, SIAM, (2001)
+    
+    Sec. 7.2:
+    *"ART reconstrutions usually suffer from salt and pepper noise,
+    which is caused by the inconsitencies introuced in the set of
+    equations by the approximations commonly used for* 
+    :math:`w_{ik}` *'s."*
     """
     # make sure `iterations` is an integer
     iterations = int(iterations)
@@ -233,73 +236,75 @@ def art(sinogram, angles, initial=None, iterations=1,
 
 def sart(sinogram, angles, initial=None, iterations=1,
          callback=None, cb_kwargs={}):
-    """ The simultaneous algebraic reconstruction technique (SART)
-        computes an inverse of the Radon transform in two dimensions.
-        The reconstruction technique uses "rays" of the diameter of
-        one pixel to iteratively solve the system of linear equations
-        that describe the image. The weighting factors are bilinear
-        elements. At the beginning and end of each ray, only partial
-        weights are used. The pixel values of the image are updated
-        only after each iteration is complete.
+    u""" Simultaneous Algebraic Reconstruction Technique
+    
+    
+    SART computes an inverse of the Radon transform in two dimensions.
+    The reconstruction technique uses "rays" of the diameter of
+    one pixel to iteratively solve the system of linear equations
+    that describe the image. The weighting factors are bilinear
+    elements. At the beginning and end of each ray, only partial
+    weights are used. The pixel values of the image are updated
+    only after each iteration is complete.
+    
+    
+    Parameters
+    ----------
+    sinogram : ndarrayy, shape (A,N)
+        Two-dimensional sinogram of line recordings.
+    angles : ndarray, length A
+        Angular positions of the `sinogram` in radians. The angles
+        at which the sinogram slices were recorded do not have to be
+        distributed equidistantly as in backprojection techniques.
+        The angles are internaly converted to modulo PI.
+    initial : ndarray, shape (N,N), optional
+        the initial guess for the solution.
+    iterations : integer
+        Number of iterations to perform.
+    callback : callable, optional
+        If set, the function `callback` is called on a regular basis
+        throughout this algorithm.
+        Number of function calls: A*iterations+1
+    cb_kwargs : dict, optional
+        Keyword arguments for `callback` (e.g. "pid" of process).
         
-        
-        Parameters
-        ----------
-        sinogram : ndarrayy, shape (A,N)
-            Two-dimensional sinogram of line recordings.
-        angles : ndarray, length A
-            Angular positions of the `sinogram` in radians. The angles
-            at which the sinogram slices were recorded do not have to be
-            distributed equidistantly as in backprojection techniques.
-            The angles are internaly converted to modulo PI.
-        initial : ndarray, shape (N,N), optional
-            the initial guess for the solution.
-        iterations : integer
-            Number of iterations to perform.
-        callback : callable, optional
-            If set, the function `callback` is called on a regular basis
-            throughout this algorithm.
-            Number of function calls: A*iterations+1
-        cb_kwargs : dict, optional
-            Keyword arguments for `callback` (e.g. "pid" of process).
-            
-        
-        See Also
-        --------
-        art : algebraic reconstruction technique
+    
+    See Also
+    --------
+    art : algebraic reconstruction technique
 
 
-        Notes
-        -----
-        Algebraic reconstruction technique (ART) (see `art`):
-            Iterations are performed over each ray of each projection.
-            Weighting factors are binary (1 if center of pixel is
-            within ray, 0 else). This leads to salt and pepper noise.
-        
-        Simultaneous iterative reconstruction technique (SIRT):
-            Same idea as ART, but for each iteration, the change of the
-            image f is computed for all rays and projections separately
-            and the weights are applied simultaneously after each
-            iteration. The result is a slower convergence but the final
-            image is also less noisy.
-        
-        This implementation does NOT use a hamming window to filter
-        the data and to emphasize points at the center of the recon-
-        struction region.
-        
-        For theoretical backround, see
-        Kak, A. C., & Slaney, M.. *Principles of Computerized
-        Tomographic Imaging*, SIAM, (2001)
-        
-        Sec 7.4:
-        *"[SART] seems to combine the best of ART and SIRT. [...] Here
-        are the main features if SART: First, [...] the traditional
-        pixel basis is abandonded in favor of bilinear elements
-        [e.g. interpolation]. Also, for a circular reconstruction
-        region, only partial weights are assigned to the first and last
-        picture elements on the individual rays. To further reduce the
-        noise [...], the correction terms are simultaneously applied
-        for all the rays in one projection [...]."*
+    Notes
+    -----
+    Algebraic reconstruction technique (ART) (see `art`):
+        Iterations are performed over each ray of each projection.
+        Weighting factors are binary (1 if center of pixel is
+        within ray, 0 else). This leads to salt and pepper noise.
+    
+    Simultaneous iterative reconstruction technique (SIRT):
+        Same idea as ART, but for each iteration, the change of the
+        image f is computed for all rays and projections separately
+        and the weights are applied simultaneously after each
+        iteration. The result is a slower convergence but the final
+        image is also less noisy.
+    
+    This implementation does NOT use a hamming window to filter
+    the data and to emphasize points at the center of the recon-
+    struction region.
+    
+    For theoretical backround, see
+    Kak, A. C., & Slaney, M.. *Principles of Computerized
+    Tomographic Imaging*, SIAM, (2001)
+    
+    Sec 7.4:
+    *"[SART] seems to combine the best of ART and SIRT. [...] Here
+    are the main features if SART: First, [...] the traditional
+    pixel basis is abandonded in favor of bilinear elements
+    [e.g. interpolation]. Also, for a circular reconstruction
+    region, only partial weights are assigned to the first and last
+    picture elements on the individual rays. To further reduce the
+    noise [...], the correction terms are simultaneously applied
+    for all the rays in one projection [...]."*
     """
     N = len(sinogram[0])
     # Meshgrid for weigths
