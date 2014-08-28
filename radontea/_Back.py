@@ -159,6 +159,151 @@ def backproject(sinogram, angles, filtering="ramp",
 
     return outarr
 
+
+
+def backproject_fan_translation(linogram, angles, filtering="ramp",
+                callback=None, cb_kwargs={}):
+    u""" 2D backprojection with the Fourier slice theorem
+    
+    Computes the inverse of the radon transform using filtered
+    backprojection.
+
+
+    Parameters
+    ----------
+    sinogram : ndarray, shape (A,N)
+        Two-dimensional sinogram of line recordings.
+    angles : (A,) ndarray
+        Angular positions of the `sinogram` in radians equally
+        distributed from zero to PI.
+    filtering : {'ramp', 'shepp-logan', 'cosine', 'hamming', \
+                 'hann'}, optional
+        Specifies the Fourier filter. Either of
+        
+        ``ramp``
+          mathematically correct reconstruction
+          
+        ``shepp-logan``
+        
+        ``cosine``
+        
+        ``hamming``
+        
+        ``hann``
+        
+    callback : callable, optional
+        If set, the function `callback` is called on a regular basis
+        throughout this algorithm.
+        Number of function calls: A+1
+    cb_kwargs : dict, optional
+        Keyword arguments for `callback` (e.g. "pid" of process).
+
+
+    Returns
+    -------
+    out : ndarray
+        The reconstructed image.
+
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from radontea import backproject
+    >>> N = 5
+    >>> A = 7
+    >>> x = np.linspace(-N/2, N/2, N)
+    >>> projection = np.exp(-x**2)
+    >>> sinogram = np.tile(projection, A).reshape(A,N)
+    >>> angles = np.linspace(0, np.pi, A, endpoint=False)
+    >>> backproject(sinogram, angles)
+    array([[ 0.03813283, -0.01972347, -0.02221885,  0.03822303,  0.01903376],
+           [ 0.04033526, -0.01591647,  0.02262173,  0.04203002,  0.02123619],
+           [ 0.02658797,  0.11375576,  0.41525594,  0.17170226,  0.0074889 ],
+           [ 0.04008672,  0.11139209,  0.27650193,  0.16933859,  0.02098764],
+           [ 0.02140445,  0.0334597 ,  0.07691547,  0.0914062 ,  0.00230537]])
+
+
+    See Also
+    --------
+    fourier_map : implementation by Fourier interpolation
+    sum : implementation by summation in real space
+    """
+    ln = len(sinogram[0])
+    la = len(angles)
+    # transpose so we can call resize correctly
+    sino = sinogram.transpose().copy()
+    # Apply a Fourier filter before projecting the sinogram slices.
+    # Resize image to next power of two for fourier analysis
+    # Speeds up fourier and lessens artifacts
+    order = max(64., 2**np.ceil(np.log(2 * ln) / np.log(2)))
+    sino.resize((order,la))
+    sino = sino.transpose()
+    # These artifacts are for example bad contrast. To check, set:
+    #order = ln
+    #sino = sinogram
+    kx = 2 * np.pi * np.abs(np.fft.fftfreq(int(order)))
+    # Ask for the filter. Do not include zero (first element).
+    if filtering == "ramp":
+        pass
+    elif filtering == "shepp-logan":
+        kx[1:] = kx[1:] * np.sin(kx[1:]) / (kx[1:])
+    elif filtering == "cosine":
+        kx[1:] = kx[1:] * np.cos(kx[1:])
+    elif filtering == "hamming":
+        kx[1:] = kx[1:] * (0.54 + 0.46 * np.cos(kx[1:]))
+    elif filtering == "hann":
+        kx[1:] = kx[1:] * (1 + np.cos(kx[1:])) / 2
+    elif filtering == None:
+        kx[1:] = 2*np.pi
+    else:
+        raise ValueError("Unknown filter: %s" % filter)
+    if callback is not None:
+        callback(**cb_kwargs)
+    # Resize f so we can multiply it with the sinogram.
+    kx = kx.reshape(1,-1)
+    projection = np.fft.fft(sino, axis=-1) * kx
+    sino_filtered = np.real(np.fft.ifft(projection, axis=-1))
+    # Resize filtered sinogram back to original size
+    sino = sino_filtered[:, :ln]
+    ## Perform backprojection
+    x = np.linspace(-ln/2, ln/2, ln, endpoint=False) +.5
+    outarr = np.zeros((ln,ln),dtype=np.float64)
+    # Meshgrid for output array
+    xv, yv = np.meshgrid(x,x)
+        
+    for i in np.arange(len(angles)):
+        #xproj = np.linspace(-n/2.0, n/2.0, N, endpoint=False)
+        projinterp = intp.interp1d(x, sino[i], fill_value=0.0,
+                                   copy=False, bounds_error=False)
+        # Call proj_interp with cos and sin of corresponding coordinate
+        # and add it to the outarr.
+        phi = angles[i]
+        # Smear projection onto 2d volume
+        xp = xv*np.cos(phi) + yv*np.sin(phi)
+        outarr += projinterp(xp)
+        ## Here a much slower version with the same result:
+        #for j in x:
+        #    for k in x:
+        #        # shift points to match origin of coordinate system
+        #        xv = j - ln/2
+        #        yv = k - ln/2
+        #        # perform a simple coordinate transform
+        #        # 
+        #        xp = xv*np.cos(phi) + yv*np.sin(phi)
+        #        # yp = -xv*np.sin(phi) + yv*np.cos(phi)
+        #        projval = projinterp(xp)
+        #        outarr[j][k] += projval
+        if callback is not None:
+            callback(**cb_kwargs)
+    # Normalize output (we assume that the projections are equidistant)
+    # We measure angles in degrees
+    dphi = np.pi/len(angles)
+    # The factor of 2π comes from the choice of the unitary angular
+    # frequency Fourier transform.
+    outarr *= dphi / (2*np.pi)
+
+    return outarr
+
     
 def fourier_map(sinogram, angles, intp_method="cubic",
                    callback=None, cb_kwargs={}):
