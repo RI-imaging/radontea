@@ -115,6 +115,8 @@ def radon_fan_translation(arr, det_size, lS=1, return_ang=False,
     lS : int
         Source position relative to the center of leftest pixel of
         `arr`. lS >= 1.
+    return_ang : bool
+        Also return the angles corresponding to the detector pixels.
     callback : callable, optional
         If set, the function `callback` is called on a regular basis
         throughout this algorithm.
@@ -125,9 +127,9 @@ def radon_fan_translation(arr, det_size, lS=1, return_ang=False,
 
     Returns
     -------
-    outarr : ndarray of floats, shape (A,N)
-        Linogram of the input image. The i'th row contains the
-        projection data of the i'th angle.
+    outarr : ndarray of floats, shape (N+det_size,det_size)
+        Linogram of the input image. Where N+det_size determines the
+        lateral position of the sample.
 
 
     See Also
