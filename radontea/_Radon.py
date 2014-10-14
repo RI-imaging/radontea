@@ -14,7 +14,8 @@ import scipy
 import scipy.ndimage
 
 
-__all__ = ["radon", "radon_fan_translation"]
+__all__ = ["radon", "radon_fan_translation",
+           "get_angular_equispaced_coords"]
 
 
 def radon(arr, angles, callback=None, cb_kwargs={}):
@@ -80,9 +81,9 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
                           callback=None, cb_kwargs={}):
     """ Compute the Radon transform for a fan beam geometry
         
-    In contrast to `radon`, this function uses (A) a fan-beam geometry
+    In contrast to `radon`, this function uses (1) a fan-beam geometry
     (the integral is taken along rays that meet at one point), and
-    (B) translates the object laterally instead of rotating it. The
+    (2) translates the object laterally instead of rotating it. The
     result is sometimes referred to as 'linogram'.
 
     x
@@ -111,9 +112,8 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
         the input image.
     det_size : int
         The total detector size in pixels. The detector centered to the
-        source (det_size odd) or is moved half a pixel up (even). The 
-        axial position of the detector is the center of the pixels on 
-        the far right of the object.
+        source. The axial position of the detector is the center of the
+        pixels on the far right of the object.
     det_spacing : float
         Distance between detection points in pixels.
     shift_size : int
@@ -180,37 +180,23 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
     # minus .5 because we use the center of the pixel
     
     if det_size%2 == 0: #even
-        latmax = det_size/2 * det_spacing
-        lat = np.linspace(-latmax, latmax, det_size, endpoint=False)
+        even = True
     else: #odd
-        latmax = det_size/2 * det_spacing - .5
-        lat = np.linspace(-latmax, latmax, det_size, endpoint=True)
+        even = False
+
+    lat = get_lateral_equispaced_coords(det_size, det_spacing)
 
     angles = np.arctan2(lat,axi)
-    #angles -= np.min(angles)
-    
     
     # Before we can rotate the image for every lateral position of the
     # object, we need to zero-pad the image according to the lateral
     # detector size. We pad only the bottom of the image, putting its
     # center at the upper detector boundary.
-    #pad2 = det_size*det_spacing - N/2
     pad2 = len(arrc[0]) - len(arrc)
     padset = np.pad(arrc, ((0,pad2), (0,0)), mode="constant")
     numsteps = int(np.ceil(N/shift_size))
     numangles = len(angles)
     lino = np.zeros((numsteps, numangles))
-    
-    
-    import os
-    import sys
-    DIR = "."
-    sys.path.append(os.path.realpath(DIR+"/../../../radontea/"))
-    sys.path.append(os.path.realpath(DIR+"/../tomography-reconstruction"))
-    sys.path.append(os.path.realpath(DIR+"/../FDTD"))
-    import tool
-
-    
     
     Nbound = int(np.floor(N/2))
     
@@ -223,23 +209,94 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
             ang = angles[j]
             rotated = scipy.ndimage.rotate(curobj, ang/np.pi*180,
                         order=3, reshape=False, mode="constant", cval=0)
-            #if i == 1:#int(numsteps/2):
-            #    #rotated[centerid,:] = np.max(rotated)
-            #    tool.arr2im(rotated, scale=True).save("./test/{:04d}.png".format(j))
-            if det_size%2 != 0: #odd
-                centerid = int(np.floor(len(rotated)/2)+1)
-            else: #even
+            if even:
+                warnings.warn("For even images the linogram is of "+
+                              "reduced resolution, because the center "+
+                              "of the image does not coincide with "+
+                              "a center of a pixel.")
                 centerid = int(len(rotated)/2)
-                
-            #lino[i,j] = np.sum(rotated[centerid, N+2*lS-1:])
-            lino[i,j] = np.sum(rotated[centerid, :])
+                lino[i,j] = np.sum(rotated[centerid-1:centerid+1, :])/2
+            else: #odd
+                centerid = int(np.floor(len(rotated)/2))
+                lino[i,j] = np.sum(rotated[centerid, :])
         
-        #rotated[centerid,:] = np.max(rotated)    
-        tool.arr2im(rotated, scale=True).save("./test/{:04d}.png".format(i))
-            
         if callback is not None:
             callback(**cb_kwargs)
     if return_ang:
         return lino, angles
     else:
         return lino
+
+
+
+def get_lateral_equispaced_coords(size, spacing):
+    """ Compute center pixel positions of 2d detector
+    
+    The centers of the pixels of a detector are usually not aligned to
+    a pixel grid. If we center the detector at the origin, odd images
+    will have a pixel at zero, whereas even images will have two pixels
+    next to the actual center.
+    
+    Parameters
+    ----------
+    size : int
+        Size of the detector (number of detection points).
+    spacing : float
+        Distance between two detection points in pixels.
+        
+    Returns
+    -------
+    arr : 1D ndarray
+        Pixel coordinates.
+    """
+    latmax = (size/2-.5) * spacing 
+    lat = np.linspace(-latmax, latmax, size, endpoint=True)
+    return lat
+    
+    
+
+def get_angular_equispaced_coords(size, spacing, distance, numang):
+    """ Compute equispaced angular coordinates for 2d detector
+    
+    The centers of the pixels of a detector are usually not aligned to
+    a pixel grid. If we center the detector at the origin, odd images
+    will have a pixel at zero, whereas even images will have two pixels
+    next to the actual center.
+    We want to compute an equispaced array of `numang` angles that go
+    between the centers of the outmost far pixels of the detector.
+    
+    Parameters
+    ----------
+    size : int
+        Size of the detector (number of detection points).
+    spacing : float
+        Distance between two detection points in pixels.
+    distance : float
+        Axial distance from the detector to the angular measurement
+        position in pixels.
+    numang : int
+        Number of angles.
+
+
+    Returns
+    -------
+    angles, latpos : two 1D ndarrays
+        Angles and pixel coordinates at the detector.
+        
+    Notes
+    -----
+    Actually one would not need to define spacing and distance, but for
+    convenience, these parameters are separated and an arbitrary uint
+    'pixel' is defined.
+    """
+    # Compute the angular positions of the outmost pixels
+    latmax = (size/2-.5) * spacing
+    angmax = abs(np.arctan2(latmax, distance))
+    # equispaced angles
+    angles = np.linspace(-angmax, angmax, numang, endpoint=True)
+    
+    latang = np.tan(angles)*distance
+    latang[0] = -latmax
+    latang[-1] = latmax
+    
+    return angles, latang
