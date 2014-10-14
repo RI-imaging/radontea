@@ -74,7 +74,9 @@ def radon(arr, angles, callback=None, cb_kwargs={}):
     return outarr
 
 
-def radon_fan_translation(arr, det_size, lS=1, return_ang=False,
+
+def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
+                          lS=1, lD=None, return_ang=False,
                           callback=None, cb_kwargs={}):
     """ Compute the Radon transform for a fan beam geometry
         
@@ -91,16 +93,16 @@ def radon_fan_translation(arr, det_size, lS=1, return_ang=False,
 
     source       object   detector
 
-              /             . (., N/2)
+              /             . (., lD)
     (0,-lS) ./   (0,0)      .
              \              .
-              \             . (., N/2)
+              \             . (., lD)
 
 
     The algorithm computes all angular projections for discrete
     movements of the object. The position of the object is changed such
-    that its lower boundary starts at x=det_size/2 and ends at
-    x=-(det_size/2+N) for odd det_size.
+    that its center starts at (det_size/2, 0) and ends at
+    (-det_size/2, 0) at increments of `shift_space`.
 
 
     Parameters
@@ -112,9 +114,15 @@ def radon_fan_translation(arr, det_size, lS=1, return_ang=False,
         source (det_size odd) or is moved half a pixel up (even). The 
         axial position of the detector is the center of the pixels on 
         the far right of the object.
-    lS : int
-        Source position relative to the center of leftest pixel of
-        `arr`. lS >= 1.
+    det_spacing : float
+        Distance between detection points in pixels.
+    shift_size : int
+        The amount of pixels that the object is shifted between
+        projections.
+    lS : multiples of 0.5
+        Source position relative to the center of `arr`. lS >= 1.
+    lD : int
+        Detector position relative to the center `arr`. Default is N/2.
     return_ang : bool
         Also return the angles corresponding to the detector pixels.
     callback : callable, optional
@@ -140,41 +148,94 @@ def radon_fan_translation(arr, det_size, lS=1, return_ang=False,
         The real radon transform.
     """
     N = len(arr)
+    if lD is None:
+        lD = N/2
+    lS = abs(lS)
+    lDS = lS + lD
+    
     # First, create a zero-padded version of the input image such that
-    # its center is the source.
-    setup = np.pad(arr, ((0,0),(N+2*lS-1,0)), mode="constant")
+    # its center is the source - this is necessary because we can
+    # only rotate through the center of the image.
+    #arrc = np.pad(arr, ((0,0),(N+2*lS-1,0)), mode="constant")    
+    if lS <= N/2:
+        pad = 2*lS
+        arrc = np.pad(arr, ((0,0),(pad,0)), mode="constant")
+        # The center is where either b/w 2 pixels or at one pixel,
+        # as it is for the input image.
+    else:
+        pad = N/2 + lS
+        if pad%1 == 0: #even
+            pad = int(pad)
+            # We padd to even number of pixels.
+            # The center of the image is between two pixels (horizontally).
+            arrc = np.pad(arr, ((0,0),(pad,0)), mode="constant")
+        else: #odd
+            # We padd to odd number of pixels.
+            # The center of the image is a pixel.
+            pad = int(np.floor(pad))
+            arrc = np.pad(arr, ((0,0),(pad,0)), mode="constant")
     
-    # Second, compute the rotational angles that we will need.
-    if det_size%2 != 0: #odd
-        x = np.linspace(-(det_size-1)/2, (det_size+1)/2, det_size,
-                        endpoint=True)
-    else: #even
-        x = np.linspace(-det_size/2+1, det_size/2, det_size,
-                        endpoint=True)
-    angles = np.arctan2(x,N+lS-1)
+    # Lateral and axial coordinates of detector pixels
+    axi = np.ones(det_size)*lDS
+    # minus .5 because we use the center of the pixel
     
-    # Now we can rotate the image for every lateral position of the
-    # object. We will again zero-pad the image with N+det_size values
-    # and roll down the object.
-    padset = np.pad(setup, ((0,N+det_size), (0,0)), mode="constant")
+    if det_size%2 == 0: #even
+        latmax = det_size/2 * det_spacing
+        lat = np.linspace(-latmax, latmax, det_size, endpoint=False)
+    else: #odd
+        latmax = det_size/2 * det_spacing - .5
+        lat = np.linspace(-latmax, latmax, det_size, endpoint=True)
+
+    angles = np.arctan2(lat,axi)
+    #angles -= np.min(angles)
     
-    lino = np.zeros((N+det_size, det_size))
     
-    for i in range(N+det_size):
+    # Before we can rotate the image for every lateral position of the
+    # object, we need to zero-pad the image according to the lateral
+    # detector size. We pad only the bottom of the image, putting its
+    # center at the upper detector boundary.
+    #pad2 = det_size*det_spacing - N/2
+    pad2 = len(arrc[0]) - len(arrc)
+    padset = np.pad(arrc, ((0,pad2), (0,0)), mode="constant")
+    numsteps = int(np.ceil(N/shift_size))
+    numangles = len(angles)
+    lino = np.zeros((numsteps, numangles))
+    
+    
+    import os
+    import sys
+    DIR = "."
+    sys.path.append(os.path.realpath(DIR+"/../../../radontea/"))
+    sys.path.append(os.path.realpath(DIR+"/../tomography-reconstruction"))
+    sys.path.append(os.path.realpath(DIR+"/../FDTD"))
+    import tool
+
+    
+    
+    Nbound = int(np.floor(N/2))
+    
+    for i in range(numsteps):
         print(i)
-        padset = np.roll(padset, 1, axis=0)
+        padset = np.roll(padset, shift_size, axis=0)
         # cut out a det_size slice
-        curobj = padset[N:N+det_size]
-        for j in range(det_size):
+        curobj = padset#[Nbound:Nbound+det_size]
+        for j in range(numangles):
             ang = angles[j]
             rotated = scipy.ndimage.rotate(curobj, ang/np.pi*180,
-                        order=3, reshape=True, mode="constant", cval=0)
+                        order=3, reshape=False, mode="constant", cval=0)
+            #if i == 1:#int(numsteps/2):
+            #    #rotated[centerid,:] = np.max(rotated)
+            #    tool.arr2im(rotated, scale=True).save("./test/{:04d}.png".format(j))
             if det_size%2 != 0: #odd
                 centerid = int(np.floor(len(rotated)/2)+1)
             else: #even
                 centerid = int(len(rotated)/2)
                 
-            lino[i,j] = np.sum(rotated[centerid, N+2*lS-1:])
+            #lino[i,j] = np.sum(rotated[centerid, N+2*lS-1:])
+            lino[i,j] = np.sum(rotated[centerid, :])
+        
+        #rotated[centerid,:] = np.max(rotated)    
+        tool.arr2im(rotated, scale=True).save("./test/{:04d}.png".format(i))
             
         if callback is not None:
             callback(**cb_kwargs)

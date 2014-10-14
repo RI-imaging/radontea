@@ -419,7 +419,6 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     #fx = np.linspace(-np.max(fx), np.max(fx), len(p_x[0]))
     fx = fx.reshape(1, -1)
     # fy is zero
-    
     fxl =  (fx)*np.cos(ang)
     fyl =  (fx)*np.sin(ang)
     # now fxl, fyl, and P_fx have same shape
