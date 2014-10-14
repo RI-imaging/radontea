@@ -252,8 +252,8 @@ def get_lateral_equispaced_coords(size, spacing):
     latmax = (size/2-.5) * spacing 
     lat = np.linspace(-latmax, latmax, size, endpoint=True)
     return lat
-    
-    
+
+
 
 def get_angular_equispaced_coords(size, spacing, distance, numang):
     """ Compute equispaced angular coordinates for 2d detector

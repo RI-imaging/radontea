@@ -12,7 +12,10 @@ computerized tomography.
 
 from ._Back import *
 from ._Back_iterative import *
+from ._Back_Fan import *
 from ._Radon import *
+
+
 
 __version__ = "0.1.2"
 __author__ = "Paul Mueller"
