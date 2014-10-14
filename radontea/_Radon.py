@@ -13,6 +13,7 @@ import os
 import scipy
 import scipy.ndimage
 
+import warnings
 
 __all__ = ["radon", "radon_fan_translation",
            "get_angular_equispaced_coords"]

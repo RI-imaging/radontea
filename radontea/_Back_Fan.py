@@ -12,27 +12,59 @@ import scipy
 
 from ._Radon import get_angular_equispaced_coords
 
-__all__= ["backproject_fan_translation",
+__all__= ["synthetic_aperture_translation_interp",
           "lino2sino_equispaced_detector_2d"]
 
 
-def backproject_fan_translation(linogram, angles, filtering="ramp",
-                callback=None, cb_kwargs={}):
-    pass
+def synthetic_aperture_translation_interp(linogram, lDS, method, 
+                                          numang=None, **kwargs):
+    """  2D synthetic aperture backprojection
+    
+    Computes the inverse of the fan-beam radon transform using inter-
+    polation of the linogram and one of the inverse algorithms for
+    tomography with the Fourier slice theorem.
+    
+    Parameters
+    ----------
+    linogram : 2d ndarray of shape (D, A)
+        Input linogram from the synthetic aprture measurement.
+    lDS : float
+        Distance in pixels between source and detector.
+    method : callable
+        Reconstruction method, e.g. `radontea.backproject`.
+    numang : int
+        Number of angles to be used for the sinogram. A higher number
+        increases quality, but interpolation takes longer. By default
+        numang = linogram.shape[1].
+    **kwargs : dict
+        Keyword arguments for `method`.
+    
+    
+    See Also
+    --------
+    `radontea.radon_fan_translation`
+        The forward process.
+    `radontea.lino2sino_equispaced_detector_2d`
+        Linogram to sinogram conversion.
+    """
+    sino, angles = lino2sino_equispaced_detector_2d(linogram, lDS,
+                                            numang=numang, retang=True)
+    
+    return = method(sino, angles, **kwargs)
 
 
 
 
 def lino2sino_equispaced_detector_2d(linogram, lDS, pxscale=None,
                                            stepsize=1, det_spacing=1,
-                                           A=None):
+                                           numang=None, retang=False):
     """ Convert linogram to sinogram for an equispaced detector.
 
     Parameters
     ----------
     linogram : real 2d ndarray of shape (D, A*)
         Linogram from synthetic aperture measurements.
-    A : 1d ndarray
+    numang : int
         Number of equispaced angles, defaults to linogram.shape[1]
     lDS : float
         Distance from point source to detector in pixels.
@@ -42,8 +74,10 @@ def lino2sino_equispaced_detector_2d(linogram, lDS, pxscale=None,
 
     Returns
     -------
-    usin : 2d ndarray of shape (D, A)
+    sinogram : 2d ndarray of shape (D, A)
         The distortion-corrected sinogram.        
+        If retang is True, then the equispaced angles are returned as
+        well.
 
 
     Notes
@@ -51,14 +85,24 @@ def lino2sino_equispaced_detector_2d(linogram, lDS, pxscale=None,
     This function can be used to convert a linogram obtained with
     fan-beam tomography to a sinogram, which then can be reconstructed
     with the backprojection or fourier mapping algorithms.
+    
+    
+    See Also
+    --------
+    `radontea.radon_fan_translation`
+        The forward process.
+    `radontea.synthetic_aperture_translation_interp`
+        Backprojection that uses this function.
     """
     if not linogram is linogram.real:
         raise ValueError("`linogram` must be a real array!")
         
     (D, det_size) = linogram.shape
     
-    if A is None:
+    if numang is None:
         A = det_size #(detector size determines # of angles)
+    else:
+        A = numang
     
     
     if pxscale is None:
@@ -99,4 +143,8 @@ def lino2sino_equispaced_detector_2d(linogram, lDS, pxscale=None,
         xnew = xk/np.cos(alpha)+deltaD
         lino[:,i] = scipy.interpolate.spline(xk, lino[:,i], xnew)
     
-    return np.transpose(lino)[:,::-1]
+    sino = np.transpose(lino)[:,::-1]
+    if retang:
+        return sino, angles + np.pi/2
+    else:
+        return sino
