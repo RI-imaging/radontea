@@ -16,21 +16,25 @@ __all__= ["sa_interpolate",
           "lino2sino"]
 
 
-def lino2sino(linogram, lDS, pxscale=None, stepsize=1, det_spacing=1,
-                                           numang=None, retang=False):
+def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
+              retang=False):
     """ Convert linogram to sinogram for an equispaced detector.
 
     Parameters
     ----------
     linogram : real 2d ndarray of shape (D, A*)
         Linogram from synthetic aperture measurements.
+    lDS : float
+        Distance from point source to detector in au.
+    stepsize : float
+        Translational increment of object in au (stepsize in D).
+    det_spacing : float
+        Distance between detector positions in au.
     numang : int
         Number of equispaced angles, defaults to linogram.shape[1]
-    lDS : float
-        Distance from point source to detector in pixels.
-    pxscale : float
-        One step in D in pixels
-
+    retang : bool
+        Return the corresponding angles for the sinogram.
+        
 
     Returns
     -------
@@ -64,10 +68,6 @@ def lino2sino(linogram, lDS, pxscale=None, stepsize=1, det_spacing=1,
     else:
         A = numang
     
-    
-    if pxscale is None:
-        pxscale = D/det_size
-
     # equispaced angles and corresponding lateral detector positions.
     angles, xang = get_fan_coords(det_size, det_spacing, lDS, A)
     
