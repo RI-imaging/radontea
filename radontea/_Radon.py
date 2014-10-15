@@ -278,7 +278,7 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
     for i in range(numsteps):
         padset = np.roll(padset, shift_size, axis=0)
         # cut out a det_size slice
-        curobj = padset[N:N+det_size]
+        curobj = padset[N:]
         for j in range(numangles):
             ang = angles[j]
             rotated = scipy.ndimage.rotate(curobj, ang/np.pi*180,
