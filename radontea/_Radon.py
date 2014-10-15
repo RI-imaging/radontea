@@ -15,8 +15,84 @@ import scipy.ndimage
 
 import warnings
 
-__all__ = ["radon", "radon_fan_translation",
-           "get_angular_equispaced_coords"]
+__all__ = ["radon", "radon_fan_translation", "get_fan_coords",
+           "get_det_coords"]
+
+
+
+def get_det_coords(size, spacing):
+    """ Compute pixel-center positions for 2d detector
+    
+    The centers of the pixels of a detector are usually not aligned to
+    a pixel grid. If we center the detector at the origin, odd images
+    will have a pixel at zero, whereas even images will have two pixels
+    next to the actual center.
+    
+    Parameters
+    ----------
+    size : int
+        Size of the detector (number of detection points).
+    spacing : float
+        Distance between two detection points in pixels.
+        
+    Returns
+    -------
+    arr : 1D ndarray
+        Pixel coordinates.
+    """
+    latmax = (size/2-.5) * spacing 
+    lat = np.linspace(-latmax, latmax, size, endpoint=True)
+    return lat
+    
+    
+
+def get_fan_coords(size, spacing, distance, numang):
+    """ Compute equispaced angular coordinates for 2d detector
+    
+    The centers of the pixels of a detector are usually not aligned to
+    a pixel grid. If we center the detector at the origin, odd images
+    will have a pixel at zero, whereas even images will have two pixels
+    next to the actual center.
+    We want to compute an equispaced array of `numang` angles that go
+    between the centers of the outmost far pixels of the detector.
+    
+    Parameters
+    ----------
+    size : int
+        Size of the detector (number of detection points).
+    spacing : float
+        Distance between two detection points in pixels.
+    distance : float
+        Axial distance from the detector to the angular measurement
+        position in pixels.
+    numang : int
+        Number of angles.
+
+
+    Returns
+    -------
+    angles, latpos : two 1D ndarrays
+        Angles and pixel coordinates at the detector.
+        
+        
+    Notes
+    -----
+    Actually one would not need to define spacing and distance, but for
+    convenience, these parameters are separated and an arbitrary uint
+    'pixel' is defined.
+    """
+    # Compute the angular positions of the outmost pixels
+    latmax = (size/2-.5) * spacing
+    angmax = abs(np.arctan2(latmax, distance))
+    # equispaced angles
+    angles = np.linspace(-angmax, angmax, numang, endpoint=True)
+    
+    latang = np.tan(angles)*distance
+    latang[0] = -latmax
+    latang[-1] = latmax
+    
+    return angles, latang
+
 
 
 def radon(arr, angles, callback=None, cb_kwargs={}):
@@ -95,16 +171,16 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
 
     source       object   detector
 
-              /             . (., lD)
+              /             . (+det_size/2, lD)
     (0,-lS) ./   (0,0)      .
              \              .
-              \             . (., lD)
+              \             . (-det_size/2, lD)
 
 
     The algorithm computes all angular projections for discrete
     movements of the object. The position of the object is changed such
-    that its center starts at (det_size/2, 0) and ends at
-    (-det_size/2, 0) at increments of `shift_space`.
+    that its lower boundary starts at (det_size/2, 0) and its upper
+    boundary ends at (-det_size/2, 0) at increments of `shift_size`.
 
 
     Parameters
@@ -185,27 +261,24 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
     else: #odd
         even = False
 
-    lat = get_lateral_equispaced_coords(det_size, det_spacing)
+    lat = get_det_coords(det_size, det_spacing)
 
     angles = np.arctan2(lat,axi)
     
     # Before we can rotate the image for every lateral position of the
-    # object, we need to zero-pad the image according to the lateral
-    # detector size. We pad only the bottom of the image, putting its
-    # center at the upper detector boundary.
-    pad2 = len(arrc[0]) - len(arrc)
+    # object, we need to zero-pad the image with the lateral detector
+    # size. We pad only the bottom of the image, putting its center at 
+    # the upper detector boundary.
+    pad2 = det_size
     padset = np.pad(arrc, ((0,pad2), (0,0)), mode="constant")
-    numsteps = int(np.ceil(N/shift_size))
+    numsteps = int(np.ceil((N+det_size)/shift_size))
     numangles = len(angles)
     lino = np.zeros((numsteps, numangles))
     
-    Nbound = int(np.floor(N/2))
-    
     for i in range(numsteps):
-        print(i)
         padset = np.roll(padset, shift_size, axis=0)
         # cut out a det_size slice
-        curobj = padset#[Nbound:Nbound+det_size]
+        curobj = padset[N:N+det_size]
         for j in range(numangles):
             ang = angles[j]
             rotated = scipy.ndimage.rotate(curobj, ang/np.pi*180,
@@ -230,74 +303,4 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
 
 
 
-def get_lateral_equispaced_coords(size, spacing):
-    """ Compute center pixel positions of 2d detector
-    
-    The centers of the pixels of a detector are usually not aligned to
-    a pixel grid. If we center the detector at the origin, odd images
-    will have a pixel at zero, whereas even images will have two pixels
-    next to the actual center.
-    
-    Parameters
-    ----------
-    size : int
-        Size of the detector (number of detection points).
-    spacing : float
-        Distance between two detection points in pixels.
-        
-    Returns
-    -------
-    arr : 1D ndarray
-        Pixel coordinates.
-    """
-    latmax = (size/2-.5) * spacing 
-    lat = np.linspace(-latmax, latmax, size, endpoint=True)
-    return lat
 
-
-
-def get_angular_equispaced_coords(size, spacing, distance, numang):
-    """ Compute equispaced angular coordinates for 2d detector
-    
-    The centers of the pixels of a detector are usually not aligned to
-    a pixel grid. If we center the detector at the origin, odd images
-    will have a pixel at zero, whereas even images will have two pixels
-    next to the actual center.
-    We want to compute an equispaced array of `numang` angles that go
-    between the centers of the outmost far pixels of the detector.
-    
-    Parameters
-    ----------
-    size : int
-        Size of the detector (number of detection points).
-    spacing : float
-        Distance between two detection points in pixels.
-    distance : float
-        Axial distance from the detector to the angular measurement
-        position in pixels.
-    numang : int
-        Number of angles.
-
-
-    Returns
-    -------
-    angles, latpos : two 1D ndarrays
-        Angles and pixel coordinates at the detector.
-        
-    Notes
-    -----
-    Actually one would not need to define spacing and distance, but for
-    convenience, these parameters are separated and an arbitrary uint
-    'pixel' is defined.
-    """
-    # Compute the angular positions of the outmost pixels
-    latmax = (size/2-.5) * spacing
-    angmax = abs(np.arctan2(latmax, distance))
-    # equispaced angles
-    angles = np.linspace(-angmax, angmax, numang, endpoint=True)
-    
-    latang = np.tan(angles)*distance
-    latang[0] = -latmax
-    latang[-1] = latmax
-    
-    return angles, latang

@@ -10,53 +10,13 @@ from __future__ import division
 import numpy as np
 import scipy
 
-from ._Radon import get_angular_equispaced_coords
+from ._Radon import get_fan_coords
 
-__all__= ["synthetic_aperture_translation_interp",
-          "lino2sino_equispaced_detector_2d"]
-
-
-def synthetic_aperture_translation_interp(linogram, lDS, method, 
-                                          numang=None, **kwargs):
-    """  2D synthetic aperture backprojection
-    
-    Computes the inverse of the fan-beam radon transform using inter-
-    polation of the linogram and one of the inverse algorithms for
-    tomography with the Fourier slice theorem.
-    
-    Parameters
-    ----------
-    linogram : 2d ndarray of shape (D, A)
-        Input linogram from the synthetic aprture measurement.
-    lDS : float
-        Distance in pixels between source and detector.
-    method : callable
-        Reconstruction method, e.g. `radontea.backproject`.
-    numang : int
-        Number of angles to be used for the sinogram. A higher number
-        increases quality, but interpolation takes longer. By default
-        numang = linogram.shape[1].
-    **kwargs : dict
-        Keyword arguments for `method`.
-    
-    
-    See Also
-    --------
-    `radontea.radon_fan_translation`
-        The forward process.
-    `radontea.lino2sino_equispaced_detector_2d`
-        Linogram to sinogram conversion.
-    """
-    sino, angles = lino2sino_equispaced_detector_2d(linogram, lDS,
-                                            numang=numang, retang=True)
-    
-    return = method(sino, angles, **kwargs)
+__all__= ["sa_interpolate",
+          "lino2sino"]
 
 
-
-
-def lino2sino_equispaced_detector_2d(linogram, lDS, pxscale=None,
-                                           stepsize=1, det_spacing=1,
+def lino2sino(linogram, lDS, pxscale=None, stepsize=1, det_spacing=1,
                                            numang=None, retang=False):
     """ Convert linogram to sinogram for an equispaced detector.
 
@@ -91,7 +51,7 @@ def lino2sino_equispaced_detector_2d(linogram, lDS, pxscale=None,
     --------
     `radontea.radon_fan_translation`
         The forward process.
-    `radontea.synthetic_aperture_translation_interp`
+    `radontea.sa_interpolate`
         Backprojection that uses this function.
     """
     if not linogram is linogram.real:
@@ -109,7 +69,7 @@ def lino2sino_equispaced_detector_2d(linogram, lDS, pxscale=None,
         pxscale = D/det_size
 
     # equispaced angles and corresponding lateral detector positions.
-    angles, xang = get_angular_equispaced_coords(det_size, det_spacing, lDS, A)
+    angles, xang = get_fan_coords(det_size, det_spacing, lDS, A)
     
     uorig = linogram
     lino = np.zeros((D, A))
@@ -148,3 +108,42 @@ def lino2sino_equispaced_detector_2d(linogram, lDS, pxscale=None,
         return sino, angles + np.pi/2
     else:
         return sino
+
+
+
+def sa_interpolate(linogram, lDS, method, stepsize=1, det_spacing=1,
+                                                numang=None, **kwargs):
+    """ 2D synthetic aperture reconstruction
+    
+    Computes the inverse of the fan-beam radon transform using inter-
+    polation of the linogram and one of the inverse algorithms for
+    tomography with the Fourier slice theorem.
+    
+    Parameters
+    ----------
+    linogram : 2d ndarray of shape (D, A)
+        Input linogram from the synthetic aprture measurement.
+    lDS : float
+        Distance in pixels between source and detector.
+    method : callable
+        Reconstruction method, e.g. `radontea.backproject`.
+    numang : int
+        Number of angles to be used for the sinogram. A higher number
+        increases quality, but interpolation takes longer. By default
+        numang = linogram.shape[1].
+    **kwargs : dict
+        Keyword arguments for `method`.
+    
+    
+    See Also
+    --------
+    `radontea.radon_fan_translation`
+        The forward process.
+    `radontea.lino2sino`
+        Linogram to sinogram conversion.
+    """
+    sino, angles = lino2sino(linogram, lDS, numang=numang, retang=True,
+                             stepsize=stepsize, det_spacing=det_spacing)
+    
+    return method(sino, angles, **kwargs)
+
