@@ -86,7 +86,7 @@ def backproject(sinogram, angles, filtering="ramp",
     la = len(angles)
     # jobmanager init
     if jmm is not None:
-        jmm.value += la+1
+        jmm.value = la+1
     # transpose so we can call resize correctly
     sino = sinogram.transpose().copy()
     # Apply a Fourier filter before projecting the sinogram slices.

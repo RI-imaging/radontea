@@ -74,7 +74,7 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
         A = numang
     
     if jmm is not None:
-        jmm.value += D+A
+        jmm.value = D+A
     
     # equispaced angles and corresponding lateral detector positions.
     angles, xang = get_fan_coords(det_size, det_spacing, lDS, A)
