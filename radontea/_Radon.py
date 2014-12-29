@@ -95,7 +95,7 @@ def get_fan_coords(size, spacing, distance, numang):
 
 
 
-def radon(arr, angles, callback=None, cb_kwargs={}):
+def radon(arr, angles, jmc=None, jmm=None):
     """ Compute the Radon transform (sinogram) of a circular image.
 
 
@@ -111,17 +111,16 @@ def radon(arr, angles, callback=None, cb_kwargs={}):
         the input image.
     angles : ndarray, length A
         angles or projections in radians
-    callback : callable, optional
-        If set, the function `callback` is called on a regular basis
-        throughout this algorithm.
-        Number of function calls: A+1
-    cb_kwargs : dict, optional
-        Keyword arguments for `callback` (e.g. "pid" of process).
-
+    jmc, jmm : instance of `multiprocessing.Value` or `None`
+        The progress of this function can be monitored with the 
+        `jobmanager` package. The current step `jmc.value` is
+        incremented `jmm.value` times. `jmm.value` is set at the 
+        beginning.
+        
 
     Returns
     -------
-    outarr : ndarray of floats, shape (A,N)
+    outarr : ndarray of floats, shape (A, N)
         Sinogram of the input image. The i'th row contains the
         projection data of the i'th angle.
 
@@ -133,29 +132,35 @@ def radon(arr, angles, callback=None, cb_kwargs={}):
     """
     # This function also works with single angles
     angles = np.atleast_1d(angles)
+    A = angles.shape[0]
+    N = len(arr)
     # The radon function from skimage.transform doeas not allow
     # to reshape the image (one could cut it of course).
     # Furthermore, no interpolation is used or at least I do not
     # know what kind of interpolation is used (_wharp_fast?).
     # outarray: x-axis: projection
     #           y-axis: 
-    outarr = np.zeros((len(angles),len(arr)))
-    if callback is not None:
-        callback(**cb_kwargs)
-    for i in np.arange(len(angles)):
+    outarr = np.zeros((A, N))
+    # jobmanager
+    if jmm is not None:
+        jmm.value = A + 1
+    if jmc is not None:
+        jmc.value += 1
+        
+    for i in np.arange(A):
         rotated = scipy.ndimage.rotate(arr, angles[i]/np.pi*180, order=3,
                   reshape=False, mode="constant", cval=0) #black corner
         # sum along some axis.
         outarr[i] = rotated.sum(axis=0)
-        if callback is not None:
-            callback(**cb_kwargs)
+        if jmc is not None:
+            jmc.value += 1
     return outarr
 
 
 
 def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
                           lS=1, lD=None, return_ang=False,
-                          callback=None, cb_kwargs={}):
+                          jmc=None, jmm=None):
     """ Compute the Radon transform for a fan beam geometry
         
     In contrast to `radon`, this function uses (1) a fan-beam geometry
@@ -202,13 +207,12 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
         Detector position relative to the center `arr`. Default is N/2.
     return_ang : bool
         Also return the angles corresponding to the detector pixels.
-    callback : callable, optional
-        If set, the function `callback` is called on a regular basis
-        throughout this algorithm.
-        Number of function calls: N+det_size
-    cb_kwargs : dict, optional
-        Keyword arguments for `callback` (e.g. "pid" of process).
-
+    jmc, jmm : instance of `multiprocessing.Value` or `None`
+        The progress of this function can be monitored with the 
+        `jobmanager` package. The current step `jmc.value` is
+        incremented `jmm.value` times. `jmm.value` is set at the 
+        beginning.
+        
 
     Returns
     -------
@@ -224,11 +228,16 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
     radontea.radon
         The real radon transform.
     """
-    N = len(arr)
+    N = arr.shape[0]
     if lD is None:
         lD = N/2
     lS = abs(lS)
     lDS = lS + lD
+
+    numsteps = int(np.ceil((N+det_size)/shift_size))
+    
+    if jmm is not None:
+        jmm.value = numsteps + 2
     
     # First, create a zero-padded version of the input image such that
     # its center is the source - this is necessary because we can
@@ -261,6 +270,9 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
     else: #odd
         even = False
 
+    if jmc is not None:
+        jmc.value += 1
+
     lat = get_det_coords(det_size, det_spacing)
 
     angles = np.arctan2(lat,axi)
@@ -271,15 +283,17 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
     # the upper detector boundary.
     pad2 = det_size
     padset = np.pad(arrc, ((0,pad2), (0,0)), mode="constant")
-    numsteps = int(np.ceil((N+det_size)/shift_size))
-    numangles = len(angles)
-    lino = np.zeros((numsteps, numangles))
+    A = angles.shape[0]
+    lino = np.zeros((numsteps, A))
+
+    if jmc is not None:
+        jmc.value += 1
     
     for i in range(numsteps):
         padset = np.roll(padset, shift_size, axis=0)
         # cut out a det_size slice
         curobj = padset[N:]
-        for j in range(numangles):
+        for j in range(A):
             ang = angles[j]
             rotated = scipy.ndimage.rotate(curobj, ang/np.pi*180,
                         order=3, reshape=False, mode="constant", cval=0)
@@ -294,13 +308,12 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
                 centerid = int(np.floor(len(rotated)/2))
                 lino[i,j] = np.sum(rotated[centerid, :])
         
-        if callback is not None:
-            callback(**cb_kwargs)
+        if jmc is not None:
+            jmc.value += 1
+            
     if return_ang:
         return lino, angles
     else:
         return lino
-
-
 
 

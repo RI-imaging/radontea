@@ -5,12 +5,23 @@
 """
 import numpy as np
 
-from ._Back import backproject, fourier_map
-from ._Back_iterative import sart
+from . import _Back as back
+from . import _Back_iterative as back_it
+from . import _Radon as radon
 from ._logo import get_original
-from ._Radon import radon
 
 
+
+# If available, use jobmanager to display progress
+try:
+    from . import __init__ as radontea
+    import jobmanager as jm
+    for module in [back, back_it, radon]:
+        jm.decorators.decorate_module_ProgressBar(module, interval=.1, verbose=1)
+except:
+    pass
+        
+        
 if __name__ == "__main__":
     import matplotlib
     matplotlib.use("wxagg")
@@ -21,29 +32,24 @@ if __name__ == "__main__":
     It=7
     A=13
 
-    # If available, use uilayer to display progress
-    try:
-        from uilayer import stdout
-        steps = ((A+1)*2 + 4 + A*It+1)*2
-        ui = stdout(show_warnings=False, steps=steps)
-        callback = ui.Iterate
-    except:
-        ui = None
-        callback = None
-
     angles = np.linspace(0,np.pi,A)
     im = get_original(N)
     
-    sino = radon(im, angles, callback=callback)
-    fbp = backproject(sino, angles, callback=callback)
-    fintp = fourier_map(sino, angles, callback=callback)
-    alg = sart(sino, angles, iterations=It, callback=callback)
+    callback = None
+    
+    sino = radon.radon(im, angles)
+    
+    fbp = back.backproject(sino, angles)
+    
+    fintp = back.fourier_map(sino, angles)
+    
+    alg = back_it.sart(sino, angles, iterations=It)
 
     im2 = ( im >= (im.max()/5) ) * 255
-    sino2 = radon(im2, angles, callback=callback)
-    fbp2 = backproject(sino2, angles, callback=callback)
-    fintp2 = fourier_map(sino2, angles, callback=callback)
-    alg2 = sart(sino2, angles, iterations=It, callback=callback)
+    sino2 = radon.radon(im2, angles)
+    fbp2 = back.backproject(sino2, angles)
+    fintp2 = back.fourier_map(sino2, angles)
+    alg2 = back_it.sart(sino2, angles, iterations=It)
 
     plt.figure(figsize=(15,8))
     

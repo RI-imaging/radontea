@@ -17,7 +17,7 @@ __all__= ["backproject", "fourier_map", "sum"]
 
 
 def backproject(sinogram, angles, filtering="ramp",
-                callback=None, cb_kwargs={}):
+                jmc=None, jmm=None):
     u""" 2D backprojection with the Fourier slice theorem
     
     Computes the inverse of the radon transform using filtered
@@ -46,12 +46,11 @@ def backproject(sinogram, angles, filtering="ramp",
         
         ``hann``
         
-    callback : callable, optional
-        If set, the function `callback` is called on a regular basis
-        throughout this algorithm.
-        Number of function calls: A+1
-    cb_kwargs : dict, optional
-        Keyword arguments for `callback` (e.g. "pid" of process).
+    jmc, jmm : instance of `multiprocessing.Value` or `None`
+        The progress of this function can be monitored with the 
+        `jobmanager` package. The current step `jmc.value` is
+        incremented `jmm.value` times. `jmm.value` is set at the 
+        beginning.
 
 
     Returns
@@ -85,6 +84,9 @@ def backproject(sinogram, angles, filtering="ramp",
     """
     ln = len(sinogram[0])
     la = len(angles)
+    # jobmanager init
+    if jmm is not None:
+        jmm.value = la+1
     # transpose so we can call resize correctly
     sino = sinogram.transpose().copy()
     # Apply a Fourier filter before projecting the sinogram slices.
@@ -112,8 +114,9 @@ def backproject(sinogram, angles, filtering="ramp",
         kx[1:] = 2*np.pi
     else:
         raise ValueError("Unknown filter: %s" % filter)
-    if callback is not None:
-        callback(**cb_kwargs)
+    # jobmanager
+    if jmc is not None:
+        jmc.value += 1
     # Resize f so we can multiply it with the sinogram.
     kx = kx.reshape(1,-1)
     projection = np.fft.fft(sino, axis=-1) * kx
@@ -148,8 +151,8 @@ def backproject(sinogram, angles, filtering="ramp",
         #        # yp = -xv*np.sin(phi) + yv*np.cos(phi)
         #        projval = projinterp(xp)
         #        outarr[j][k] += projval
-        if callback is not None:
-            callback(**cb_kwargs)
+        if jmc is not None:
+            jmc.value += 1
     # Normalize output (we assume that the projections are equidistant)
     # We measure angles in degrees
     dphi = np.pi/len(angles)
@@ -161,7 +164,7 @@ def backproject(sinogram, angles, filtering="ramp",
 
 
 def fourier_map(sinogram, angles, intp_method="cubic",
-                   callback=None, cb_kwargs={}):
+                   jmc=None, jmm=None):
     u""" 2D Fourier mapping with the Fourier slice theorem
     
     Computes the inverse of the radon transform using Fourier
@@ -193,12 +196,11 @@ def fourier_map(sinogram, angles, intp_method="cubic",
         ``cubic``
           interpolate using a two-dimensional poolynimial surface.
           
-    callback : callable, optional
-        If set, the function `callback` is called on a regular basis
-        throughout this algorithm.
-        Number of function calls: 4
-    cb_kwargs : dict, optional
-        Keyword arguments for `callback` (e.g. "pid" of process).
+    jmc, jmm : instance of `multiprocessing.Value` or `None`
+        The progress of this function can be monitored with the 
+        `jobmanager` package. The current step `jmc.value` is
+        incremented `jmm.value` times. `jmm.value` is set at the 
+        beginning.
 
 
     Returns
@@ -213,8 +215,9 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     sum : implementation by summation in real space
     scipy.interpolate.griddata : the used interpolation method
     """
-    if callback is not None:
-        callback(**cb_kwargs)
+    if jmm is not None:
+        jmm.value = 4
+        
     if len(sinogram[0]) %2 == 0:
         warnings.warn("Fourier interpolation with slices that have"+
                       " even dimensions leads to image distortions!")
@@ -225,6 +228,9 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     # The sinogram data is shifted in Fourier space
     P_fx = np.fft.fft(np.fft.ifftshift(p_x, axes=-1), axis=-1)
 
+
+    if jmc is not None:
+        jmc.value += 1
 
     # This paragraph could be useful for future version if the reconstruction
     # grid is to be changed. They directly affect *P_fx*.
@@ -294,8 +300,8 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     # rintp defines the interpolation grid
     rintp = np.fft.fftshift(fx.reshape(-1))
 
-    if callback is not None:
-        callback(**cb_kwargs)
+    if jmc is not None:
+        jmc.value += 1
         
     ## The code block yields the same result as griddata (below)
     # interpolation coordinates
@@ -325,20 +331,21 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     Fcomp = intp.griddata((Xf, Yf), Zf, (rintp[None,:], rintp[:,None]),
                           method=intp_method)
                           
-    if callback is not None:
-        callback(**cb_kwargs)
+    if jmc is not None:
+        jmc.value += 1
+        
     # removed nans
     Fcomp[np.where(np.isnan(Fcomp))] = 0
 
     f = np.fft.fftshift( np.fft.ifft2(np.fft.ifftshift(Fcomp)) )
 
-    if callback is not None:
-        callback(**cb_kwargs)
+    if jmc is not None:
+        jmc.value += 1
 
     return f
     
     
-def sum(sinogram, angles, callback=None, cb_kwargs={}):
+def sum(sinogram, angles, jmc=None, jmm=None):
     u""" 2D sum-reconstruction with the Fourier slice theorem
 
     Computes the inverse of the radon transform by computing the
@@ -352,12 +359,11 @@ def sum(sinogram, angles, callback=None, cb_kwargs={}):
     angles : (A,) ndarray
         Angular positions of the `sinogram` in radians equally 
         distributed from zero to PI.
-    callback : callable, optional
-        If set, the function `callback` is called on a regular basis
-        throughout this algorithm.
-        Number of function calls: approx. N²/10
-    cb_kwargs : dict, optional
-        Keyword arguments for `callback` (e.g. "pid" of process).
+    jmc, jmm : instance of `multiprocessing.Value` or `None`
+        The progress of this function can be monitored with the 
+        `jobmanager` package. The current step `jmc.value` is
+        incremented `jmm.value` times. `jmm.value` is set at the 
+        beginning.
         
 
     Returns
@@ -371,6 +377,8 @@ def sum(sinogram, angles, callback=None, cb_kwargs={}):
     backproject : implementation by backprojection
     fourier_map : implementation by summation in real space
     """
+    if jmm is not None:
+        jmm.value = sinogram.shape[1]**2 + 1
     # In the script we used the unitary angular frequency (uaf) Fourier
     # Transform. The discrete Fourier transform is equivalent to the
     # unitary ordinary frequency (uof) Fourier transform.
@@ -442,8 +450,9 @@ def sum(sinogram, angles, callback=None, cb_kwargs={}):
     # because axis -1 is always used.
     P = np.fft.fft(np.fft.ifftshift(sinogram, axes=-1))/np.sqrt(2*np.pi)
 
-    if callback is not None:
-        callback()
+    if jmc is not None:
+        jmc.value += 1
+    
 
     for j in xrange(lenf):
         # Get r (We compute f(r) in this for-loop)
@@ -472,8 +481,8 @@ def sum(sinogram, angles, callback=None, cb_kwargs={}):
         f[j] = np.sum(integrand)
         
         # Display how far we are
-        if callback is not None and j%10 == 0:
-            callback(**cb_kwargs)
-        
+        if jmc is not None:
+            jmc.value += 1
+
     return f.reshape((N,N))
 

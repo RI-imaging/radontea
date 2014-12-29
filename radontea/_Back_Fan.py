@@ -17,7 +17,7 @@ __all__= ["sa_interpolate",
 
 
 def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
-              retang=False):
+              retang=False, jmc=None, jmm=None):
     """ Convert linogram to sinogram for an equispaced detector.
 
     Parameters
@@ -34,6 +34,11 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
         Number of equispaced angles, defaults to linogram.shape[1]
     retang : bool
         Return the corresponding angles for the sinogram.
+    jmc, jmm : instance of `multiprocessing.Value` or `None`
+        The progress of this function can be monitored with the 
+        `jobmanager` package. The current step `jmc.value` is
+        incremented `jmm.value` times. `jmm.value` is set at the 
+        beginning.
         
 
     Returns
@@ -68,6 +73,9 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
     else:
         A = numang
     
+    if jmm is not None:
+        jmm.value += D+A
+    
     # equispaced angles and corresponding lateral detector positions.
     angles, xang = get_fan_coords(det_size, det_spacing, lDS, A)
     
@@ -81,6 +89,9 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
     for i in range(D):
         #uscaled[i] = scipy.interpolate.spline(xk, uorig[i], xang)
         lino[i] = scipy.interpolate.spline(xk, uorig[i], xang)
+        
+        if jmc is not None:
+            jmc.value += 1
 
     # begin angular stretching
     for i in range(A):
@@ -102,7 +113,10 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
         # At larger angles, the object seems bigger on the screen.
         xnew = xk/np.cos(alpha)+deltaD
         lino[:,i] = scipy.interpolate.spline(xk, lino[:,i], xnew)
-    
+        
+        if jmc is not None:
+            jmc.value += 1
+                
     sino = np.transpose(lino)[:,::-1]
     if retang:
         return sino, angles + np.pi/2
@@ -112,7 +126,7 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
 
 
 def sa_interpolate(linogram, lDS, method, stepsize=1, det_spacing=1,
-                                                numang=None, **kwargs):
+                   numang=None, jmm=None, jmc=None, **kwargs):
     """ 2D synthetic aperture reconstruction
     
     Computes the inverse of the fan-beam radon transform using inter-
@@ -131,6 +145,11 @@ def sa_interpolate(linogram, lDS, method, stepsize=1, det_spacing=1,
         Number of angles to be used for the sinogram. A higher number
         increases quality, but interpolation takes longer. By default
         numang = linogram.shape[1].
+    jmc, jmm : instance of `multiprocessing.Value` or `None`
+        The progress of this function can be monitored with the 
+        `jobmanager` package. The current step `jmc.value` is
+        incremented `jmm.value` times. `jmm.value` is set at the 
+        beginning.
     **kwargs : dict
         Keyword arguments for `method`.
     
@@ -143,7 +162,9 @@ def sa_interpolate(linogram, lDS, method, stepsize=1, det_spacing=1,
         Linogram to sinogram conversion.
     """
     sino, angles = lino2sino(linogram, lDS, numang=numang, retang=True,
-                             stepsize=stepsize, det_spacing=det_spacing)
-    
+                             stepsize=stepsize, det_spacing=det_spacing,
+                             jmm=jmm, jmc=jmc)
+    kwargs["jmm"] = jmm
+    kwargs["jmc"] = jmc
     return method(sino, angles, **kwargs)
 

@@ -26,7 +26,7 @@ __all__ = ["art", "sart"]
 
 
 def art(sinogram, angles, initial=None, iterations=1,
-        callback=None, cb_kwargs={}):
+        jmc=None, jmm={}):
     u""" Algebraic Reconstruction Technique
     
     The Algebraic Reconstruction Technique (ART) iteratively
@@ -53,13 +53,12 @@ def art(sinogram, angles, initial=None, iterations=1,
         The initial guess for the solution.
     iterations : int
         Number of iterations to perform.
-    callback : callable, optional
-        If set, the function `callback` is called on a regular basis
-        throughout this algorithm.
-        Number of function calls: A*iterations+1
-    cb_kwargs : dict, optional
-        Keyword arguments for `callback` (e.g. "pid" of process).
-
+    jmc, jmm : instance of `multiprocessing.Value` or `None`
+        The progress of this function can be monitored with the 
+        `jobmanager` package. The current step `jmc.value` is
+        incremented `jmm.value` times. `jmm.value` is set at the 
+        beginning.
+        
 
     See Also
     --------
@@ -80,7 +79,11 @@ def art(sinogram, angles, initial=None, iterations=1,
     """
     # make sure `iterations` is an integer
     iterations = int(iterations)
-    N = len(sinogram[0])
+    N = sinogram.shape[1]
+    A = angles.shape[0]
+    # jobmanager
+    if jmm is not None:
+        jmm.value = A*iterations + 1
     # Meshgrid for weigths
     center = N/2.0
     x = np.arange(N) - center +.5
@@ -91,7 +94,7 @@ def art(sinogram, angles, initial=None, iterations=1,
     else:
         f = 1*initial.transpose()[::-1]
     # Make sure all angles are in [0,PI)
-    for i in np.arange(len(angles)):
+    for i in np.arange(A):
         if angles[i] > np.pi:
             offset = np.floor(angles[i]/np.pi)
             angles[i] -= offset*np.pi
@@ -144,8 +147,8 @@ def art(sinogram, angles, initial=None, iterations=1,
     # f[j] is consistent with Kak, Slaney
     f = f.flatten()
 
-    if callback is not None:
-        callback(**cb_kwargs)
+    if jmc is not None:
+        jmc.value += 1
 
     for iteration in np.arange(iterations):
         #
@@ -153,7 +156,7 @@ def art(sinogram, angles, initial=None, iterations=1,
         # j iterates the flattened outarr
         # k iterates the angles
         #
-        for k in np.arange(len(angles)):
+        for k in np.arange(A):
             # From now on we work in radians
             angle_k = angles[k]
             # p[i] is consistent with Kak, Slaney
@@ -224,9 +227,8 @@ def art(sinogram, angles, initial=None, iterations=1,
                  # # Export single steps as bmp files...
                  # #if i%10 == 1:
                  # #    image = f.reshape((N,N))[::-1]
-            if callback is not None:
-                callback(**cb_kwargs)
-
+            if jmc is not None:
+                jmc.value += 1
                  # #    proc_arr2im(image, cut=True).save(os.path.join(DIR,"test/Elephantulus_small_art_%02d_%04d_%08d.bmp" % (iteration,k,i)))
     # By slicing in-place [::-1] we get rid of the inversion of the
     # image along the y-axis.
@@ -235,7 +237,7 @@ def art(sinogram, angles, initial=None, iterations=1,
 
 
 def sart(sinogram, angles, initial=None, iterations=1,
-         callback=None, cb_kwargs={}):
+         jmc=None, jmm={}):
     u""" Simultaneous Algebraic Reconstruction Technique
     
     
@@ -261,12 +263,12 @@ def sart(sinogram, angles, initial=None, iterations=1,
         the initial guess for the solution.
     iterations : integer
         Number of iterations to perform.
-    callback : callable, optional
-        If set, the function `callback` is called on a regular basis
-        throughout this algorithm.
-        Number of function calls: A*iterations+1
-    cb_kwargs : dict, optional
-        Keyword arguments for `callback` (e.g. "pid" of process).
+    jmc, jmm : instance of `multiprocessing.Value` or `None`
+        The progress of this function can be monitored with the 
+        `jobmanager` package. The current step `jmc.value` is
+        incremented `jmm.value` times. `jmm.value` is set at the 
+        beginning.
+
         
     
     See Also
@@ -306,7 +308,13 @@ def sart(sinogram, angles, initial=None, iterations=1,
     noise [...], the correction terms are simultaneously applied
     for all the rays in one projection [...]."*
     """
-    N = len(sinogram[0])
+    # make sure `iterations` is an integer
+    iterations = int(iterations)
+    N = sinogram.shape[1]
+    A = angles.shape[0]
+    # jobmanager
+    if jmm is not None:
+        jmm.value = A*iterations + 1
     # Meshgrid for weigths
     center = N/2.0
     x = np.arange(N) - center +.5
@@ -316,7 +324,7 @@ def sart(sinogram, angles, initial=None, iterations=1,
     else:
         g = 1*initial[::-1]
     # Make sure all angles are in [0,PI)
-    for i in np.arange(len(angles)):
+    for i in np.arange(A):
         if angles[i] > np.pi:
             offset = np.floor(angles[i]/np.pi)
             angles[i] -= offset*np.pi
@@ -337,8 +345,8 @@ def sart(sinogram, angles, initial=None, iterations=1,
     
     g = g.flatten()
     
-    if callback is not None:
-        callback(**cb_kwargs)
+    if jmc is not None:
+        jmc.value += 1
 
     for k in np.arange(iterations):
         #
@@ -350,8 +358,8 @@ def sart(sinogram, angles, initial=None, iterations=1,
         #   is computed
         #
         # initiate array
-        dgall = np.zeros((len(angles),N,N))
-        for l in np.arange(len(angles)):
+        dgall = np.zeros((A, N, N))
+        for l in np.arange(A):
             # Differences accumulated over one angle
             #dg = np.zeros((N,N), dtype=np.float64)
             dg = dgall[l]
@@ -498,8 +506,8 @@ def sart(sinogram, angles, initial=None, iterations=1,
             #proc_arr2im((ai_sum*255/np.max(ai_sum)).reshape((N,N))[::-1], cut=False).save(os.path.join(DIR,"test/ai%08d.bmp" % l))
             dg[np.where(ai_sum != 0)] /= ai_sum[np.where(ai_sum != 0)]
             del ai_sum
-            if callback is not None:
-                callback(**cb_kwargs)
+            if jmc is not None:
+                jmc.value += 1
 
         ## Only apply the average from all differences dgall
         ## ->leads to slower convergence then ART, but is more accurate
