@@ -14,7 +14,6 @@ from ._logo import get_original
 
 # If available, use jobmanager to display progress
 try:
-    from . import __init__ as radontea
     import jobmanager as jm
     for module in [back, back_it, radon]:
         jm.decorators.decorate_module_ProgressBar(module, interval=.1, verbose=1)

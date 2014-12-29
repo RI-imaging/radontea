@@ -164,7 +164,7 @@ def sa_interpolate(linogram, lDS, method, stepsize=1, det_spacing=1,
     sino, angles = lino2sino(linogram, lDS, numang=numang, retang=True,
                              stepsize=stepsize, det_spacing=det_spacing,
                              jmm=jmm, jmc=jmc)
-    kwargs["jmm"] = jmm
-    kwargs["jmc"] = jmc
+    #kwargs["jmm"] = jmm
+    #kwargs["jmc"] = jmc
     return method(sino, angles, **kwargs)
 
