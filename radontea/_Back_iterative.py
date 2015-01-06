@@ -26,7 +26,7 @@ __all__ = ["art", "sart"]
 
 
 def art(sinogram, angles, initial=None, iterations=1,
-        jmc=None, jmm={}):
+        jmc=None, jmm=None):
     u""" Algebraic Reconstruction Technique
     
     The Algebraic Reconstruction Technique (ART) iteratively
@@ -237,7 +237,7 @@ def art(sinogram, angles, initial=None, iterations=1,
 
 
 def sart(sinogram, angles, initial=None, iterations=1,
-         jmc=None, jmm={}):
+         jmc=None, jmm=None):
     u""" Simultaneous Algebraic Reconstruction Technique
     
     
