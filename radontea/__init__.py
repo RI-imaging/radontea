@@ -15,6 +15,7 @@ from ._Back_iterative import *
 from ._Back_Fan import *
 from ._Radon import *
 
+from ._Back_3D import *
 
 
 __version__ = "0.1.3"

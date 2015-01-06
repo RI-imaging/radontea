@@ -10,8 +10,6 @@ from . import _Back_iterative as back_it
 from . import _Radon as radon
 from ._logo import get_original
 
-
-
 # If available, use jobmanager to display progress
 try:
     import jobmanager as jm
