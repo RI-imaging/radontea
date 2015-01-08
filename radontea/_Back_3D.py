@@ -37,7 +37,7 @@ def back_3d(sinogram=None, angles=None, method="backproject",
 
     Parameters
     ----------
-    sinogram : ndarray, shape (A,N,M)
+    sinogram : ndarray, shape (A,M,N)
         Three-dimensional sinogram of line recordings. The dimension `M`
         iterates through the slices. The rotation takes place through
         the second (y) axis.
@@ -83,9 +83,6 @@ def back_3d(sinogram=None, angles=None, method="backproject",
     if angles is not None:
         kwargs["angles"] = angles
     
-
-    sinogram = sinogram.transpose(0,2,1)
-
     (A,M,N) = sinogram.shape
     
     # How long will the algorithm run? - `jobmanager` counters.
@@ -119,11 +116,10 @@ def back_3d(sinogram=None, angles=None, method="backproject",
     
     result = p.map_async(_wrapper_func, arglistsino).get()
     
-    shape = (result[0].shape[0], result[0].shape[1], len(result))
+    shape = (N,M,N)
     data = np.zeros(shape)
     for m in range(M):
-        data[:,:,m] = result[m].transpose()
-    data = data.transpose(1,2,0)
+        data[:,m,:] = result[m]
     
     return data
 

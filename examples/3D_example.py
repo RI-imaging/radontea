@@ -12,7 +12,7 @@ from os.path import split, dirname, abspath
 import time
 import sys
 
-sys.path.append(split(dirname(abspath(__file__)))[0])
+sys.path = [split(dirname(abspath(__file__)))[0]] + sys.path
 
 import radontea as rt
 
@@ -22,8 +22,8 @@ M = 24    # detector size y (number of slices)
 
 # generate random data
 sino0 = np.random.random((A,N))     # for 2d example
-sino = np.random.random((A,N,M))    # for 3d example
-sino[:,:,0] = sino0
+sino = np.random.random((A,M,N))    # for 3d example
+sino[:,0,:] = sino0
 angles = np.linspace(0,np.pi,A)     # for both
 
 
@@ -36,5 +36,6 @@ a = time.time()
 data = rt.backproject_3d(sino, angles)
 print("time on {} cores: {} s".format(cpu_count(), time.time() - a))
 
-
+import IPython
+IPython.embed()
 assert np.sum(data0==data[:,0,:]) == N**2, "2D and 3D results don't match"

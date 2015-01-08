@@ -18,7 +18,7 @@ from ._Radon import *
 from ._Back_3D import *
 
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 __author__ = "Paul Mueller"
 __email__ = "paul.mueller@biotec.tu-dresden.de"
 __license__ = "BSD (3-Clause)"
