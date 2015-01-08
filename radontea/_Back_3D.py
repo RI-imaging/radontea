@@ -83,9 +83,10 @@ def back_3d(sinogram=None, angles=None, method="backproject",
     if angles is not None:
         kwargs["angles"] = angles
     
-    (A,N,M) = sinogram.shape
-    
+
     sinogram = sinogram.transpose(0,2,1)
+
+    (A,M,N) = sinogram.shape
     
     # How long will the algorithm run? - `jobmanager` counters.
     #kwargs["jmc"] = jmc
@@ -102,7 +103,7 @@ def back_3d(sinogram=None, angles=None, method="backproject",
     arglistsino = list()
     for m in range(M):
         arglist = list()
-        kwargs["sinogram"] = sinogram[:,:,m]
+        kwargs["sinogram"] = sinogram[:,m,:]
         for i, a in enumerate(func_args[::-1]):
             # first set default
             if i < len(func_def):
