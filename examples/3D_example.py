@@ -36,6 +36,5 @@ a = time.time()
 data = rt.backproject_3d(sino, angles)
 print("time on {} cores: {} s".format(cpu_count(), time.time() - a))
 
-import IPython
-IPython.embed()
+
 assert np.sum(data0==data[:,0,:]) == N**2, "2D and 3D results don't match"
