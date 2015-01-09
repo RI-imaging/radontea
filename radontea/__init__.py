@@ -19,15 +19,12 @@ Methods
 """
 
 from ._Back import *
-from ._Back_iterative import *
+from ._Back_3D import *
 from ._Back_Fan import *
+from ._Back_iterative import *
 from ._Radon import *
 
-from ._Back_3D import *
 
-def pette():
-    """asds"""
-    pass
 
 __version__ = "0.1.5"
 __author__ = "Paul Mueller"
