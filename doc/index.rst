@@ -1,8 +1,19 @@
 radontea reference
 =====================
+.. toctree::
+   :maxdepth: 2
+
+
+.. this does not work recursively
+.. .. autosummary::
+..    
+..   radontea
+
+
 .. automodule:: radontea
-   :members: art, backproject, fourier_map, radon, sart, sum
+   :members:
+   :imported-members:
+   :show-inheritance:
+   :inherited-members:   
 
-
-
-
+   

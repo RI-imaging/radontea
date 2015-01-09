@@ -38,7 +38,7 @@ extensions = [
 #              'sphinx.ext.viewcode',
 #               'ipython_directive',
               'sphinx.ext.intersphinx',
-#               'sphinx.ext.autosummary',
+              'sphinx.ext.autosummary',
               'sphinx.ext.autodoc',
 #              'sphinx.ext.doctest',
 #              'ipython_console_highlighting',
@@ -167,6 +167,7 @@ html_theme = 'nature'
 
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {}
+
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.

@@ -47,14 +47,15 @@ def back_3d(sinogram=None, angles=None, method="backproject",
     method : str
         The method to be used for sinogram inversion (e.g. "sart",
         "backproject", or "foutier_map"). `method` must be a method
-        in `radontea`. This parameter is automatically overwritten
-        with `radontea.METHOD` unless you are explicitly
-        calling `radontea._Back_3D.back_3d`.
+        in :py:mod:`radontea`. This parameter is automatically
+        overwritten with :py:func:`radontea.METHOD` unless you are
+        explicitly calling `radontea._Back_3D.back_3d`.
     jmc, jmm : instance of `multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        `jobmanager` package. The current step `jmc.value` is
+        :py:mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
+        This is not yet implemented!
     *kwargs : dict
         Keyword arguments to `radontea.METHOD`.
 

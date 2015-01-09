@@ -48,7 +48,7 @@ def backproject(sinogram, angles, filtering="ramp",
         
     jmc, jmm : instance of `multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        `jobmanager` package. The current step `jmc.value` is
+        :py:mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
 
@@ -198,7 +198,7 @@ def fourier_map(sinogram, angles, intp_method="cubic",
           
     jmc, jmm : instance of `multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        `jobmanager` package. The current step `jmc.value` is
+        :py:mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
 
@@ -361,7 +361,7 @@ def sum(sinogram, angles, jmc=None, jmm=None):
         distributed from zero to PI.
     jmc, jmm : instance of `multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        `jobmanager` package. The current step `jmc.value` is
+        :py:mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
         

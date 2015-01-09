@@ -99,7 +99,7 @@ def radon(arr, angles, jmc=None, jmm=None):
     """ Compute the Radon transform (sinogram) of a circular image.
 
 
-    The `scipy` Radon transform performs this operation on the 
+    The :py:mod:`scipy` Radon transform performs this operation on the 
     entire image, whereas this implementation requires an input
     image that has gray-scale values of 0 outside of a circle
     with diameter equal to the image size.
@@ -113,7 +113,7 @@ def radon(arr, angles, jmc=None, jmm=None):
         angles or projections in radians
     jmc, jmm : instance of `multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        `jobmanager` package. The current step `jmc.value` is
+        :py:mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
         
@@ -162,24 +162,26 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
                           lS=1, lD=None, return_ang=False,
                           jmc=None, jmm=None):
     """ Compute the Radon transform for a fan beam geometry
-        
+
+
     In contrast to `radon`, this function uses (1) a fan-beam geometry
     (the integral is taken along rays that meet at one point), and
     (2) translates the object laterally instead of rotating it. The
     result is sometimes referred to as 'linogram'.
+    
+    Problem sketch::
 
-    x
-    ^ 
-    |
-    ----> z
+                    x
+                    ^ 
+                    |
+                    ----> z
+                    
+                    source       object   detector
 
-
-    source       object   detector
-
-              /             . (+det_size/2, lD)
-    (0,-lS) ./   (0,0)      .
-             \              .
-              \             . (-det_size/2, lD)
+                              /             . (+det_size/2, lD)
+                    (0,-lS) ./   (0,0)      .
+                             \              .
+                              \             . (-det_size/2, lD)
 
 
     The algorithm computes all angular projections for discrete
@@ -209,7 +211,7 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
         Also return the angles corresponding to the detector pixels.
     jmc, jmm : instance of `multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        `jobmanager` package. The current step `jmc.value` is
+        :py:mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
         

@@ -36,7 +36,7 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
         Return the corresponding angles for the sinogram.
     jmc, jmm : instance of `multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        `jobmanager` package. The current step `jmc.value` is
+        :py:mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
         
@@ -58,9 +58,9 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
     
     See Also
     --------
-    `radontea.radon_fan_translation`
+    radontea.radon_fan_translation
         The forward process.
-    `radontea.sa_interpolate`
+    radontea.sa_interpolate
         Backprojection that uses this function.
     """
     if not linogram is linogram.real:
@@ -147,7 +147,7 @@ def sa_interpolate(linogram, lDS, method, stepsize=1, det_spacing=1,
         numang = linogram.shape[1].
     jmc, jmm : instance of `multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        `jobmanager` package. The current step `jmc.value` is
+        :py:mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
     **kwargs : dict
@@ -156,9 +156,9 @@ def sa_interpolate(linogram, lDS, method, stepsize=1, det_spacing=1,
     
     See Also
     --------
-    `radontea.radon_fan_translation`
+    radontea.radon_fan_translation
         The forward process.
-    `radontea.lino2sino`
+    radontea.lino2sino
         Linogram to sinogram conversion.
     """
     sino, angles = lino2sino(linogram, lDS, numang=numang, retang=True,
