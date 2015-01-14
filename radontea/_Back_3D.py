@@ -122,6 +122,8 @@ def back_3d(sinogram=None, angles=None, method="backproject",
     for m in range(M):
         data[:,m,:] = result[m]
     
+    p.terminate()
+
     return data
 
     
