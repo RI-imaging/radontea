@@ -153,6 +153,8 @@ def backproject(sinogram, angles, filtering="ramp",
         #        outarr[j][k] += projval
         if jmc is not None:
             jmc.value += 1
+    
+    del projinterp, x, sino_filtered, sino, xv, yv
     # Normalize output (we assume that the projections are equidistant)
     # We measure angles in degrees
     dphi = np.pi/len(angles)
