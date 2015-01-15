@@ -122,7 +122,9 @@ def back_3d(sinogram=None, angles=None, method="backproject",
     for m in range(M):
         data[:,m,:] = result[m]
     
+    p.close()
     p.terminate()
+    p.join()
     
     del result
 
