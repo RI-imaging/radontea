@@ -14,7 +14,7 @@ from ._logo import get_original
 try:
     import jobmanager as jm
     for module in [back, back_it, radon]:
-        jm.decorators.decorate_module_ProgressBar(module, interval=.1, verbose=1)
+        jm.decorators.decorate_module_ProgressBar(module, override_count=True, interval=.1, verbose=1)
 except:
     pass
         
