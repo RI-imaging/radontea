@@ -111,20 +111,19 @@ def back_3d(sinogram=None, angles=None, method="backproject",
             arglist.append(val)
         arglistsino.append(arglist[::-1])
     
-    # Mapsinogram to cpus
+    # Map sinogram to cpus
     # Splice sinogram
     p = mp.Pool(mp.cpu_count())
     
     result = p.map_async(_wrapper_func, arglistsino).get()
-    
+    p.close()
+    p.terminate()
+    p.join()    
+
     shape = (N,M,N)
     data = np.zeros(shape)
     for m in range(M):
         data[:,m,:] = result[m]
-    
-    p.close()
-    p.terminate()
-    p.join()
     
     del result
 
