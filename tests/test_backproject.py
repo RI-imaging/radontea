@@ -15,7 +15,7 @@ from os.path import abspath, dirname, split
 sys.path = [split(dirname(abspath(__file__)))[0]] + sys.path
 
 import radontea
-
+import radontea._Back_2D
 
 
 def test_2d_backproject():
@@ -27,7 +27,9 @@ def test_2d_backproject():
     angles = np.linspace(0,1,A)
 
     r = radontea.backproject(sino, angles)
-    r2 = radontea.backproject_2d(sino, angles)
+    r2 = radontea._Back_2D.backproject(sino, angles)
+    
+    assert np.allclose(r, r2)
     assert np.allclose(r, results[myname])
 
 

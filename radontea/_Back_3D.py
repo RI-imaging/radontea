@@ -21,10 +21,15 @@ import os
 import scipy.interpolate as intp
 import warnings
 
-__all__= ["backproject_3d", "fourier_map_3d", "sart_3d"]
 
-from ._Back import *
+from ._Back_2D import *
 from ._Back_iterative import *
+
+from . import _Back_2D
+from . import _Back_iterative
+
+
+__all__ = _Back.__all__ + _Back_iterative.__all__
 
 
 def back_3d(sinogram=None, angles=None, method="backproject", 
