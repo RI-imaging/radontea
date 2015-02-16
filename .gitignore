@@ -52,3 +52,8 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
+# editor files
+*.md~
+
+# test files
+tests/pytest.html
