@@ -22,10 +22,10 @@ import scipy.interpolate as intp
 import warnings
 
 
-from ._Back_2D import *
+from ._Back import *
 from ._Back_iterative import *
 
-from . import _Back_2D
+from . import _Back
 from . import _Back_iterative
 
 
