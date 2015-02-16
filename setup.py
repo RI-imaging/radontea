@@ -36,15 +36,15 @@ setup(
     description='Collection of algorithms to compute the inverse Radon transform',
     long_description=open(join(dirname(__file__), 'README.txt')).read(),
     install_requires=[ "NumPy >= 1.5.1", "SciPy >= 0.8.0"],
-    keywords=["tomography", "ct", "radon"],
+    keywords=["tomography", "ct", "radon", "computerized tomography",
+              "optical projection tomography"],
     extras_require={
                     'doc': ['sphinx']
                    },
     classifiers= [
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.2',
-        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
         'Topic :: Scientific/Engineering :: Visualization',
         'Intended Audience :: Science/Research'
                  ],

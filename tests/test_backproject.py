@@ -19,14 +19,16 @@ import radontea
 
 
 def test_2d_backproject():
+    myname = sys._getframe().f_code.co_name
+    print("running ", myname)
     A = 5
     N = 13
     sino = np.arange(A*N).reshape(A,N) * np.pi
     angles = np.linspace(0,1,A)
 
     r = radontea.backproject(sino, angles)
-
-    assert np.allclose(r, results["test_2d_backproject"])
+    r2 = radontea.backproject_2d(sino, angles)
+    assert np.allclose(r, results[myname])
 
 
 
