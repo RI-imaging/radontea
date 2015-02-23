@@ -1,14 +1,15 @@
 import os
 import sys
-sys.path.insert(0, '..')
-import shutil
-import fnmatch
+import subprocess as sp
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-os.system('make html')
+sp.check_output(["make", 'html'])
 
-# os.system('make latex')
-# olddir = os.curdir
-# os.chdir('_build\\latex\\')
-# os.system('pdflatex multipletau.tex')
-# os.chdir(olddir)
+os.chdir("..")
+
+# checkout the gh-pages branch
+sp.check_output(["git", 'checkout gh-pages'])
+
+# copy 
+sp.check_output(["git", 'commit -a -m "automated "'])

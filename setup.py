@@ -3,9 +3,37 @@
 # python setup.py sdist
 from setuptools import setup, find_packages, Command
 from os.path import join, dirname, realpath
+import subprocess
+import sys
 from warnings import warn
 
 import radontea
+
+
+class PyDoc(Command):
+    user_options = []
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        errno = subprocess.call([sys.executable, 'doc/make.py'])
+        raise SystemExit(errno)
+
+
+class PyDocAll(Command):
+    user_options = []
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        errno = subprocess.call([sys.executable, 'doc/upload.py'])
+        raise SystemExit(errno)
 
 
 class PyTest(Command):
@@ -17,7 +45,6 @@ class PyTest(Command):
         pass
 
     def run(self):
-        import sys,subprocess
         errno = subprocess.call([sys.executable, 'tests/runtests.py'])
         raise SystemExit(errno)
 
@@ -50,5 +77,7 @@ setup(
                  ],
     platforms=['ALL'],
     cmdclass = {'test': PyTest},
+    cmdclass = {'make_doc': PyDoc},
+    cmdclass = {'publish_doc': PyDocAll},
     )
 
