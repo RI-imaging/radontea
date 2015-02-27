@@ -11,7 +11,8 @@ sp.check_output([sys.executable, 'make.py'])
 sp.check_output(["git", 'checkout', 'gh-pages'])
 
 # copy built files
-sp.check_output(["cp", '-r',  './_build/html/*', './'])
+if os.system("cp -r ./_build/html/* ./") != 0:
+    sys.exit()
 
 # commit changes
 sp.check_output(["git", 'commit', '-a', '-m', '"automated doc upload"'])
