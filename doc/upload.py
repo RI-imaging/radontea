@@ -15,7 +15,8 @@ if os.system("cp -r ./_build/html/* ./") != 0:
     sys.exit()
 
 # commit changes
-sp.check_output(["git", 'commit', '-a', '-m', '"automated doc upload"'])
+if len(sp.check_output(["git", "diff"]).strip()) > 0:
+    sp.check_output(["git", 'commit', '-a', '-m', '"automated doc upload"'])
 
 # push
 sp.check_output(["git", 'push'])
