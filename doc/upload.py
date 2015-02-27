@@ -10,16 +10,16 @@ sp.check_output([sys.executable, 'make.py'])
 os.chdir("..")
 
 # checkout the gh-pages branch
-sp.check_output(["git", 'checkout gh-pages'])
+sp.check_output(["git", 'checkout', 'gh-pages'])
 
 # copy built files
-sp.check_output(["cp", '-r ./doc/_build/html/* ./'])
+sp.check_output(["cp", '-r',  './doc/_build/html/*', './'])
 
 # commit changes
-sp.check_output(["git", 'commit -a -m "automated doc upload"'])
+sp.check_output(["git", 'commit', '-a', '-m', '"automated doc upload"'])
 
 # push
 sp.check_output(["git", 'push'])
 
 # go back to master
-sp.check_output(["git", 'checkout master'])
+sp.check_output(["git", 'checkout', 'master'])
