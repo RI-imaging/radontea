@@ -19,7 +19,10 @@ if len(sp.check_output(["git", "diff"]).strip()) > 0:
     sp.check_output(["git", 'commit', '-a', '-m', '"automated doc upload"'])
 
 # push
-sp.check_output(["git", 'push'])
+try:
+    sp.check_output(["git", 'push'])
+except:
+    print("Could not push to master")
 
 # go back to master
 sp.check_output(["git", 'checkout', 'master'])
