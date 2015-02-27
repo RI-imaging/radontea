@@ -22,7 +22,7 @@ if len(sp.check_output(["git", "diff"]).strip()) > 0:
 try:
     sp.check_output(["git", 'push'])
 except:
-    print("Could not push to master")
+    print("Could not push to gh-pages.")
 
 # go back to master
 sp.check_output(["git", 'checkout', 'master'])
