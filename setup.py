@@ -76,8 +76,8 @@ setup(
         'Intended Audience :: Science/Research'
                  ],
     platforms=['ALL'],
-    cmdclass = {'test': PyTest},
-    cmdclass = {'make_doc': PyDoc},
-    cmdclass = {'publish_doc': PyDocAll},
+    cmdclass = {'test': PyTest,
+                'make_doc': PyDoc,
+                'commit_doc': PyDocAll},
     )
 
