@@ -7,13 +7,11 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 # compile
 sp.check_output([sys.executable, 'make.py'])
 
-os.chdir("..")
-
 # checkout the gh-pages branch
 sp.check_output(["git", 'checkout', 'gh-pages'])
 
 # copy built files
-sp.check_output(["cp", '-r',  './doc/_build/html/*', './'])
+sp.check_output(["cp", '-r',  './_build/html/*', './'])
 
 # commit changes
 sp.check_output(["git", 'commit', '-a', '-m', '"automated doc upload"'])
