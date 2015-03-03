@@ -31,6 +31,8 @@ from . import _Back_iterative
 
 __all__ = _Back.__all__ + _Back_iterative.__all__
 
+modules_2d = [_Back, _Back_iterative]
+
 
 def back_3d(sinogram=None, angles=None, method="backproject", 
             jmc=None, jmm=None, **kwargs):
@@ -77,9 +79,15 @@ def back_3d(sinogram=None, angles=None, method="backproject",
    
     # Check if the method exists
     if isinstance(method, str):
-        try:
-            func = globals()[method]
-        except:
+        i = 0
+        while i < len(modules_2d):
+            try:
+                func = getattr(modules_2d[i], method)
+                break
+            except:
+                pass
+            i += 1
+        if i == len(modules_2d):
             raise ValueError("Unknown method: '{}'".format(method))
     
     # Write method to globals so we can wrap it
@@ -100,6 +108,7 @@ def back_3d(sinogram=None, angles=None, method="backproject",
     # arguments of the function
     func_args = func.__code__.co_varnames[:func.__code__.co_argcount]
     # default keyword arguments
+
     func_def = func.__defaults__[::-1]
     
     # build arguments reversely
@@ -137,8 +146,12 @@ def back_3d(sinogram=None, angles=None, method="backproject",
     
 def _wrapper_func(args):
     # get the method
-    func = globals()[_used_method]
-    return func(*args)
+    for module in modules_2d:
+        if hasattr(module, _used_method):
+            func = getattr(module, _used_method)
+            return func(*args)
+    # no?
+    raise AttributeError("Something went wrong.")
 
 
 def _set_method(method):
@@ -147,7 +160,11 @@ def _set_method(method):
 
 
 def _generate_3dfunc(method3d):
-    method = method3d[:-3]
+    if method3d.endswith("_2d") or method3d.endswith("_3d"):
+        method = method3d[:-3]
+    else:
+        method = method3d
+    # wraps around back_3d
     def _generated(*args, **kwargs):
         # translate args to kwargs
         func_args = back_3d.__code__.co_varnames[:back_3d.__code__.co_argcount]
@@ -155,13 +172,19 @@ def _generate_3dfunc(method3d):
             kwargs[func_args[i]] = arg
         kwargs["method"] = method
         return back_3d(**kwargs)
+
     _generated.__doc__ = back_3d.__doc__.replace("METHOD", method)
+
     return _generated
     
 
 _used_method = "none"
 
+# overwrite globals function defined in 2d backprojection
+# files.
 
+# Todo:
+# write function to get 2d functions and make this more clean.
 glob = globals()
 for method3d in __all__:
     glob[method3d] = _generate_3dfunc(method3d)
