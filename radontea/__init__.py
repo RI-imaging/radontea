@@ -26,7 +26,6 @@ from ._Back_Fan import *
 from ._Radon import *
 
 
-__version__ = "0.1.5"
-__author__ = "Paul Mueller"
-__email__ = "paul.mueller@biotec.tu-dresden.de"
+from ._version import version as __version__
+__author__ = u"Paul Müller"
 __license__ = "BSD (3-Clause)"

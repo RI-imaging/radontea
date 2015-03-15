@@ -7,7 +7,19 @@ import subprocess
 import sys
 from warnings import warn
 
-import radontea
+
+author = u"Paul Müller"
+authors = [author]
+name = 'radontea'
+description = 'Collection of algorithms to compute the inverse Radon transform'
+year = "2014"
+
+sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
+try:
+    from _version import version
+except:
+    version = "unknown"
+
 
 
 class PyDoc(Command):
@@ -49,35 +61,34 @@ class PyTest(Command):
         raise SystemExit(errno)
 
 
-name='radontea'
-
-setup(
-    name=name,
-    author=radontea.__author__,
-    author_email=radontea.__email__,
-    version=radontea.__version__,
-    license=radontea.__license__,
-    url='https://github.com/paulmueller/radontea',
-    packages=[name],
-    package_dir={name: name},
-    description='Collection of algorithms to compute the inverse Radon transform',
-    long_description=open(join(dirname(__file__), 'README.txt')).read(),
-    install_requires=[ "NumPy >= 1.5.1", "SciPy >= 0.8.0"],
-    keywords=["tomography", "ct", "radon", "computerized tomography",
-              "optical projection tomography"],
-    extras_require={
-                    'doc': ['sphinx']
-                   },
-    classifiers= [
-        'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
-        'Topic :: Scientific/Engineering :: Visualization',
-        'Intended Audience :: Science/Research'
-                 ],
-    platforms=['ALL'],
-    cmdclass = {'test': PyTest,
-                'make_doc': PyDoc,
-                'commit_doc': PyDocAll},
-    )
+if __name__ == "__main__":
+    setup(
+        name=name,
+        author=author,
+        author_email="paul.mueller@biotec.tu-dresden.de",
+        version=version,
+        license="BSD (3 clause)",
+        url='https://github.com/paulmueller/radontea',
+        packages=[name],
+        package_dir={name: name},
+        description=description,
+        long_description=open(join(dirname(__file__), 'README.txt')).read(),
+        install_requires=[ "NumPy >= 1.5.1", "SciPy >= 0.8.0"],
+        keywords=["tomography", "ct", "radon", "computerized tomography",
+                  "optical projection tomography"],
+        extras_require={
+                        'doc': ['sphinx']
+                       },
+        classifiers= [
+            'Operating System :: OS Independent',
+            'Programming Language :: Python :: 2.7',
+            'Programming Language :: Python :: 3.4',
+            'Topic :: Scientific/Engineering :: Visualization',
+            'Intended Audience :: Science/Research'
+                     ],
+        platforms=['ALL'],
+        cmdclass = {'test': PyTest,
+                    'make_doc': PyDoc,
+                    'commit_doc': PyDocAll},
+        )
 
