@@ -10,7 +10,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 sp.check_output([sys.executable, 'make.py'])
 
 # commit changes of master
-print("Automatically commiting/pushing cahges to master")
+print("Automatically commiting/pushing changes to master")
 sp.check_output(["git", 'commit', '-a', '-m', '"automated commit before doc upload"'])
 sp.check_output(["git", 'push'])
 

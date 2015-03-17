@@ -45,7 +45,7 @@ class PyDocAll(Command):
         pass
 
     def run(self):
-        errno = subprocess.call([sys.executable, 'doc/upload.py'])
+        errno = subprocess.call([sys.executable, 'doc/commit.py'])
         raise SystemExit(errno)
 
 
