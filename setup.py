@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # To create a distribution package for pip or easy-install:
 # python setup.py sdist
 from setuptools import setup, find_packages, Command
