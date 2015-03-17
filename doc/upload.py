@@ -7,6 +7,9 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 # compile
 sp.check_output([sys.executable, 'make.py'])
 
+# commit changes of master
+sp.check_output(["git", 'commit', '-a', '-m', '"automated commit before doc upload"'])
+
 # checkout the gh-pages branch
 sp.check_output(["git", 'checkout', 'gh-pages'])
 
