@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+from __future__ import print_function
 import os
 import sys
 import subprocess as sp
@@ -8,7 +10,9 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 sp.check_output([sys.executable, 'make.py'])
 
 # commit changes of master
+print("Automatically commiting/pushing cahges to master")
 sp.check_output(["git", 'commit', '-a', '-m', '"automated commit before doc upload"'])
+sp.check_output(["git", 'push'])
 
 # checkout the gh-pages branch
 sp.check_output(["git", 'checkout', 'gh-pages'])
