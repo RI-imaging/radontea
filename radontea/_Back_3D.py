@@ -6,7 +6,7 @@
     Generates 3D variants of the 2D sinogram inversion methods of
     `radontea` using `multiprocessing`.
 """
-## TODO
+# TODO
 #
 # Jobmanager:
 # - Local Manager?
@@ -31,10 +31,10 @@ __all__ = _Back.__all__ + _Back_iterative.__all__
 modules_2d = [_Back, _Back_iterative]
 
 
-def back_3d(sinogram=None, angles=None, method="backproject", 
+def back_3d(sinogram=None, angles=None, method="backproject",
             jmc=None, jmm=None, **kwargs):
     u""" 3D inverse with the Fourier slice theorem
-    
+
     Computes the slice-wise 3D inverse of the radon transform using
     multiprocessing.
 
@@ -70,10 +70,10 @@ def back_3d(sinogram=None, angles=None, method="backproject",
 
     """
     assert sinogram.shape[0] == angles.shape[0], \
-            "First dimension of `sinogram` must match size of `angles`"
+        "First dimension of `sinogram` must match size of `angles`"
     assert len(sinogram.shape) == 3, \
-            "`sinogram` must have three dimensions."
-   
+        "`sinogram` must have three dimensions."
+
     # Check if the method exists
     if isinstance(method, str):
         i = 0
@@ -86,33 +86,32 @@ def back_3d(sinogram=None, angles=None, method="backproject",
             i += 1
         if i == len(modules_2d):
             raise ValueError("Unknown method: '{}'".format(method))
-    
+
     # Write method to globals so we can wrap it
     _set_method(func.__name__)
-    
-    
+
     if angles is not None:
         kwargs["angles"] = angles
-    
-    (A,M,N) = sinogram.shape
-    
+
+    (A, M, N) = sinogram.shape
+
     # How long will the algorithm run? - `jobmanager` counters.
     #kwargs["jmc"] = jmc
-    #if func.__name__ == "backproject":
+    # if func.__name__ == "backproject":
     #    if jmm is not None:
-    #        jmm.value = M * (A+1) 
+    #        jmm.value = M * (A+1)
 
     # arguments of the function
     func_args = func.__code__.co_varnames[:func.__code__.co_argcount]
     # default keyword arguments
 
     func_def = func.__defaults__[::-1]
-    
+
     # build arguments reversely
     arglistsino = list()
     for m in range(M):
         arglist = list()
-        kwargs["sinogram"] = sinogram[:,m,:]
+        kwargs["sinogram"] = sinogram[:, m, :]
         for i, a in enumerate(func_args[::-1]):
             # first set default
             if i < len(func_def):
@@ -121,26 +120,26 @@ def back_3d(sinogram=None, angles=None, method="backproject",
                 val = kwargs[a]
             arglist.append(val)
         arglistsino.append(arglist[::-1])
-    
+
     # Map sinogram to cpus
     # Splice sinogram
     p = mp.Pool(mp.cpu_count())
-    
+
     result = p.map_async(_wrapper_func, arglistsino).get()
     p.close()
     p.terminate()
-    p.join()    
+    p.join()
 
-    shape = (N,M,N)
+    shape = (N, M, N)
     data = np.zeros(shape)
     for m in range(M):
-        data[:,m,:] = result[m]
-    
+        data[:, m, :] = result[m]
+
     del result
 
     return data
 
-    
+
 def _wrapper_func(args):
     # get the method
     for module in modules_2d:
@@ -162,6 +161,7 @@ def _generate_3dfunc(method3d):
     else:
         method = method3d
     # wraps around back_3d
+
     def _generated(*args, **kwargs):
         # translate args to kwargs
         func_args = back_3d.__code__.co_varnames[:back_3d.__code__.co_argcount]
@@ -173,7 +173,7 @@ def _generate_3dfunc(method3d):
     _generated.__doc__ = back_3d.__doc__.replace("METHOD", method)
 
     return _generated
-    
+
 
 _used_method = "none"
 
