@@ -12,13 +12,13 @@ import numpy as np
 import scipy.interpolate as intp
 import warnings
 
-__all__= ["backproject", "fourier_map", "sum"]
+__all__ = ["backproject", "fourier_map", "sum"]
 
 
 def backproject(sinogram, angles, filtering="ramp",
                 jmc=None, jmm=None):
     u""" 2D backprojection with the Fourier slice theorem
-    
+
     Computes the inverse of the radon transform using filtered
     backprojection.
 
@@ -33,18 +33,18 @@ def backproject(sinogram, angles, filtering="ramp",
     filtering : {'ramp', 'shepp-logan', 'cosine', 'hamming', \
                  'hann'}, optional
         Specifies the Fourier filter. Either of
-        
+
         ``ramp``
           mathematically correct reconstruction
-          
+
         ``shepp-logan``
-        
+
         ``cosine``
-        
+
         ``hamming``
-        
+
         ``hann``
-        
+
     jmc, jmm : instance of `multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
         :py:mod:`jobmanager` package. The current step `jmc.value` is
@@ -85,14 +85,14 @@ def backproject(sinogram, angles, filtering="ramp",
     la = len(angles)
     # jobmanager init
     if jmm is not None:
-        jmm.value = la+1
+        jmm.value = la + 1
     # transpose so we can call resize correctly
     sino = sinogram.transpose().copy()
     # Apply a Fourier filter before projecting the sinogram slices.
     # Resize image to next power of two for fourier analysis
     # Speeds up fourier and lessens artifacts
     order = max(64., 2**np.ceil(np.log(2 * ln) / np.log(2)))
-    sino.resize((order,la))
+    sino.resize((order, la))
     sino = sino.transpose()
     # These artifacts are for example bad contrast. To check, set:
     #order = ln
@@ -110,24 +110,24 @@ def backproject(sinogram, angles, filtering="ramp",
     elif filtering == "hann":
         kx[1:] = kx[1:] * (1 + np.cos(kx[1:])) / 2
     elif filtering == None:
-        kx[1:] = 2*np.pi
+        kx[1:] = 2 * np.pi
     else:
         raise ValueError("Unknown filter: %s" % filter)
     # jobmanager
     if jmc is not None:
         jmc.value += 1
     # Resize f so we can multiply it with the sinogram.
-    kx = kx.reshape(1,-1)
+    kx = kx.reshape(1, -1)
     projection = np.fft.fft(sino, axis=-1) * kx
     sino_filtered = np.real(np.fft.ifft(projection, axis=-1))
     # Resize filtered sinogram back to original size
     sino = sino_filtered[:, :ln]
-    ## Perform backprojection
-    x = np.linspace(-ln/2, ln/2, ln, endpoint=False) +.5
-    outarr = np.zeros((ln,ln),dtype=np.float64)
+    # Perform backprojection
+    x = np.linspace(-ln / 2, ln / 2, ln, endpoint=False) + .5
+    outarr = np.zeros((ln, ln), dtype=np.float64)
     # Meshgrid for output array
-    xv, yv = np.meshgrid(x,x)
-        
+    xv, yv = np.meshgrid(x, x)
+
     for i in np.arange(len(angles)):
         #xproj = np.linspace(-n/2.0, n/2.0, N, endpoint=False)
         projinterp = intp.interp1d(x, sino[i], fill_value=0.0,
@@ -136,38 +136,38 @@ def backproject(sinogram, angles, filtering="ramp",
         # and add it to the outarr.
         phi = angles[i]
         # Smear projection onto 2d volume
-        xp = xv*np.cos(phi) + yv*np.sin(phi)
+        xp = xv * np.cos(phi) + yv * np.sin(phi)
         outarr += projinterp(xp)
-        ## Here a much slower version with the same result:
-        #for j in x:
+        # Here a much slower version with the same result:
+        # for j in x:
         #    for k in x:
         #        # shift points to match origin of coordinate system
         #        xv = j - ln/2
         #        yv = k - ln/2
         #        # perform a simple coordinate transform
-        #        # 
+        #        #
         #        xp = xv*np.cos(phi) + yv*np.sin(phi)
         #        # yp = -xv*np.sin(phi) + yv*np.cos(phi)
         #        projval = projinterp(xp)
         #        outarr[j][k] += projval
         if jmc is not None:
             jmc.value += 1
-    
+
     del projinterp, x, sino_filtered, sino, xv, yv
     # Normalize output (we assume that the projections are equidistant)
     # We measure angles in degrees
-    dphi = np.pi/len(angles)
+    dphi = np.pi / len(angles)
     # The factor of 2π comes from the choice of the unitary angular
     # frequency Fourier transform.
-    outarr *= dphi / (2*np.pi)
+    outarr *= dphi / (2 * np.pi)
 
     return outarr
 
 
 def fourier_map(sinogram, angles, intp_method="cubic",
-                   jmc=None, jmm=None):
+                jmc=None, jmm=None):
     u""" 2D Fourier mapping with the Fourier slice theorem
-    
+
     Computes the inverse of the radon transform using Fourier
     interpolation.
     Warning: This is the naive reconstruction that assumes that
@@ -175,7 +175,7 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     the actual center of the image. We do not have this problem for
     odd images, only for even images.
 
-    
+
     Parameters
     ----------
     sinogram : (A,N) ndarray
@@ -186,17 +186,17 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     intp_method : {'cubic', 'nearest', 'linear'}, optional
         Method of interpolation. For more information see
         `scipy.interpolate.griddata`. One of
-        
+
         ``nearest``
           instead of interpolating, use the points closest to
           the input data.
 
         ``linear``
           bilinear interpolation between data points.
-          
+
         ``cubic``
           interpolate using a two-dimensional poolynimial surface.
-          
+
     jmc, jmm : instance of `multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
         :py:mod:`jobmanager` package. The current step `jmc.value` is
@@ -218,9 +218,9 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     """
     if jmm is not None:
         jmm.value = 4
-        
-    if len(sinogram[0]) %2 == 0:
-        warnings.warn("Fourier interpolation with slices that have"+
+
+    if len(sinogram[0]) % 2 == 0:
+        warnings.warn("Fourier interpolation with slices that have" +
                       " even dimensions leads to image distortions!")
     # projections
     p_x = sinogram
@@ -228,7 +228,6 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     # Fourier transform of the projections
     # The sinogram data is shifted in Fourier space
     P_fx = np.fft.fft(np.fft.ifftshift(p_x, axes=-1), axis=-1)
-
 
     if jmc is not None:
         jmc.value += 1
@@ -250,7 +249,7 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     #        # shift datfft
     #        P_fx[i] = np.roll(1*datfft,0)
     #    p_x = newp
-    #if False:
+    # if False:
     #    # Resize the input image
     #    P_fx = np.zeros(p_x.shape, dtype=np.complex128)
     #    for i in range(len(sinogram)):
@@ -272,7 +271,7 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     # angles need to be normalized to 2pi
     # if angles star with 0, then the image is falsly rotated
     # unfortunately we still have ashift in the data.
-    ang = ( angles.reshape(-1, 1) )
+    ang = (angles.reshape(-1, 1))
     #ang = ang + ang[1][0]
 
     # compute frequency coordinates fx
@@ -281,18 +280,17 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     #fx = np.linspace(-np.max(fx), np.max(fx), len(p_x[0]))
     fx = fx.reshape(1, -1)
     # fy is zero
-    fxl =  (fx)*np.cos(ang)
-    fyl =  (fx)*np.sin(ang)
+    fxl = (fx) * np.cos(ang)
+    fyl = (fx) * np.sin(ang)
     # now fxl, fyl, and P_fx have same shape
-    
+
     # DEBUG: plot coordinates of positions of projections in fourier domain
     #from matplotlib import pylab as plt
-    #plt.figure()
-    #for i in range(len(fxl)):
+    # plt.figure()
+    # for i in range(len(fxl)):
     #    plt.plot(fxl[i],fyl[i],"x")
-    #plt.axes().set_aspect('equal')
-    #plt.show()
-
+    # plt.axes().set_aspect('equal')
+    # plt.show()
 
     # flatten everything for interpolation
     Xf = fxl.flatten()
@@ -303,49 +301,49 @@ def fourier_map(sinogram, angles, intp_method="cubic",
 
     if jmc is not None:
         jmc.value += 1
-        
-    ## The code block yields the same result as griddata (below)
+
+    # The code block yields the same result as griddata (below)
     # interpolation coordinates
     #Rf = np.zeros((len(Xf),2))
     #Rf[:,0] = 1*Xf
     #Rf[:,1] = 1*Yf
-    ## reconstruction coordinates
+    # reconstruction coordinates
     #Nintp = len(rintp)
     #Xn, Yn = np.meshgrid(rintp,rintp)
     #Rn = np.zeros((Nintp**2, 2))
     #Rn[:,0] = Xn.flatten()
     #Rn[:,1] = Yn.flatten()
     #
-    #if intp_method.lower() == "bilinear":
+    # if intp_method.lower() == "bilinear":
     #    Fr = intp.LinearNDInterpolator(Rf,Zf.real)
     #    Fi = intp.LinearNDInterpolator(Rf,Zf.imag)
-    #elif intp_method.lower() == "nearest":
+    # elif intp_method.lower() == "nearest":
     #    Fr = intp.NearestNDInterpolator(Rf,Zf.real)
     #    Fi = intp.NearestNDInterpolator(Rf,Zf.imag)
-    #else:
+    # else:
     #    raise NotImplementedError("Unknown interpolation type: {}".format(
     #                               intp_method.lower()))
     #    return
     #Fcomp = (Fr(Rn) + 1j*Fi(Rn)).reshape(Nintp,Nintp)
 
     # The actual interpolation
-    Fcomp = intp.griddata((Xf, Yf), Zf, (rintp[None,:], rintp[:,None]),
+    Fcomp = intp.griddata((Xf, Yf), Zf, (rintp[None, :], rintp[:, None]),
                           method=intp_method)
-                          
+
     if jmc is not None:
         jmc.value += 1
-        
+
     # removed nans
     Fcomp[np.where(np.isnan(Fcomp))] = 0
 
-    f = np.fft.fftshift( np.fft.ifft2(np.fft.ifftshift(Fcomp)) )
+    f = np.fft.fftshift(np.fft.ifft2(np.fft.ifftshift(Fcomp)))
 
     if jmc is not None:
         jmc.value += 1
 
     return f
-    
-    
+
+
 def sum(sinogram, angles, jmc=None, jmm=None):
     u""" 2D sum-reconstruction with the Fourier slice theorem
 
@@ -365,7 +363,7 @@ def sum(sinogram, angles, jmc=None, jmm=None):
         :py:mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
-        
+
 
     Returns
     -------
@@ -394,22 +392,21 @@ def sum(sinogram, angles, jmc=None, jmm=None):
     # We have a one-dimensional (n=1) Fourier transform and UB in the
     # script is equivalent to f₃(ω). Because we are working with the
     # uaf, we divide by sqrt(2π) after computing the fft with the uof.
-    
+
     # Corresponding sample frequencies
-    fx = np.fft.fftfreq(sinogram[0].shape[0]) # 1D array
-    kx = 2*np.pi*fx
-    
+    fx = np.fft.fftfreq(sinogram[0].shape[0])  # 1D array
+    kx = 2 * np.pi * fx
+
     # Get the angles ϕ₀.
-    phi0 = (angles).reshape(-1,1)
+    phi0 = (angles).reshape(-1, 1)
     # Differentials for integral
-    dphi0 = len(angles)/np.pi
+    dphi0 = len(angles) / np.pi
     dkx = np.abs(kx[1] - kx[0])
 
     #kx = np.fft.fftshift(kx)
     # We will later multiply with phi0.
     # Make sure we are using correct shapes
     kx = kx.reshape(1, -1)
-
 
     # Create the integrand
     # Integrals over ϕ₀ [0,2π]; kx [-k,k]
@@ -425,42 +422,41 @@ def sum(sinogram, angles, jmc=None, jmm=None):
     #      * exp( i kx (cos(ϕ₀)*x + sin(ϕ₀)*y ) )  (dependent on ϕ₀ and r)
     #
     # everything that is not dependent on phi0:
-    prefactor  = 1 / ( (2*np.pi)**(3/2) )
-    prefactor *= dphi0*dkx
+    prefactor = 1 / ((2 * np.pi)**(3 / 2))
+    prefactor *= dphi0 * dkx
     prefactor *= np.abs(kx)
-    
+
     # Initiate function f
     N = len(sinogram[0])
-    coords = np.linspace(-N/2.,N/2., N, endpoint=False)
+    coords = np.linspace(-N / 2., N / 2., N, endpoint=False)
     x, y = np.meshgrid(coords, coords)
     points = np.zeros((N**2, 2))
-    points[:,0] = x.flatten()
-    points[:,1] = y.flatten()
+    points[:, 0] = x.flatten()
+    points[:, 1] = y.flatten()
     f = np.zeros(len(points), dtype=np.complex128)
     lenf = len(f)
-    
+
     # Initiate vector r that corresponds to calculating a value of f.
-    r = np.zeros((2,1,1), dtype=np.complex256)
-    
+    r = np.zeros((2, 1, 1), dtype=np.complex256)
+
     # Compute the Fourier transform of uB.
     # This is true: np.fft.fft(UB)[0] == np.fft.fft(UB[0])
     # because axis -1 is always used.
-    P = np.fft.fft(np.fft.ifftshift(sinogram, axes=-1))/np.sqrt(2*np.pi)
+    P = np.fft.fft(np.fft.ifftshift(sinogram, axes=-1)) / np.sqrt(2 * np.pi)
 
     if jmc is not None:
         jmc.value += 1
-    
 
     for j in xrange(lenf):
         # Get r (We compute f(r) in this for-loop)
-        r[0][:] = points[j][0] #x
-        r[1][:] = points[j][1] #y
+        r[0][:] = points[j][0]  # x
+        r[1][:] = points[j][1]  # y
 
         # Integrand changes with r, so we have to create a new
         # array:
         integrand = prefactor * P
-        
-        ## Reminder:
+
+        # Reminder:
         # f(r) = 1 / ( (2π)^(3/2) )                  (prefactor)
         #      * iint dϕ₀ dkx                           (prefactor)
         #      * |kx|                                   (prefactor)
@@ -468,18 +464,17 @@ def sum(sinogram, angles, jmc=None, jmm=None):
         #      * exp( i kx (cos(ϕ₀)*x + sin(ϕ₀)*y ) )  (dependent on ϕ₀ and r)
         #
         # everything that is not dependent on phi0:
-        integrand *= np.exp(1j*kx*(
-                                      r[0] * np.cos(phi0) +
-                                      r[1] * np.sin(phi0)   )
-                                   )
-        
+        integrand *= np.exp(1j * kx * (
+            r[0] * np.cos(phi0) +
+            r[1] * np.sin(phi0))
+        )
+
         # Calculate the integral for the position r
         integrand.sort()
         f[j] = np.sum(integrand)
-        
+
         # Display how far we are
         if jmc is not None:
             jmc.value += 1
 
-    return f.reshape((N,N))
-
+    return f.reshape((N, N))

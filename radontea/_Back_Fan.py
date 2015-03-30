@@ -12,8 +12,8 @@ import scipy
 
 from ._Radon import get_fan_coords
 
-__all__= ["sa_interpolate",
-          "lino2sino"]
+__all__ = ["sa_interpolate",
+           "lino2sino"]
 
 
 def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
@@ -39,7 +39,7 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
         :py:mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
-        
+
 
     Returns
     -------
@@ -54,8 +54,8 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
     This function can be used to convert a linogram obtained with
     fan-beam tomography to a sinogram, which then can be reconstructed
     with the backprojection or fourier mapping algorithms.
-    
-    
+
+
     See Also
     --------
     radontea.radon_fan_translation
@@ -65,20 +65,20 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
     """
     if not linogram is linogram.real:
         raise ValueError("`linogram` must be a real array!")
-        
+
     (D, det_size) = linogram.shape
-    
+
     if numang is None:
-        A = det_size #(detector size determines # of angles)
+        A = det_size  # (detector size determines # of angles)
     else:
         A = numang
-    
+
     if jmm is not None:
-        jmm.value = D+A
-    
+        jmm.value = D + A
+
     # equispaced angles and corresponding lateral detector positions.
     angles, xang = get_fan_coords(det_size, det_spacing, lDS, A)
-    
+
     uorig = linogram
     lino = np.zeros((D, A))
 
@@ -89,50 +89,50 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
     for i in range(D):
         #uscaled[i] = scipy.interpolate.spline(xk, uorig[i], xang)
         lino[i] = scipy.interpolate.spline(xk, uorig[i], xang)
-        
+
         if jmc is not None:
             jmc.value += 1
 
     # begin angular stretching
     for i in range(A):
         # parametrization of the time axis (spatial information)
-        xk = np.linspace(-D*stepsize/2+.5,D*stepsize/2-.5, D, endpoint=True)
+        xk = np.linspace(-D * stepsize / 2 + .5,
+                         D * stepsize / 2 - .5, D, endpoint=True)
         alpha = angles[i]
 
-        ## Centering:
+        # Centering:
         # The object moves 1px per view in D.
         # We need to translate this lateral movement to a shift that
         # depends on the current angle.
         # What is the distance b/w the center of the object (centered at
         # lDS/2) to the axis alpha = 0?
-        deltaD = np.tan(alpha) * lDS/2
+        deltaD = np.tan(alpha) * lDS / 2
         #deltaD = np.tan(alpha) * D/2
         #xnew = xk + deltaD
-        
-        ## Sheering:
+
+        # Sheering:
         # At larger angles, the object seems bigger on the screen.
-        xnew = xk/np.cos(alpha)+deltaD
-        lino[:,i] = scipy.interpolate.spline(xk, lino[:,i], xnew)
-        
+        xnew = xk / np.cos(alpha) + deltaD
+        lino[:, i] = scipy.interpolate.spline(xk, lino[:, i], xnew)
+
         if jmc is not None:
             jmc.value += 1
-                
-    sino = np.transpose(lino)[:,::-1]
+
+    sino = np.transpose(lino)[:, ::-1]
     if retang:
-        return sino, angles + np.pi/2
+        return sino, angles + np.pi / 2
     else:
         return sino
-
 
 
 def sa_interpolate(linogram, lDS, method, stepsize=1, det_spacing=1,
                    numang=None, jmm=None, jmc=None, **kwargs):
     """ 2D synthetic aperture reconstruction
-    
+
     Computes the inverse of the fan-beam radon transform using inter-
     polation of the linogram and one of the inverse algorithms for
     tomography with the Fourier slice theorem.
-    
+
     Parameters
     ----------
     linogram : 2d ndarray of shape (D, A)
@@ -152,8 +152,8 @@ def sa_interpolate(linogram, lDS, method, stepsize=1, det_spacing=1,
         beginning.
     **kwargs : dict
         Keyword arguments for `method`.
-    
-    
+
+
     See Also
     --------
     radontea.radon_fan_translation
@@ -167,4 +167,3 @@ def sa_interpolate(linogram, lDS, method, stepsize=1, det_spacing=1,
     #kwargs["jmm"] = jmm
     #kwargs["jmc"] = jmc
     return method(sino, angles, **kwargs)
-
