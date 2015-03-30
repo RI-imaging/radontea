@@ -17,9 +17,6 @@ from __future__ import division, print_function
 
 import multiprocessing as mp
 import numpy as np
-import os
-import scipy.interpolate as intp
-import warnings
 
 
 from ._Back import *

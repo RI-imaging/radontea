@@ -8,11 +8,7 @@
 
 from __future__ import division
 
-import numpy as np
-import os
-import scipy.interpolate as intp
 import sys
-import warnings
 
 from . import _Back as back2d
 from . import _Back_iterative as back2d_it

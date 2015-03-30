@@ -23,7 +23,6 @@ if __name__ == "__main__":
     import matplotlib
     matplotlib.use("wxagg")
     from matplotlib import pylab as plt
-    from matplotlib import cm
         
     N=55
     It=7

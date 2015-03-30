@@ -19,7 +19,6 @@ Investigation of non-diffraction tomography methods.
 from __future__ import division, print_function
 
 import numpy as np
-import os
 
 
 __all__ = ["art", "sart"]
@@ -175,7 +174,7 @@ def art(sinogram, angles, initial=None, iterations=1,
             #
             if angle_k <= np.pi/2:
                 # 0 to PI/2
-                case = 1
+                #case = 1
                 # position of each p[i] in the centered *outarr*.
                 x_p1 = (pr-.5)*np.sin(angle_k)                # a position of line1 in X
                 y_p1 = -(pr-.5)*np.cos(angle_k)                # a position of line1 in Y
@@ -183,12 +182,12 @@ def art(sinogram, angles, initial=None, iterations=1,
                 y_p2 = -(pr+.5)*np.cos(angle_k)                # a position of line2 in Y
             else:
                 # PI/2 to PI
+                #case = 2
                 # position of each p[i] in the centered *outarr*.
                 x_p1 = (pr+.5)*np.sin(angle_k)                # a position of line1 in X
                 y_p1 = -(pr+.5)*np.cos(angle_k)                # a position of line1 in Y
                 x_p2 = (pr-.5)*np.sin(angle_k)                # a position of line2 in X
                 y_p2 = -(pr-.5)*np.cos(angle_k)                # a position of line2 in Y
-                case = 2
             for i in np.arange(len(p)):
                 # If the angle is zero, then we are looking at the
                 # projections onto the right side. The indices are
@@ -453,17 +452,21 @@ def sart(sinogram, angles, initial=None, iterations=1,
                 P1x = np.uint64(np.ceil(px)*(np.ceil(px) < N-1) + (N-1)*(np.ceil(px) >= N-1))
                 P1y = np.uint64(np.ceil(py)*(np.ceil(py) < N-1) + (N-1)*(np.ceil(py) >= N-1))
                 P2x = np.uint64(np.floor(px)*(np.floor(px) > 0))
-                P2y = np.uint64(np.ceil(py)*(np.ceil(py) < N-1) + (N-1)*(np.ceil(py) >= N-1))
-                P3x = np.uint64(np.floor(px)*(np.floor(px) > 0))
+                P2y = P1y
+                #P2y = np.uint64(np.ceil(py)*(np.ceil(py) < N-1) + (N-1)*(np.ceil(py) >= N-1))
+                P3x = P2x
+                #P3x = np.uint64(np.floor(px)*(np.floor(px) > 0))
                 P3y = np.uint64(np.floor(py)*(np.floor(py) > 0))
-                P4x = np.uint64(np.ceil(px)*(np.ceil(px) < N-1) + (N-1)*(np.ceil(px) >= N-1))
-                P4y = np.uint64(np.floor(py)*(np.floor(py) > 0))
+                P4x = P1x
+                #P4x = np.uint64(np.ceil(px)*(np.ceil(px) < N-1) + (N-1)*(np.ceil(px) >= N-1))
+                P4y = P3y
+                #P4y = np.uint64(np.floor(py)*(np.floor(py) > 0))
 
                 prelx = px-P3x
                 prely = py-P3y
 
                 Px = np.array([P1x, P2x, P3x, P4x]).flatten()
-                Py = np.array([P2y, P2y, P3y, P4y]).flatten()
+                Py = np.array([P1y, P2y, P3y, P4y]).flatten()
                 
                 Pdelta = np.array([ prelx*prely,
                                     (1-prelx)*prely,

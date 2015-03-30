@@ -9,7 +9,6 @@
 from __future__ import division
 
 import numpy as np
-import os
 import scipy.interpolate as intp
 import warnings
 
@@ -443,10 +442,6 @@ def sum(sinogram, angles, jmc=None, jmm=None):
     # Initiate vector r that corresponds to calculating a value of f.
     r = np.zeros((2,1,1), dtype=np.complex256)
     
-    # Create counters for real and imaginary parts of f.
-    freal = 0
-    fimag = 0
-
     # Compute the Fourier transform of uB.
     # This is true: np.fft.fft(UB)[0] == np.fft.fft(UB[0])
     # because axis -1 is always used.
