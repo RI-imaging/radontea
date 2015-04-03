@@ -28,11 +28,11 @@ checkout_ghpages()
 
 
 # copy built files
-if os.system("cp -r ./build/sphinx/html/* ../") != 0:
+if os.system("cp -r ../build/sphinx/html/* ../") != 0:
     checkout_master()
     sys.exit()
 
-for item in os.listdir("./build/sphinx/html/"):
+for item in os.listdir("../build/sphinx/html/"):
     # Make sure we have added all files from html
     if not item.startswith("."):
         os.system("git add ../{}".format(item))
