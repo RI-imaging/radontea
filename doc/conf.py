@@ -24,7 +24,7 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.abspath(
                     os.path.dirname(__file__)), '../')))
 
-#sys.path.append(os.path.abspath('extensions'))
+sys.path.append(os.path.abspath('extensions'))
 
 
 # There should be a file "setup.py" that has the property "version"
@@ -63,9 +63,11 @@ extensions = [
 #              'ipython_console_highlighting',
 #               'sphinx.ext.pngmath',
               'sphinx.ext.mathjax',
+#              'sphinx.ext.viewcode',
 #              'sphinx.ext.todo',
 #             'inheritance_diagram',
               'numpydoc',
+              'myviewcode',  
 #              'hidden_code_block',
 #              'sphinx.ext.autosummary'
               ]
