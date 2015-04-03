@@ -24,7 +24,7 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.abspath(
                     os.path.dirname(__file__)), '../')))
 
-sys.path.append(os.path.abspath('_extensions'))
+#sys.path.append(os.path.abspath('extensions'))
 
 
 # There should be a file "setup.py" that has the property "version"
@@ -108,7 +108,6 @@ release = version
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -139,12 +138,12 @@ exclude_patterns = ['_build']
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'nature'
+html_theme = 'default'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {"stickysidebar": True}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []

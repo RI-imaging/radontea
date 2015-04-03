@@ -23,7 +23,9 @@ except:
 
 
 
-class PyDoc(Command):
+class PyDocGitHub(Command):
+    """ Upload the docs to GitHub gh-pages branch
+    """
     user_options = []
     def initialize_options(self):
         pass
@@ -32,24 +34,13 @@ class PyDoc(Command):
         pass
 
     def run(self):
-        errno = subprocess.call([sys.executable, 'doc/make.py'])
-        raise SystemExit(errno)
-
-
-class PyDocAll(Command):
-    user_options = []
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        errno = subprocess.call([sys.executable, 'doc/commit.py'])
+        errno = sp.call([sys.executable, 'doc/commit_gh-pages.py'])
         raise SystemExit(errno)
 
 
 class PyTest(Command):
+    """ Perform pytests
+    """
     user_options = []
     def initialize_options(self):
         pass
@@ -89,7 +80,7 @@ if __name__ == "__main__":
                      ],
         platforms=['ALL'],
         cmdclass = {'test': PyTest,
-                    'make_doc': PyDoc,
-                    'commit_doc': PyDocAll},
+                    'commit_doc': PyDocGitHub,
+                    },
         )
 
