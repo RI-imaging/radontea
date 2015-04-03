@@ -16,5 +16,4 @@ To upload the documentation to gh-pages, run
     
 or
 
-    cd doc
-    python commit_gh-pages.py
+    python doc/commit_gh-pages.py

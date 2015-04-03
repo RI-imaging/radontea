@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import os
+from os.path import abspath,dirname
 import sys
 import subprocess as sp
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+os.chdir(dirname(dirname(abspath(__file__))))
 
 
 def checkout_master():
@@ -28,14 +30,14 @@ checkout_ghpages()
 
 
 # copy built files
-if os.system("cp -r ../build/sphinx/html/* ../") != 0:
+if os.system("cp -r ./build/sphinx/html/* ./") != 0:
     checkout_master()
     sys.exit()
 
-for item in os.listdir("../build/sphinx/html/"):
+for item in os.listdir("./build/sphinx/html/"):
     # Make sure we have added all files from html
     if not item.startswith("."):
-        os.system("git add ../{}".format(item))
+        os.system("git add ./{}".format(item))
 
 # commit changes
 if len(sp.check_output(["git", "diff", "HEAD"]).strip()) > 0:
