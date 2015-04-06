@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    _Radon.py
-    
-    Performs the radon transform.
+The Radon transform describes the forward (projection) process.
 """
 from __future__ import division
 from __future__ import print_function

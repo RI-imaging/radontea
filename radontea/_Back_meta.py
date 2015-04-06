@@ -336,7 +336,8 @@ def sum(sinogram, angles, jmc=None, jmm=None):
     Computes the inverse of the radon transform by computing the
     integral in real space.
 
-
+    .. warning:: This algorithm is slow and prone to numerical errors.
+    
     Parameters
     ----------
     sinogram : ndarray, shape (A,N) or (A,M,N)
@@ -352,6 +353,7 @@ def sum(sinogram, angles, jmc=None, jmm=None):
         :py:mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
+
 
 
     Returns

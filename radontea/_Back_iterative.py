@@ -1,19 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
+Inversion of Radon-based tomography methods using iterative algorithms.
 
-_Back_iterative.py
-
-Investigation of non-diffraction tomography methods.
-
-- perform algebraic reconstruction of a sinogram taken from angles
-  that are not equidistant
-
-- Algebraic reconstruction technique (ART)
-
-- Simultaneous algebraic reconstruction technique (SART)
-  - no hamming window
-  - not parallelized
+The convegence of these algorithms might be slow. The implementation
+is not optimized.
 
 """
 from __future__ import division, print_function

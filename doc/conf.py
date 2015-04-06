@@ -57,7 +57,7 @@ extensions = [
 #              'sphinx.ext.viewcode',
 #               'ipython_directive',
               'sphinx.ext.intersphinx',
-#               'sphinx.ext.autosummary',
+              'sphinx.ext.autosummary',
               'sphinx.ext.autodoc',
 #              'sphinx.ext.doctest',
 #              'ipython_console_highlighting',

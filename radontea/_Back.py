@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    _Back.py
-
-    The inverse Radon transform with non-iterative techniques.
+Computes the inverse Radon transform with non-iterative techniques.
+The linear system of equations that describes the forward process can be
+inverted with several algorithms, most notably the backprojection
+algorithm :func:`radontea.backproject`. The reconstruction is based on
+the Fourier slice theorem. A Fourier-based interpolation algorithm is
+implemented in :func:`radontea.fourier_map`.
 """
 
 from __future__ import division
