@@ -4,7 +4,7 @@
 # python setup.py sdist
 from setuptools import setup, find_packages, Command
 from os.path import join, dirname, realpath
-import subprocess
+import subprocess as sp
 import sys
 from warnings import warn
 
@@ -49,7 +49,7 @@ class PyTest(Command):
         pass
 
     def run(self):
-        errno = subprocess.call([sys.executable, 'tests/runtests.py'])
+        errno = sp.call([sys.executable, 'tests/runtests.py'])
         raise SystemExit(errno)
 
 
