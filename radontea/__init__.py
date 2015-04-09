@@ -45,7 +45,7 @@ with a matching date).
 
 .. topic:: cite
 
-    Paul Müller (2012) *Python algorithms for the inversion of the
+    Paul Müller (2013) *Python algorithms for the inversion of the
     Radon transform* (Version x.x.x)
     [Computer program].
     Available at https://pypi.python.org/pypi/radontea/
