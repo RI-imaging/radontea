@@ -3,10 +3,10 @@ radontea reference
 .. toctree::
    :maxdepth: 2
 
+General
+:::::::
 
 .. automodule:: radontea
-
-For a quick overview, see :ref:`genindex`.
 
 Parallel beam geometry
 ::::::::::::::::::::::

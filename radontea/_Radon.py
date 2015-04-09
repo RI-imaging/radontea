@@ -220,7 +220,7 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
     --------
     scipy.ndimage.interpolation.rotate :
         The interpolator used to rotate the image.
-    radontea.radon
+    radon
         The real radon transform.
     """
     N = arr.shape[0]

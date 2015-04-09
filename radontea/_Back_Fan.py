@@ -58,9 +58,9 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
 
     See Also
     --------
-    radontea.radon_fan_translation
+    radon_fan_translation
         The forward process.
-    radontea.sa_interpolate
+    sa_interpolate
         Backprojection that uses this function.
     """
     if not linogram is linogram.real:
@@ -156,9 +156,9 @@ def sa_interpolate(linogram, lDS, method, stepsize=1, det_spacing=1,
 
     See Also
     --------
-    radontea.radon_fan_translation
+    radon_fan_translation
         The forward process.
-    radontea.lino2sino
+    lino2sino
         Linogram to sinogram conversion.
     """
     sino, angles = lino2sino(linogram, lDS, numang=numang, retang=True,
