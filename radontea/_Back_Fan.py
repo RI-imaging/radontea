@@ -34,9 +34,9 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
         Number of equispaced angles, defaults to linogram.shape[1]
     retang : bool
         Return the corresponding angles for the sinogram.
-    jmc, jmm : instance of `multiprocessing.Value` or `None`
+    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        :py:mod:`jobmanager` package. The current step `jmc.value` is
+        :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
 
@@ -145,9 +145,9 @@ def sa_interpolate(linogram, lDS, method, stepsize=1, det_spacing=1,
         Number of angles to be used for the sinogram. A higher number
         increases quality, but interpolation takes longer. By default
         numang = linogram.shape[1].
-    jmc, jmm : instance of `multiprocessing.Value` or `None`
+    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        :py:mod:`jobmanager` package. The current step `jmc.value` is
+        :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
     **kwargs : dict

@@ -54,9 +54,9 @@ def back_3d(sinogram=None, angles=None, method="backproject",
         in :py:mod:`radontea`. This parameter is automatically
         overwritten with :py:func:`radontea.METHOD` unless you are
         explicitly calling `radontea._Back_3D.back_3d`.
-    jmc, jmm : instance of `multiprocessing.Value` or `None`
+    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        :py:mod:`jobmanager` package. The current step `jmc.value` is
+        :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
         This is not yet implemented!

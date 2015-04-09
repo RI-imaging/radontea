@@ -105,9 +105,9 @@ def radon(arr, angles, jmc=None, jmm=None):
         the input image.
     angles : ndarray, length A
         angles or projections in radians
-    jmc, jmm : instance of `multiprocessing.Value` or `None`
+    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        :py:mod:`jobmanager` package. The current step `jmc.value` is
+        :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
 
@@ -202,9 +202,9 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
         Detector position relative to the center `arr`. Default is N/2.
     return_ang : bool
         Also return the angles corresponding to the detector pixels.
-    jmc, jmm : instance of `multiprocessing.Value` or `None`
+    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        :py:mod:`jobmanager` package. The current step `jmc.value` is
+        :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
 

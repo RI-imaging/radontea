@@ -26,6 +26,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.abspath(
 
 sys.path.append(os.path.abspath('extensions'))
 
+# include examples
+sys.path.append(os.path.abspath(os.path.dirname(__file__)+"/../examples"))
 
 # There should be a file "setup.py" that has the property "version"
 from setup import author, authors, description, name, version, year
@@ -308,5 +310,6 @@ intersphinx_mapping = {
     _python_doc_base: None,
     'http://docs.scipy.org/doc/numpy': None,
     'http://docs.scipy.org/doc/scipy/reference': None,
+    'http://cimatosa.github.io/jobmanager/': None,
 }
 

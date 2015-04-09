@@ -43,9 +43,9 @@ def art(sinogram, angles, initial=None, iterations=1,
         The initial guess for the solution.
     iterations : int
         Number of iterations to perform.
-    jmc, jmm : instance of `multiprocessing.Value` or `None`
+    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        :py:mod:`jobmanager` package. The current step `jmc.value` is
+        :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
 
@@ -267,9 +267,9 @@ def sart(sinogram, angles, initial=None, iterations=1,
         the initial guess for the solution.
     iterations : integer
         Number of iterations to perform.
-    jmc, jmm : instance of `multiprocessing.Value` or `None`
+    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        :py:mod:`jobmanager` package. The current step `jmc.value` is
+        :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
 

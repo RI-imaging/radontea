@@ -48,9 +48,9 @@ def art(sinogram, angles, initial=None, iterations=1,
         The initial guess for the solution.
     iterations : int
         Number of iterations to perform.
-    jmc, jmm : instance of `multiprocessing.Value` or `None`
+    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        :py:mod:`jobmanager` package. The current step `jmc.value` is
+        :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
 
@@ -123,9 +123,9 @@ def backproject(sinogram, angles, filtering="ramp",
 
         ``hann``
 
-    jmc, jmm : instance of `multiprocessing.Value` or `None`
+    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        :py:mod:`jobmanager` package. The current step `jmc.value` is
+        :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
 
@@ -207,9 +207,9 @@ def fourier_map(sinogram, angles, intp_method="cubic",
         ``cubic``
           interpolate using a two-dimensional poolynimial surface.
 
-    jmc, jmm : instance of `multiprocessing.Value` or `None`
+    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        :py:mod:`jobmanager` package. The current step `jmc.value` is
+        :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
 
@@ -268,9 +268,9 @@ def sart(sinogram, angles, initial=None, iterations=1,
         The initial guess for the solution.
     iterations : integer
         Number of iterations to perform.
-    jmc, jmm : instance of `multiprocessing.Value` or `None`
+    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        :py:mod:`jobmanager` package. The current step `jmc.value` is
+        :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
 
@@ -348,9 +348,9 @@ def sum(sinogram, angles, jmc=None, jmm=None):
     angles : (A,) ndarray
         Angular positions of the `sinogram` in radians equally 
         distributed from zero to PI.
-    jmc, jmm : instance of `multiprocessing.Value` or `None`
+    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
-        :py:mod:`jobmanager` package. The current step `jmc.value` is
+        :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
 
