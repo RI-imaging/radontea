@@ -310,6 +310,6 @@ intersphinx_mapping = {
     _python_doc_base: None,
     'http://docs.scipy.org/doc/numpy': None,
     'http://docs.scipy.org/doc/scipy/reference': None,
-    'http://cimatosa.github.io/jobmanager/': None,
+    'http://cimatosa.github.io/jobmanager': None,
 }
 
