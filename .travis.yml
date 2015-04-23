@@ -11,6 +11,6 @@ before_install:
 - conda update --yes conda
 - travis_retry conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy
 install:
-- travis_retry python setup.py dev
+- travis_retry python setup.py develop
 script: travis_wait python setup.py test
 cache: apt
