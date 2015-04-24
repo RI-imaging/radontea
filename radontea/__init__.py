@@ -39,17 +39,17 @@ https://github.com/paulmueller/radontea.
 
 Citing radontea
 ---------------
-The radontea package should be cited like this (replace "x.x.x"
-with the actual version of radontea that you used and "DD Month YYYY"
-with a matching date).
+Please cite this package if you are using it in a scientific
+publication.
+
+This package should be cited like this 
+(replace "x.x.x" with the actual version of radontea that you used):
 
 .. topic:: cite
 
-    Paul Müller (2013) *Python algorithms for the inversion of the
-    Radon transform* (Version x.x.x)
-    [Computer program].
+    Paul Müller (2013) *radontea: Python algorithms for the inversion of
+    the Radon transform* (Version x.x.x) [Software].
     Available at https://pypi.python.org/pypi/radontea/
-    (Accessed DD Month YYYY)
 
 
 You can find out what version you are using by typing
