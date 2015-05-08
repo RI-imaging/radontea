@@ -19,8 +19,8 @@ import multiprocessing as mp
 import numpy as np
 
 
-from ._Back import *
-from ._Back_iterative import *
+from ._Back import *  # @UnusedWildImport
+from ._Back_iterative import *  # @UnusedWildImport
 
 from . import _Back
 from . import _Back_iterative
@@ -93,7 +93,7 @@ def back_3d(sinogram=None, angles=None, method="backproject",
     if angles is not None:
         kwargs["angles"] = angles
 
-    (A, M, N) = sinogram.shape
+    (A, M, N) = sinogram.shape  # @UnusedVariable
 
     # How long will the algorithm run? - `jobmanager` counters.
     #kwargs["jmc"] = jmc

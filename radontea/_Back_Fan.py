@@ -8,7 +8,7 @@ a fan-beam geometry.
 from __future__ import division
 
 import numpy as np
-import scipy
+import scipy.interpolate
 
 from ._Radon import get_fan_coords
 

@@ -144,7 +144,7 @@ def art(sinogram, angles, initial=None, iterations=1,
     if jmc is not None:
         jmc.value += 1
 
-    for iteration in np.arange(iterations):
+    for iteration in np.arange(iterations):  # @UnusedVariable
         #
         # i iterates the rays
         # j iterates the flattened outarr
@@ -352,7 +352,7 @@ def sart(sinogram, angles, initial=None, iterations=1,
     if jmc is not None:
         jmc.value += 1
 
-    for k in np.arange(iterations):
+    for k in np.arange(iterations):  # @UnusedVariable
         #
         # k iterates the iterations
         # i iterates the rays

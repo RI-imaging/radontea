@@ -51,52 +51,52 @@ if __name__ == "__main__":
     plt.figure(figsize=(15, 8))
 
     plt.subplot(2, 5, 1)
-    plt.imshow(im, cmap=plt.cm.gray, vmin=0, vmax=255)
+    plt.imshow(im, cmap=plt.cm.gray, vmin=0, vmax=255)  # @UndefinedVariable
     plt.axis('off')
     plt.title('uint16 image')
 
     plt.subplot(2, 5, 2)
-    plt.imshow(sino, cmap=plt.cm.gray)
+    plt.imshow(sino, cmap=plt.cm.gray)  # @UndefinedVariable
     plt.axis('off')
     plt.title('sinogram ({} proj.)'.format(A))
 
     plt.subplot(2, 5, 3)
-    plt.imshow(fbp, cmap=plt.cm.gray, vmin=0, vmax=255)
+    plt.imshow(fbp, cmap=plt.cm.gray, vmin=0, vmax=255)  # @UndefinedVariable
     plt.axis('off')
     plt.title('backprojection')
 
     plt.subplot(2, 5, 4)
-    plt.imshow(fintp.real, cmap=plt.cm.gray, vmin=0, vmax=255)
+    plt.imshow(fintp.real, cmap=plt.cm.gray, vmin=0, vmax=255)  # @UndefinedVariable
     plt.axis('off')
     plt.title('Fourier interpolation')
 
     plt.subplot(2, 5, 5)
-    plt.imshow(alg, cmap=plt.cm.gray, vmin=0, vmax=255)
+    plt.imshow(alg, cmap=plt.cm.gray, vmin=0, vmax=255)  # @UndefinedVariable
     plt.axis('off')
     plt.title('SART ({} iterations)'.format(It))
 
     plt.subplot(2, 5, 6)
-    plt.imshow(im2, cmap=plt.cm.gray, vmin=0, vmax=255)
+    plt.imshow(im2, cmap=plt.cm.gray, vmin=0, vmax=255)  # @UndefinedVariable
     plt.axis('off')
     plt.title('binary image')
 
     plt.subplot(2, 5, 7)
-    plt.imshow(sino2, cmap=plt.cm.gray)
+    plt.imshow(sino2, cmap=plt.cm.gray)  # @UndefinedVariable
     plt.axis('off')
     plt.title('sinogram ({} proj.)'.format(A))
 
     plt.subplot(2, 5, 8)
-    plt.imshow(fbp2, cmap=plt.cm.gray, vmin=0, vmax=255)
+    plt.imshow(fbp2, cmap=plt.cm.gray, vmin=0, vmax=255)  # @UndefinedVariable
     plt.axis('off')
     plt.title('backprojection')
 
     plt.subplot(2, 5, 9)
-    plt.imshow(fintp2.real, cmap=plt.cm.gray, vmin=0, vmax=255)
+    plt.imshow(fintp2.real, cmap=plt.cm.gray, vmin=0, vmax=255)  # @UndefinedVariable
     plt.axis('off')
     plt.title('Fourier interpolation')
 
     plt.subplot(2, 5, 10)
-    plt.imshow(alg2, cmap=plt.cm.gray, vmin=0, vmax=255)
+    plt.imshow(alg2, cmap=plt.cm.gray, vmin=0, vmax=255)  # @UndefinedVariable
     plt.axis('off')
     plt.title('SART ({} iterations)'.format(It))
 

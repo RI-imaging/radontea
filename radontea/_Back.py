@@ -347,7 +347,7 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     return f
 
 
-def sum(sinogram, angles, jmc=None, jmm=None):
+def sum(sinogram, angles, jmc=None, jmm=None):  # @ReservedAssignment
     u""" 2D sum-reconstruction with the Fourier slice theorem
 
     Computes the inverse of the radon transform by computing the

@@ -330,7 +330,7 @@ def sart(sinogram, angles, initial=None, iterations=1,
     return two_three_dim_recon(code, kwargs)
 
 
-def sum(sinogram, angles, jmc=None, jmm=None):
+def sum(sinogram, angles, jmc=None, jmm=None):  # @ReservedAssignment
     u""" Sum-reconstruction with the Fourier slice theorem
 
     Computes the inverse of the radon transform by computing the

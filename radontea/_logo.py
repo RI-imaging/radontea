@@ -10,9 +10,9 @@ from __future__ import division
 import numpy as np
 
 if __name__ == "__main__":
-    from _Radon import radon
+    from _Radon import radon  # @UnusedImport
 else:
-    from ._Radon import radon
+    from ._Radon import radon  # @Reimport
 
 
 def logo(x, y, N):
@@ -80,7 +80,7 @@ def main():
     from matplotlib import pylab as plt
     from matplotlib import cm
     logo = get_logo(N=128)
-    plt.imshow(logo, cmap=cm.gray)
+    plt.imshow(logo, cmap=cm.gray)  # @UndefinedVariable
     plt.axis("off")
     plt.tight_layout()
     plt.show()
