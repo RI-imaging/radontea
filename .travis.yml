@@ -14,7 +14,7 @@ before_install:
 install:
 - travis_retry python setup.py develop
 script:
-  - coverage run --source=multipletau tests/runtests.py
+  - coverage run --source=radontea tests/runtests.py
   - coverage report -m
 after_success:
   coveralls --verbose
