@@ -1,6 +1,7 @@
 ## radontea
 [![PyPI](http://img.shields.io/pypi/v/radontea.svg)](https://pypi.python.org/pypi/radontea)
 [![Travis](http://img.shields.io/travis/paulmueller/radontea.svg)](https://travis-ci.org/paulmueller/radontea)
+[![Coveralls](https://img.shields.io/coveralls/paulmueller/radontea.svg)](https://coveralls.io/r/paulmueller/radontea)
 
 This repo contains a collection of algorithms to compute the inverse
 Radon transform.
