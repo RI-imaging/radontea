@@ -6,13 +6,12 @@ branches:
   only:
   - master
 before_install:
-# We need to use conda, because virtualenv did not work on travis with 3.4
 - sudo apt-get update -qq
-- travis_retry sudo apt-get -y install python-numpy
-- travis_retry sudo apt-get -y install python-scipy
-- travis_retry pip install coveralls
 install:
+- if [[ $TRAVIS_PYTHON_VERSION == "2.7" ]]; then sudo apt-get -y install python-numpy python-scipy; fi
+- if [[ $TRAVIS_PYTHON_VERSION == "3.4" ]]; then sudo apt-get -y install python3-numpy python3-scipy; fi
 - travis_retry python setup.py develop
+- pip freeze
 script:
   - coverage run --source=radontea tests/runtests.py
   - coverage report -m
