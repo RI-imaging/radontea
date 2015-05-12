@@ -2,12 +2,17 @@ language: python
 notifications:
   email: false
 python:
+# Dummy versions - we will use miniconda
 - "2.7"
 - "3.4"
 before_install:
 - sudo apt-get update -qq
-- if [[ $TRAVIS_PYTHON_VERSION == "2.7" ]]; then sudo apt-get -y install python-numpy python-scipy; fi
-- if [[ $TRAVIS_PYTHON_VERSION == "3.4" ]]; then sudo apt-get -y install python3-numpy python3-scipy; fi
+- sudo apt-get install -qq libatlas-dev libatlas-base-dev liblapack-dev gfortran
+- chmod +x miniconda.sh
+- ./miniconda.sh -b
+- export PATH=/home/travis/miniconda/bin:$PATH
+- conda update --yes conda
+- travis_retry conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy
 install:
 - travis_retry pip install coverage
 - travis_retry pip install coveralls
