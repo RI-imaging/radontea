@@ -1,14 +1,14 @@
 language: python
+notifications:
+  email: false
 python:
 - "2.7"
 - "3.4"
-notifications:
-  email: false
 before_install:
 - sudo apt-get update -qq
-install:
 - if [[ $TRAVIS_PYTHON_VERSION == "2.7" ]]; then sudo apt-get -y install python-numpy python-scipy; fi
 - if [[ $TRAVIS_PYTHON_VERSION == "3.4" ]]; then sudo apt-get -y install python3-numpy python3-scipy; fi
+install:
 - travis_retry pip install coverage
 - pip freeze
 script:
