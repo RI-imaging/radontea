@@ -40,7 +40,7 @@ Prerequisites
     after_success:
     - git config credential.helper "store --file=.git/credentials"
     - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
-    - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then pip install numpydoc; fi
+    - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then pip -y install numpydoc sphinx; fi
     - if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then python doc/deploy_ghpages.py; fi
 
 """
