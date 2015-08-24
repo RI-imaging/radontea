@@ -1,16 +1,19 @@
 language: python
+env:
+  global:
+  - GH_REF: github.com/paulmueller/radontea.git
+  - secure: Nd25iJe7xObOOXXPQaNumD0bZdJwS+/uWVA+A0IeHdqU61EUkBjDMVuawO5jnWuL5YYVkZulgpYpCzTdpuyfM4FsjvRbUnxVCKOWO70LgBV/XupWZEAJ5YV31E63Ku5ZkVJMGxztv5N70Yc38ubNGht+ctKbORm62UehxyRwsg8=
 notifications:
   email: false
 python:
-# Dummy versions - we will use miniconda
-- "2.7"
-- "3.4"
+- '2.7'
+- '3.4'
 before_install:
 - sudo apt-get update -qq
 - sudo apt-get install -qq libatlas-dev libatlas-base-dev liblapack-dev gfortran
 - wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
 - chmod +x miniconda.sh
-- ./miniconda.sh -b
+- "./miniconda.sh -b"
 - export PATH=/home/travis/miniconda/bin:$PATH
 - conda update --yes conda
 - travis_retry conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy
@@ -19,7 +22,12 @@ install:
 - travis_retry pip install coveralls
 - pip freeze
 script:
-  - coverage run --source=radontea tests/runtests.py
-  - coverage report -m
+- coverage run --source=radontea tests/runtests.py
+- coverage report -m
 after_success:
-  coveralls --verbose
+- coveralls --verbose
+- coveralls --verbose
+- git config credential.helper "store --file=.git/credentials"
+- echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+- if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then pip install numpydoc; fi
+- if [[ $TRAVIS_PYTHON_VERSION == 2.7 ]]; then python doc/deploy_ghpages.py; fi
