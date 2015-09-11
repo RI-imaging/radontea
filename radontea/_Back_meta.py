@@ -91,7 +91,8 @@ def art(sinogram, angles, initial=None, iterations=1,
 
 
 def backproject(sinogram, angles, filtering="ramp",
-                jmc=None, jmm=None):
+                padding=True, padval=0,
+                jmc=None, jmm=None, verbose=0):
     u""" Backprojection with the Fourier slice theorem
 
     Computes the inverse of the radon transform using filtered
@@ -123,11 +124,21 @@ def backproject(sinogram, angles, filtering="ramp",
 
         ``hann``
 
+    padding : bool, optional
+        Pad the input data to the second next power of 2 before
+        Fourier transforming. This reduces artifacts and speeds up
+        the process for input image sizes that are not powers of 2.
+    padval : float
+        The value used for padding.
+        If `padval` is `None`, then the edge values are used for
+        padding (see documentation of `numpy.pad`).
     jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
         :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
+    verbose : int
+        Increment to increase verbosity.
 
 
     Returns

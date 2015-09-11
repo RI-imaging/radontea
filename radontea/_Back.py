@@ -19,7 +19,8 @@ __all__ = ["backproject", "fourier_map", "sum"]
 
 
 def backproject(sinogram, angles, filtering="ramp",
-                jmc=None, jmm=None):
+                padding=True, padval=0,
+                jmc=None, jmm=None, verbose=0):
     u""" 2D backprojection with the Fourier slice theorem
 
     Computes the inverse of the radon transform using filtered
@@ -48,12 +49,21 @@ def backproject(sinogram, angles, filtering="ramp",
 
         ``hann``
 
+    padding : bool, optional
+        Pad the input data to the second next power of 2 before
+        Fourier transforming. This reduces artifacts and speeds up
+        the process for input image sizes that are not powers of 2.
+    padval : float
+        The value used for padding.
+        If `padval` is `None`, then the edge values are used for
+        padding (see documentation of `numpy.pad`).
     jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
         :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
-
+    verbose : int
+        Increment to increase verbosity.
 
     Returns
     -------
@@ -84,19 +94,43 @@ def backproject(sinogram, angles, filtering="ramp",
     fourier_map : implementation by Fourier interpolation
     sum : implementation by summation in real space
     """
-    ln = len(sinogram[0])
-    la = len(angles)
+    ln = sinogram.shape[1]
+    la = angles.shape[0]
     # jobmanager init
     if jmm is not None:
         jmm.value = la + 1
-    # transpose so we can call resize correctly
-    sino = sinogram.transpose().copy()
-    # Apply a Fourier filter before projecting the sinogram slices.
-    # Resize image to next power of two for fourier analysis
-    # Speeds up fourier and lessens artifacts
-    order = max(64., 2**np.ceil(np.log(2 * ln) / np.log(2)))
-    sino.resize((order, la))
-    sino = sino.transpose()
+
+    # We perform padding before performing the Fourier transform.
+    # This gets rid of artifacts due to false periodicity and also
+    # speeds up Fourier transforms of the input image size is not
+    # a power of 2.
+
+    if padding:
+        order = max(64., 2**np.ceil(np.log(ln * 2.1) / np.log(2)))
+        pad = order - ln
+    else:
+        pad = 0
+        order = ln
+
+    padl = int(np.ceil(pad / 2))
+    padr = pad - padl
+
+    if padval is None:
+        if verbose > 0:
+            print("......Padding with edge values.")
+        sino = np.pad(sinogram, ((0, 0), (padl, padr)),
+                      mode="edge")
+        sino = np.roll(sino, -padl, 1)
+    else:
+        if verbose > 0:
+            print("......Verifying padding value: {}".format(padval))
+        sino = np.pad(sinogram, ((0, 0), (padl, padr)),
+                      # mode="constant", constant_values=((padval,padval),
+                      #(padval,padval),(padval,padval)))
+                      mode="linear_ramp",
+                      end_values=((padval, padval), (padval, padval)))
+        sino = np.roll(sino, -padl, 1)
+
     # These artifacts are for example bad contrast. To check, set:
     #order = ln
     #sino = sinogram
