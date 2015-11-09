@@ -125,10 +125,8 @@ def backproject(sinogram, angles, filtering="ramp",
         if verbose > 0:
             print("......Verifying padding value: {}".format(padval))
         sino = np.pad(sinogram, ((0, 0), (padl, padr)),
-                      # mode="constant", constant_values=((padval,padval),
-                      #(padval,padval),(padval,padval)))
                       mode="linear_ramp",
-                      end_values=((padval, padval), (padval, padval)))
+                      end_values=(padval,))
         sino = np.roll(sino, -padl, 1)
 
     # These artifacts are for example bad contrast. To check, set:
