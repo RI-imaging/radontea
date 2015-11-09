@@ -112,8 +112,8 @@ def backproject(sinogram, angles, filtering="ramp",
         pad = 0
         order = ln
 
-    padl = int(np.ceil(pad / 2))
-    padr = pad - padl
+    padl = np.int(np.ceil(pad / 2))
+    padr = np.int(pad - padl)
 
     if padval is None:
         if verbose > 0:
