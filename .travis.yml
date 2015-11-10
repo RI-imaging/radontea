@@ -1,14 +1,28 @@
 language: python
-env:
-  global:
-  - GH_REF: github.com/paulmueller/radontea.git
-  - secure: Nd25iJe7xObOOXXPQaNumD0bZdJwS+/uWVA+A0IeHdqU61EUkBjDMVuawO5jnWuL5YYVkZulgpYpCzTdpuyfM4FsjvRbUnxVCKOWO70LgBV/XupWZEAJ5YV31E63Ku5ZkVJMGxztv5N70Yc38ubNGht+ctKbORm62UehxyRwsg8=
-notifications:
-  email: false
 python:
 - '2.7'
 - '3.4'
 - '3.5'
+env:
+  global:
+  - GH_REF: github.com/paulmueller/radontea.git
+  - secure: Nd25iJe7xObOOXXPQaNumD0bZdJwS+/uWVA+A0IeHdqU61EUkBjDMVuawO5jnWuL5YYVkZulgpYpCzTdpuyfM4FsjvRbUnxVCKOWO70LgBV/XupWZEAJ5YV31E63Ku5ZkVJMGxztv5N70Yc38ubNGht+ctKbORm62UehxyRwsg8=
+  matrix:
+  - NUMPY_VERSION_MAX="1.7.9"
+  - NUMPY_VERSION_MAX="1.8.9"
+  - NUMPY_VERSION_MAX="1.9.9"
+  - NUMPY_VERSION_MAX="1.10.9"
+matrix:
+  exclude:
+    # These things won't install with anaconda:
+    - python: "3.5"
+      env: NUMPY_VERSION_MAX="1.7.9"
+    - python: "3.5"
+      env: NUMPY_VERSION_MAX="1.8.9"
+    - python: "3.4"
+      env: NUMPY_VERSION_MAX="1.7.9"
+notifications:
+  email: false
 before_install:
 - wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
 - chmod +x miniconda.sh
