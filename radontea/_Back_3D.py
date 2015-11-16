@@ -15,7 +15,9 @@
 #
 from __future__ import division, print_function
 
-import multiprocessing as mp
+#import multiprocessing as mp
+#from jobmanager.decorators import Pool
+from multiprocessing import Pool
 import numpy as np
 
 
@@ -108,7 +110,7 @@ def back_3d(sinogram=None, angles=None, method="backproject",
     func_def = func.__defaults__[::-1]
 
     # build arguments reversely
-    arglistsino = list()
+    arglistsino = []
     for m in range(M):
         arglist = list()
         kwargs["sinogram"] = sinogram[:, m, :]
@@ -123,12 +125,12 @@ def back_3d(sinogram=None, angles=None, method="backproject",
 
     # Map sinogram to cpus
     # Splice sinogram
-    p = mp.Pool(mp.cpu_count())
+    p = Pool()
 
-    result = p.map_async(_wrapper_func, arglistsino).get()
-    p.close()
-    p.terminate()
-    p.join()
+    result = p.map(_wrapper_func, arglistsino)
+    #p.close()
+    #p.terminate()
+    #p.join()
 
     shape = (N, M, N)
     data = np.zeros(shape)
