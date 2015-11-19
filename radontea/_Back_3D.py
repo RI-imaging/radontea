@@ -128,9 +128,9 @@ def back_3d(sinogram=None, angles=None, method="backproject",
     p = Pool()
 
     result = p.map(_wrapper_func, arglistsino)
-    #p.close()
-    #p.terminate()
-    #p.join()
+    p.close()
+    p.terminate()
+    p.join()
 
     shape = (N, M, N)
     data = np.zeros(shape)
@@ -138,7 +138,6 @@ def back_3d(sinogram=None, angles=None, method="backproject",
         data[:, m, :] = result[m]
 
     del result
-
     return data
 
 
@@ -150,6 +149,7 @@ def _wrapper_func(args):
             return func(*args)
     # no?
     raise AttributeError("Something went wrong.")
+
 
 
 def _set_method(method):

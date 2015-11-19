@@ -16,6 +16,7 @@ sys.path = [split(dirname(abspath(__file__)))[0]] + sys.path
 
 import radontea as rt
 
+
 try:
     # use jobmanager if available
     import jobmanager as jm
@@ -37,18 +38,14 @@ if __name__ == "__main__":
     sino[:,0,:] = sino0
     angles = np.linspace(0,np.pi,A)     # for both
     
-    
     a = time.time()
     data0 = rt.backproject(sino0, angles)
     print("time on 1 core: {} s".format((time.time() - a)*M))
     
-    
     a = time.time()
-    data = rt.backproject(sino, angles)
+    data = rt._Back_3D.backproject(sino, angles)
     print("time on {} cores: {} s".format(cpu_count(), time.time() - a))
     
     
     assert np.sum(data0==data[:,0,:]) == N**2, "2D and 3D results don't match"
     
-    import IPython
-    IPython.embed()
