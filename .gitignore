@@ -52,8 +52,12 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
-# editor files
 *.md~
+*.txt~
+*.py~
+*.in~
+*.yml~
+*.rst~
 
-# test files
-tests/pytest.html
+_version_save.py
+
