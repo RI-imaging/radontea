@@ -1,5 +1,6 @@
 include CHANGELOG
 include README.rst
+include tests/data/*.txt
 include tests/*.py
 include tests/*.md
 include examples/*.py

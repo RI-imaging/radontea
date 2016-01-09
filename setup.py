@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 # To create a distribution package for pip or easy-install:
 # python setup.py sdist
-from setuptools import setup, find_packages, Command
-from os.path import join, dirname, realpath
-import subprocess as sp
+from setuptools import setup
+from os.path import exists, dirname, realpath
 import sys
-from warnings import warn
 
 
 author = u"Paul Müller"
@@ -22,37 +20,6 @@ except:
     version = "unknown"
 
 
-
-class PyDocGitHub(Command):
-    """ Upload the docs to GitHub gh-pages branch
-    """
-    user_options = []
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        errno = sp.call([sys.executable, 'doc/commit_gh-pages.py'])
-        raise SystemExit(errno)
-
-
-class PyTest(Command):
-    """ Perform pytests
-    """
-    user_options = []
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        errno = sp.call([sys.executable, 'tests/runtests.py'])
-        raise SystemExit(errno)
-
-
 if __name__ == "__main__":
     setup(
         name=name,
@@ -64,13 +31,12 @@ if __name__ == "__main__":
         packages=[name],
         package_dir={name: name},
         description=description,
-        long_description=open(join(dirname(__file__), 'README.txt')).read(),
+        long_description=open('README.rst').read() if exists('README.rst') else '',
         install_requires=[ "NumPy >= 1.5.1", "SciPy >= 0.8.0"],
         keywords=["tomography", "ct", "radon", "computerized tomography",
                   "optical projection tomography"],
-        extras_require={
-                        'doc': ['sphinx']
-                       },
+        setup_requires=['pytest-runner'],
+        tests_require=["pytest"],
         classifiers= [
             'Operating System :: OS Independent',
             'Programming Language :: Python :: 2.7',
@@ -79,8 +45,5 @@ if __name__ == "__main__":
             'Intended Audience :: Science/Research'
                      ],
         platforms=['ALL'],
-        cmdclass = {'test': PyTest,
-                    'commit_doc': PyDocGitHub,
-                    },
         )
 
