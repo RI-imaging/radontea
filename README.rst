@@ -8,7 +8,7 @@ Algorithms to compute the inverse Radon trannsform (e.g. SART, backprojection, F
 
 Documentation
 -------------
-The documentation is available `here <http://paulmueller.github.io/radontea/>`__.
+The documentation is available `here <http://RI-imaging.github.io/radontea/>`__.
 
 
 Installation
@@ -42,8 +42,8 @@ Some functionalities of the module are tested with
 
 .. |PyPI Version| image:: http://img.shields.io/pypi/v/radontea.svg
    :target: https://pypi.python.org/pypi/radontea
-.. |Build Status| image:: http://img.shields.io/travis/paulmueller/radontea.svg
-   :target: https://travis-ci.org/paulmueller/radontea
-.. |Coverage Status| image:: https://img.shields.io/coveralls/paulmueller/radontea.svg
-   :target: https://coveralls.io/r/paulmueller/radontea
+.. |Build Status| image:: http://img.shields.io/travis/RI-imaging/radontea.svg
+   :target: https://travis-ci.org/RI-imaging/radontea
+.. |Coverage Status| image:: https://img.shields.io/coveralls/RI-imaging/radontea.svg
+   :target: https://coveralls.io/r/RI-imaging/radontea
 

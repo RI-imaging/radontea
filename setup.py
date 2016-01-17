@@ -27,7 +27,7 @@ if __name__ == "__main__":
         author_email="paul.mueller@biotec.tu-dresden.de",
         version=version,
         license="BSD (3 clause)",
-        url='https://github.com/paulmueller/radontea',
+        url='https://github.com/RI-imaging/radontea',
         packages=[name],
         package_dir={name: name},
         description=description,

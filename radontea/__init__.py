@@ -34,7 +34,7 @@ If you have Python and :py:mod:`numpy` installed, simply run
     pip install radontea
 
 The source code of radontea is available at
-https://github.com/paulmueller/radontea.
+https://github.com/RI-imaging/radontea.
 
 
 Citing radontea
