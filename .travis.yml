@@ -5,7 +5,7 @@ python:
 - '3.5'
 env:
   global:
-  - GH_REF: github.com/paulmueller/radontea.git
+  - GH_REF: github.com/RI-imaging/radontea.git
   - secure: Nd25iJe7xObOOXXPQaNumD0bZdJwS+/uWVA+A0IeHdqU61EUkBjDMVuawO5jnWuL5YYVkZulgpYpCzTdpuyfM4FsjvRbUnxVCKOWO70LgBV/XupWZEAJ5YV31E63Ku5ZkVJMGxztv5N70Yc38ubNGht+ctKbORm62UehxyRwsg8=
   matrix:
   - NUMPY_VERSION_MAX="1.7.9"
