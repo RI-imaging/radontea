@@ -15,10 +15,13 @@ import numpy as np
 import scipy.interpolate as intp
 import warnings
 
+from . import util
+
 __all__ = ["backproject", "fourier_map", "sum"]
 
 
 def backproject(sinogram, angles, filtering="ramp",
+                weight_angles=True,
                 padding=True, padval=0,
                 jmc=None, jmm=None, verbose=0):
     u""" 2D backprojection with the Fourier slice theorem
@@ -32,8 +35,7 @@ def backproject(sinogram, angles, filtering="ramp",
     sinogram : ndarray, shape (A,N)
         Two-dimensional sinogram of line recordings.
     angles : (A,) ndarray
-        Angular positions of the `sinogram` in radians equally
-        distributed from zero to PI.
+        Angular positions of the `sinogram` in radians from zero to PI.
     filtering : {'ramp', 'shepp-logan', 'cosine', 'hamming', \
                  'hann'}, optional
         Specifies the Fourier filter. Either of
@@ -48,6 +50,16 @@ def backproject(sinogram, angles, filtering="ramp",
         ``hamming``
 
         ``hann``
+
+    weight_angles : bool
+        If ``True``, weights each backpropagated projection with a factor
+        proportional to the angular distance between the neighboring
+        projections. 
+        
+        .. math::
+            \Delta \phi_0 \\longmapsto \Delta \phi_j = \\frac{\phi_{j+1} - \phi_{j-1}}{2}
+        
+        .. versionadded:: 0.1.9
 
     padding : bool, optional
         Pad the input data to the second next power of 2 before
@@ -94,6 +106,13 @@ def backproject(sinogram, angles, filtering="ramp",
     fourier_map : implementation by Fourier interpolation
     sum : implementation by summation in real space
     """
+    # Perform weighting
+    if weight_angles:
+        weights = util.compute_angle_weights_1d(angles).reshape(-1,1)
+        sinogram = sinogram * weights
+    else:
+        sinogram = sinogram
+
     ln = sinogram.shape[1]
     la = angles.shape[0]
     # jobmanager init
@@ -190,7 +209,7 @@ def backproject(sinogram, angles, filtering="ramp",
 
     del projinterp, x, sino_filtered, sino, xv, yv
     # Normalize output (we assume that the projections are equidistant)
-    # We measure angles in degrees
+    # We measure angles in radians
     dphi = np.pi / len(angles)
     # The factor of 2π comes from the choice of the unitary angular
     # frequency Fourier transform.
