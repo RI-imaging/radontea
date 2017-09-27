@@ -24,7 +24,7 @@ if __name__ == "__main__":
     setup(
         name=name,
         author=author,
-        author_email="paul.mueller@biotec.tu-dresden.de",
+        author_email="dev@craban.de",
         version=version,
         license="BSD (3 clause)",
         url='https://github.com/RI-imaging/radontea',
