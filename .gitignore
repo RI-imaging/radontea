@@ -60,4 +60,5 @@ docs/_build/
 *.rst~
 
 _version_save.py
-
+.env
+docs/_build

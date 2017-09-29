@@ -23,7 +23,8 @@ sys.path.insert(0, pdir)
 sys.path.append(op.abspath('extensions'))
 
 # Mock all dependencies of qpimage
-install_requires = ["numpy", "scipy"]
+install_requires = ["numpy", "scipy", "scipy.interpolate",
+                    "scipy.ndimage"]
 
 for mod_name in install_requires:
     sys.modules[mod_name] = mock.Mock()
