@@ -1,7 +1,7 @@
 radontea
 ========
 
-|PyPI Version| |Build Status| |Coverage Status|
+|PyPI Version| |Tests Status| |Coverage Status| |Docs Status|
 
 Algorithms to compute the inverse Radon trannsform (e.g. SART, backprojection, Fourier interpolation).
 
@@ -42,8 +42,9 @@ Some functionalities of the module are tested with
 
 .. |PyPI Version| image:: http://img.shields.io/pypi/v/radontea.svg
    :target: https://pypi.python.org/pypi/radontea
-.. |Build Status| image:: http://img.shields.io/travis/RI-imaging/radontea.svg
+.. |Tests Status| image:: http://img.shields.io/travis/RI-imaging/radontea.svg?label=tests
    :target: https://travis-ci.org/RI-imaging/radontea
 .. |Coverage Status| image:: https://img.shields.io/coveralls/RI-imaging/radontea.svg
    :target: https://coveralls.io/r/RI-imaging/radontea
-
+.. |Docs Status| image:: https://readthedocs.org/projects/radontea/badge/?version=latest
+   :target: https://readthedocs.org/projects/radontea/builds/

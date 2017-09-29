@@ -12,22 +12,26 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+# Get version number from qpimage._version file
+import mock
+import os.path as op
 import sys
-import os
+# include parent directory
+pdir = op.dirname(op.dirname(op.abspath(__file__)))
+sys.path.insert(0, pdir)
+# include extenstions
+sys.path.append(op.abspath('extensions'))
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+# Mock all dependencies of qpimage
+install_requires = ["numpy", "scipy"]
 
+for mod_name in install_requires:
+    sys.modules[mod_name] = mock.Mock()
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.abspath(
-                    os.path.dirname(__file__)), '../')))
-
-sys.path.append(os.path.abspath('extensions'))
-
-# include examples
-sys.path.append(os.path.abspath(os.path.dirname(__file__)+"/../examples"))
+# http://www.sphinx-doc.org/en/stable/ext/autodoc.html#confval-autodoc_member_order
+# Order class attributes and functions in separate blocks
+autodoc_member_order = 'bysource'
+autodoc_mock_imports = install_requires
 
 # There should be a file "setup.py" that has the property "version"
 from setup import author, authors, description, name, version, year
@@ -43,35 +47,15 @@ projectdescription = description
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-#extensions = [
-#    'sphinx.ext.autodoc',
-#    'sphinx.ext.doctest',
-#    'sphinx.ext.coverage',
-#    'sphinx.ext.pngmath',
-#    'sphinx.ext.viewcode',
-#]
 
 
-extensions = [
-#              'matplotlib.sphinxext.mathmpl',
-#              'matplotlib.sphinxext.only_directives',
-#              'matplotlib.sphinxext.plot_directive',
-#              'sphinx.ext.viewcode',
-#               'ipython_directive',
-              'sphinx.ext.intersphinx',
+extensions = ['sphinx.ext.intersphinx',
               'sphinx.ext.autosummary',
               'sphinx.ext.autodoc',
-#              'sphinx.ext.doctest',
-#              'ipython_console_highlighting',
-#               'sphinx.ext.pngmath',
               'sphinx.ext.mathjax',
-#              'sphinx.ext.viewcode',
-#              'sphinx.ext.todo',
-#             'inheritance_diagram',
-              'numpydoc',
+              'sphinx.ext.napoleon',
+              'include_doc_code_img',
               'myviewcode',  
-#              'hidden_code_block',
-#              'sphinx.ext.autosummary'
               ]
 
 
@@ -305,11 +289,7 @@ texinfo_documents = [
 # -----------------------------------------------------------------------------
 # intersphinx
 # -----------------------------------------------------------------------------
-_python_doc_base = 'http://docs.python.org/2.7'
-intersphinx_mapping = {
-    _python_doc_base: None,
-    'http://docs.scipy.org/doc/numpy': None,
-    'http://docs.scipy.org/doc/scipy/reference': None,
-    'http://cimatosa.github.io/jobmanager': None,
-}
-
+intersphinx_mapping = {"python": ('https://docs.python.org/', None),
+                       "numpy": ('http://docs.scipy.org/doc/numpy', None),
+                       "scipy": ('https://docs.scipy.org/doc/scipy/reference/', None),
+                       }
