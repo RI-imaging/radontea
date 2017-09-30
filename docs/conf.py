@@ -39,6 +39,11 @@ from setup import author, authors, description, name, version, year
 projectname = name
 projectdescription = description
 
+# Display link to GitHub repo instead of doc on rtfd
+rst_prolog = """
+:github_url: https://github.com/RI-imaging/radontea
+"""
+
 
 # -- General configuration ------------------------------------------------
 
@@ -55,7 +60,7 @@ extensions = ['sphinx.ext.intersphinx',
               'sphinx.ext.autodoc',
               'sphinx.ext.mathjax',
               'sphinx.ext.napoleon',
-              'include_doc_code_img',
+              'fancy_include',
               'myviewcode',  
               ]
 
