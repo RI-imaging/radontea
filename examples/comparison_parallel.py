@@ -1,9 +1,9 @@
-"""Comparison of parallel reconstruction methods
+"""Comparison of parallel-beam reconstruction methods
 
 This example illustrates the performance of the
-different reconstruction techniques. The left
-column shows the reconstruction of the original
-image and the right column shows the reconstruction
+different reconstruction techniques for a parralel-beam
+geometry. The left column shows the reconstruction of
+the original image and the right column shows the reconstruction
 of the corresponding binary images. Note that the
 SART process could be sped-up by computing an
 initial guess with a non-iterative method and
