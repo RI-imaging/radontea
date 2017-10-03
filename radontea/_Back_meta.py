@@ -113,16 +113,11 @@ def backproject(sinogram, angles, filtering="ramp",
                  'hann'}, optional
         Specifies the Fourier filter. Either of
 
-        ``ramp``
-          mathematically correct reconstruction
-
-        ``shepp-logan``
-
-        ``cosine``
-
-        ``hamming``
-
-        ``hann``
+          - "ramp" :mathematically correct reconstruction
+          - "shepp-logan"
+          - "cosine"
+          - "hamming"
+          - "hann"
 
     padding : bool, optional
         Pad the input data to the second next power of 2 before
@@ -208,15 +203,11 @@ def fourier_map(sinogram, angles, intp_method="cubic",
         Method of interpolation. For more information see
         `scipy.interpolate.griddata`. One of
 
-        ``nearest``
-          instead of interpolating, use the points closest to
-          the input data.
-
-        ``linear``
-          bilinear interpolation between data points.
-
-        ``cubic``
-          interpolate using a two-dimensional poolynimial surface.
+          - "nearest": instead of interpolating, use the points closest
+            to the input data
+          - "linear": bilinear interpolation between data points
+          - "cubic": interpolate using a two-dimensional poolynimial
+            surface
 
     jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
