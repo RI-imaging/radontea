@@ -113,7 +113,7 @@ def backproject(sinogram, angles, filtering="ramp",
                  'hann'}, optional
         Specifies the Fourier filter. Either of
 
-          - "ramp" :mathematically correct reconstruction
+          - "ramp": mathematically correct reconstruction
           - "shepp-logan"
           - "cosine"
           - "hamming"
