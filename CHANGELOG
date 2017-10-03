@@ -1,6 +1,7 @@
+0.2.0
+ - Updated docs and examples (#1)
 0.1.9
- - Moved doscs to readthedocs.io
- - Updated docs and examples
+ - Moved docs to readthedocs.io
 0.1.8
  - Added support for NumPy 1.10.
 0.1.7

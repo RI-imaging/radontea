@@ -8,7 +8,7 @@ Algorithms to compute the inverse Radon trannsform (e.g. SART, backprojection, F
 
 Documentation
 -------------
-The documentation is available `here <http://RI-imaging.github.io/radontea/>`__.
+The documentation, including the reference and examples, is available on `readthedocs.io <https://radontea.readthedocs.io/en/stable/>`__.
 
 
 Installation
