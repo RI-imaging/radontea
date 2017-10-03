@@ -22,7 +22,6 @@ except:
 
 if __name__ == "__main__":
     import matplotlib
-    matplotlib.use("wxagg")
     from matplotlib import pylab as plt
 
     N = 55

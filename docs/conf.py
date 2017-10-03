@@ -12,7 +12,6 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-# Get version number from qpimage._version file
 import mock
 import os.path as op
 import sys
@@ -61,7 +60,6 @@ extensions = ['sphinx.ext.intersphinx',
               'sphinx.ext.mathjax',
               'sphinx.ext.napoleon',
               'fancy_include',
-              'myviewcode',  
               ]
 
 

@@ -62,3 +62,4 @@ docs/_build/
 _version_save.py
 .env
 docs/_build
+.eggs

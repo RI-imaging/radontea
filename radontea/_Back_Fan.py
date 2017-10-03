@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-""" _Back_Fan.py
-
+"""
 The inverse Radon transform with non-iterative techniques for
 a fan-beam geometry.
 """
@@ -129,9 +128,9 @@ def sa_interpolate(linogram, lDS, method, stepsize=1, det_spacing=1,
                    numang=None, jmm=None, jmc=None, **kwargs):
     """ 2D synthetic aperture reconstruction
 
-    Computes the inverse of the fan-beam radon transform using inter-
-    polation of the linogram and one of the inverse algorithms for
-    tomography with the Fourier slice theorem.
+    Computes the inverse of the fan-beam radon transform using
+    interpolation of the linogram and one of the inverse algorithms
+    for tomography with the Fourier slice theorem.
 
     Parameters
     ----------
