@@ -4,3 +4,5 @@ include README.rst
 recursive-include examples *.py *.jpg
 recursive-include docs *.py *.md *.txt *.rst
 recursive-include tests *.py *.md test_*.txt
+prune docs/_build
+
