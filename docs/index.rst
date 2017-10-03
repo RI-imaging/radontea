@@ -11,6 +11,7 @@ This is the documentaion of radontea version |release|.
 
    introduction
    code_reference
+   examples
 
 
 Indices and tables
