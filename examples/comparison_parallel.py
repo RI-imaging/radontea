@@ -37,8 +37,8 @@ sarta2 = radontea.sart(sino2, angles, iterations=ITA)
 sartb2 = radontea.sart(sino2, angles, iterations=ITB)
 
 plt.figure(figsize=(8, 22))
-pltkw = {"vmin":-20,
-         "vmax":280}
+pltkw = {"vmin": -20,
+         "vmax": 280}
 
 plt.subplot(6, 2, 1, title="original image")
 plt.imshow(im, **pltkw)

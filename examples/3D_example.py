@@ -20,9 +20,9 @@ import radontea as rt
 try:
     # use jobmanager if available
     import jobmanager as jm
-    jm.decorators.decorate_module_ProgressBar(rt, 
-                        decorator=jm.decorators.ProgressBarOverrideCount,
-                        interval=.1)
+    jm.decorators.decorate_module_ProgressBar(rt,
+                                              decorator=jm.decorators.ProgressBarOverrideCount,
+                                              interval=.1)
 except:
     pass
 
@@ -31,21 +31,20 @@ if __name__ == "__main__":
     A = 70    # number of angles
     N = 128   # detector size x
     M = 24    # detector size y (number of slices)
-    
+
     # generate random data
-    sino0 = np.random.random((A,N))     # for 2d example
-    sino = np.random.random((A,M,N))    # for 3d example
-    sino[:,0,:] = sino0
-    angles = np.linspace(0,np.pi,A)     # for both
-    
+    sino0 = np.random.random((A, N))     # for 2d example
+    sino = np.random.random((A, M, N))    # for 3d example
+    sino[:, 0, :] = sino0
+    angles = np.linspace(0, np.pi, A)     # for both
+
     a = time.time()
     data0 = rt.backproject(sino0, angles)
     print("time on 1 core: {} s".format((time.time() - a)*M))
-    
+
     a = time.time()
     data = rt._Back_3D.backproject(sino, angles)
     print("time on {} cores: {} s".format(cpu_count(), time.time() - a))
-    
-    
-    assert np.sum(data0==data[:,0,:]) == N**2, "2D and 3D results don't match"
-    
+
+    assert np.sum(data0 == data[:, 0, :]
+                  ) == N**2, "2D and 3D results don't match"

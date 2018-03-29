@@ -20,16 +20,6 @@ The package can be installed from the Python package index.
     pip install radontea
 
 
-Usage
------
-For a general idea of use cases, execute radontea as a package
-(matplotlib needs to be installed):
-
-::
-
-    python -m radontea
-
-
 Testing
 -------
 Some functionalities of the module are tested with
