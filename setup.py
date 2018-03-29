@@ -30,7 +30,7 @@ setup(
     install_requires=[ "numpy >= 1.5.1", "scipy >= 0.8.0"],
     setup_requires=['pytest-runner'],
     tests_require=["pytest"],
-    python_requires='>=3.5, <4',
+    python_requires='>=3.4, <4',
     keywords=["tomography", "ct", "radon", "computerized tomography",
               "optical projection tomography"],
     classifiers= [
