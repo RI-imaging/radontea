@@ -18,9 +18,17 @@ install:
 - "travis_retry pip install . --only-binary=:all:"
 - travis_retry pip install coverage coveralls
 # coverage packages
+- travis_retry pip install flake8
+- travis_retry pip install codecov coverage
 - pip freeze
 script:
-- coverage run --source=radontea ./setup.py test
-- coverage report -m
-after_success:
-- coveralls --verbose
+- set -ev
+- if [ "${TEST}" == "PYTEST" ]; then
+       coverage run --source=drymass setup.py test;
+       coverage report -m;
+       codecov;
+  else
+       flake8 drymass;
+       flake8 examples;
+       flake8 tests;
+  fi;
