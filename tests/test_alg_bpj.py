@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""backprojection algorithm
-"""
-from __future__ import division, print_function
-
 import pathlib
 
 import numpy as np

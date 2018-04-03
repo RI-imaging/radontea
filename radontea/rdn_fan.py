@@ -1,22 +1,11 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-The Radon transform describes the forward (projection) process.
-"""
-from __future__ import division
-from __future__ import print_function
+import warnings
 
 import numpy as np
 import scipy.ndimage
 
-import warnings
-
-__all__ = ["radon", "radon_fan_translation", "get_fan_coords",
-           "get_det_coords"]
-
 
 def get_det_coords(size, spacing):
-    """ Compute pixel-center positions for 2d detector
+    """Compute pixel-center positions for 2d detector
 
     The centers of the pixels of a detector are usually not aligned to
     a pixel grid. If we center the detector at the origin, odd images
@@ -25,14 +14,14 @@ def get_det_coords(size, spacing):
 
     Parameters
     ----------
-    size : int
+    size: int
         Size of the detector (number of detection points).
-    spacing : float
+    spacing: float
         Distance between two detection points in pixels.
 
     Returns
     -------
-    arr : 1D ndarray
+    arr: 1D ndarray
         Pixel coordinates.
     """
     latmax = (size / 2 - .5) * spacing
@@ -52,20 +41,20 @@ def get_fan_coords(size, spacing, distance, numang):
 
     Parameters
     ----------
-    size : int
+    size: int
         Size of the detector (number of detection points).
-    spacing : float
+    spacing: float
         Distance between two detection points in pixels.
-    distance : float
+    distance: float
         Axial distance from the detector to the angular measurement
         position in pixels.
-    numang : int
+    numang: int
         Number of angles.
 
 
     Returns
     -------
-    angles, latpos : two 1D ndarrays
+    angles, latpos: two 1D ndarrays
         Angles and pixel coordinates at the detector.
 
 
@@ -88,83 +77,21 @@ def get_fan_coords(size, spacing, distance, numang):
     return angles, latang
 
 
-def radon(arr, angles, jmc=None, jmm=None):
-    """ Compute the Radon transform (sinogram) of a circular image.
+def radon_fan(arr, det_size, det_spacing=1, shift_size=1,
+              lS=1, lD=None, return_ang=False,
+              count=None, max_count=None):
+    """Compute the Radon transform for a fan beam geometry
 
 
-    The :py:mod:`scipy` Radon transform performs this operation on the 
-    entire image, whereas this implementation requires an input
-    image that has gray-scale values of 0 outside of a circle
-    with diameter equal to the image size.
-
-
-    Parameters
-    ----------
-    arr : ndarray, shape (N,N)
-        the input image.
-    angles : ndarray, length A
-        angles or projections in radians
-    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
-        The progress of this function can be monitored with the 
-        :mod:`jobmanager` package. The current step `jmc.value` is
-        incremented `jmm.value` times. `jmm.value` is set at the 
-        beginning.
-
-
-    Returns
-    -------
-    outarr : ndarray of floats, shape (A, N)
-        Sinogram of the input image. The i'th row contains the
-        projection data of the i'th angle.
-
-
-    See Also
-    --------
-    scipy.ndimage.interpolation.rotate :
-        The interpolator used to rotate the image.
-    """
-    # This function also works with single angles
-    angles = np.atleast_1d(angles)
-    A = angles.shape[0]
-    N = len(arr)
-    # The radon function from skimage.transform doeas not allow
-    # to reshape the image (one could cut it of course).
-    # Furthermore, no interpolation is used or at least I do not
-    # know what kind of interpolation is used (_wharp_fast?).
-    # outarray: x-axis: projection
-    #           y-axis:
-    outarr = np.zeros((A, N))
-    # jobmanager
-    if jmm is not None:
-        jmm.value = A + 1
-    if jmc is not None:
-        jmc.value += 1
-
-    for i in np.arange(A):
-        rotated = scipy.ndimage.rotate(arr, angles[i] / np.pi * 180, order=3,
-                                       reshape=False, mode="constant", cval=0)  # black corner
-        # sum along some axis.
-        outarr[i] = rotated.sum(axis=0)
-        if jmc is not None:
-            jmc.value += 1
-    return outarr
-
-
-def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
-                          lS=1, lD=None, return_ang=False,
-                          jmc=None, jmm=None):
-    """ Compute the Radon transform for a fan beam geometry
-
-
-    In contrast to `radon`, this function uses (1) a fan-beam geometry
-    (the integral is taken along rays that meet at one point), and
-    (2) translates the object laterally instead of rotating it. The
-    result is sometimes referred to as 'linogram'.
+    In contrast to :func:`radon_parallel`, this function uses (1)
+    a fan-beam geometry (the integral is taken along rays that meet
+    at one point), and (2) translates the object laterally instead
+    of rotating it. The result is sometimes referred to as 'linogram'.
 
     Problem sketch::
 
                     x
-                    ^ 
+                    ^
                     |
                     ----> z
 
@@ -184,33 +111,33 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
 
     Parameters
     ----------
-    arr : ndarray, shape (N,N)
+    arr: ndarray, shape (N,N)
         the input image.
-    det_size : int
+    det_size: int
         The total detector size in pixels. The detector centered to the
         source. The axial position of the detector is the center of the
         pixels on the far right of the object.
-    det_spacing : float
+    det_spacing: float
         Distance between detection points in pixels.
-    shift_size : int
+    shift_size: int
         The amount of pixels that the object is shifted between
         projections.
-    lS : multiples of 0.5
+    lS: multiples of 0.5
         Source position relative to the center of `arr`. lS >= 1.
-    lD : int
+    lD: int
         Detector position relative to the center `arr`. Default is N/2.
-    return_ang : bool
+    return_ang: bool
         Also return the angles corresponding to the detector pixels.
-    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
-        The progress of this function can be monitored with the 
-        :mod:`jobmanager` package. The current step `jmc.value` is
-        incremented `jmm.value` times. `jmm.value` is set at the 
-        beginning.
+    count, max_count: multiprocessing.Value or `None`
+        Can be used to monitor the progress of the algorithm.
+        Initially, the value of `max_count.value` is incremented
+        by the total number of steps. At each step, the value
+        of `count.value` is incremented.
 
 
     Returns
     -------
-    outarr : ndarray of floats, shape (N+det_size,det_size)
+    outarr: ndarray of floats, shape (N+det_size,det_size)
         Linogram of the input image. Where N+det_size determines the
         lateral position of the sample.
 
@@ -219,8 +146,8 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
     --------
     scipy.ndimage.interpolation.rotate :
         The interpolator used to rotate the image.
-    radon
-        The real radon transform.
+    radon_prl
+        The original Radon transform.
     """
     N = arr.shape[0]
     if lD is None:
@@ -230,13 +157,13 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
 
     numsteps = int(np.ceil((N + det_size) / shift_size))
 
-    if jmm is not None:
-        jmm.value = numsteps + 2
+    if max_count is not None:
+        max_count.value += numsteps + 2
 
     # First, create a zero-padded version of the input image such that
     # its center is the source - this is necessary because we can
     # only rotate through the center of the image.
-    #arrc = np.pad(arr, ((0,0),(N+2*lS-1,0)), mode="constant")
+    # arrc = np.pad(arr, ((0,0),(N+2*lS-1,0)), mode="constant")
     if lS <= N / 2:
         pad = 2 * lS
         arrc = np.pad(arr, ((0, 0), (pad, 0)), mode="constant")
@@ -264,8 +191,8 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
     else:  # odd
         even = False
 
-    if jmc is not None:
-        jmc.value += 1
+    if count is not None:
+        count.value += 1
 
     lat = get_det_coords(det_size, det_spacing)
 
@@ -280,8 +207,8 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
     A = angles.shape[0]
     lino = np.zeros((numsteps, A))
 
-    if jmc is not None:
-        jmc.value += 1
+    if count is not None:
+        count.value += 1
 
     for i in range(numsteps):
         padset = np.roll(padset, shift_size, axis=0)
@@ -290,7 +217,8 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
         for j in range(A):
             ang = angles[j]
             rotated = scipy.ndimage.rotate(curobj, ang / np.pi * 180,
-                                           order=3, reshape=False, mode="constant", cval=0)
+                                           order=3, reshape=False,
+                                           mode="constant", cval=0)
             if even:
                 warnings.warn("For even images the linogram is of " +
                               "reduced resolution, because the center " +
@@ -302,8 +230,8 @@ def radon_fan_translation(arr, det_size, det_spacing=1, shift_size=1,
                 centerid = int(np.floor(len(rotated) / 2))
                 lino[i, j] = np.sum(rotated[centerid, :])
 
-        if jmc is not None:
-            jmc.value += 1
+        if count is not None:
+            count.value += 1
 
     if return_ang:
         return lino, angles
