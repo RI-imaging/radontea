@@ -9,6 +9,8 @@ from .fan import fan_rec, lino2sino
 from .rdn_prl import radon_parallel
 from .rdn_fan import radon_fan
 
+from .threed import volume_recon
+
 from ._version import version as __version__
 
 

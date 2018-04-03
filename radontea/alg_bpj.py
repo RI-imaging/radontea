@@ -189,7 +189,7 @@ def backproject(sinogram, angles, filtering="ramp", weight_angles=True,
 def backproject_3d(sinogram, angles, filtering="ramp", weight_angles=True,
                    padding=True, padval=0, count=None, max_count=None,
                    ncpus=None):
-    """3D backprojection algorithm
+    """Convenience wrapper for 3D backprojection reconstruction
 
     See :func:`backproject` for parameter definitions. The additional
     parameter `ncpus` sets the number of CPUs used.

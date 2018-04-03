@@ -3,6 +3,8 @@ import warnings
 import numpy as np
 import scipy.interpolate as intp
 
+from . import threed
+
 
 def fourier_map(sinogram, angles, intp_method="cubic",
                 count=None, max_count=None):
@@ -175,3 +177,20 @@ def fourier_map(sinogram, angles, intp_method="cubic",
         count.value += 1
 
     return f
+
+
+def fourier_map_3d(sinogram, angles, intp_method="cubic",
+                   count=None, max_count=None, ncpus=None):
+    """Convenience wrapper for 3D Fourier mapping reconstruction
+
+    See :func:`fourier_map` for parameter definitions. The additional
+    parameter `ncpus` sets the number of CPUs used.
+    """
+    return threed.volume_recon(func2d=fourier_map,
+                               sinogram=sinogram,
+                               angles=angles,
+                               intp_method=intp_method,
+                               count=count,
+                               max_count=max_count,
+                               ncpus=ncpus)
+
