@@ -1,38 +1,25 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-"""
-    _logo.py
-    
-    Functions that are used to create the logo of radontea.
-"""
-from __future__ import division
-
+"""Functions that are used to create the logo of radontea."""
 import numpy as np
 
-if __name__ == "__main__":
-    from _Radon import radon  # @UnusedImport
-else:
-    from ._Radon import radon  # @Reimport
+from radontea import radon_parallel
 
 
 def logo(x, y, N):
-    """
-        Vector representation of radonteach logo.
+    """Vector representation of radontea logo.
+
+    Parameters
+    ----------
+    x,y: ndarray or float
+        coordinates where to calculate the logo.
+    N: float
+        total size of the image (NxN)
 
 
-        Parameters
-        ----------
-        x,y : ndarray or float
-            coordinates where to calculate the logo.
-        N : float
-            total size of the image (NxN)
-
-
-        Returns
-        -------
-        v : ndarray
-            inverted values of the logo at the coordinates (x,y)
-            normalized to one.
+    Returns
+    -------
+    v: ndarray
+        inverted values of the logo at the coordinates (x,y)
+        normalized to one.
     """
     z1 = np.exp(-((x - N / 8)**2 + (y + N / 14)**2) / (N / 8)**2)
     z2 = np.exp(-((x + N / 10)**2 + (y - N / 10)**2) / (N / 8)**2)
@@ -50,10 +37,7 @@ def logo(x, y, N):
 
 
 def get_original(N=64):
-    """
-        Returns a two-dimensional square image that is the image used
-        to create the sinogram for the radontea logo.
-    """
+    """radontea logo base image"""
     x = np.linspace(-N / 2, N / 2, N, endpoint=False)
     X = x.reshape(1, -1)
     Y = x.reshape(-1, 1)
@@ -63,14 +47,14 @@ def get_original(N=64):
 
 
 def get_logo(N=64):
-    """
-        Returns a two-dimensional square logo of resolution NxN. This
-        function discretizes the vector image representation of the
-        radonteach logo.
+    """Return the radontea logo as a 2D NxN array
+
+    This function discretizes the vector image representation of the
+    radonteach logo.
     """
     a = (get_original(N=N))
     angles = np.linspace(0, np.pi * 1.6, N)
-    sinogram = radon(a, angles)
+    sinogram = radon_parallel(a, angles)
     sinogram = (1 - sinogram / sinogram.max()) * 255
     return sinogram.transpose()
 
@@ -78,9 +62,8 @@ def get_logo(N=64):
 def main():
     # Show the logo
     from matplotlib import pylab as plt
-    from matplotlib import cm
     logo = get_logo(N=128)
-    plt.imshow(logo, cmap=cm.gray)  # @UndefinedVariable
+    plt.imshow(logo, cmap="gray")
     plt.axis("off")
     plt.tight_layout()
     plt.show()

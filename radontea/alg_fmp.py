@@ -193,4 +193,3 @@ def fourier_map_3d(sinogram, angles, intp_method="cubic",
                                count=count,
                                max_count=max_count,
                                ncpus=ncpus)
-
