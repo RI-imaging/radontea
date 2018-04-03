@@ -1,6 +1,9 @@
-"""Volumetric data reconstruction
+"""Volumetric data reconstruction benchmark
 
-
+This simple example can be used to quantify the speed-up due to
+multiprocessing on the hardware used. Note that
+``multiprocessing.cpu_count`` does not return the number of
+physical cores.
 """
 from multiprocessing import cpu_count
 import time
@@ -27,6 +30,5 @@ print("time on 1 core:  {:.2f} s".format(time.time() - a))
 a = time.time()
 data2 = rt.backproject_3d(sino, angles, ncpus=cpu_count())
 print("time on {} cores: {:.2f} s".format(cpu_count(), time.time() - a))
-
 
 assert np.all(data1 == data2), "2D and 3D results don't match"

@@ -30,7 +30,7 @@ def test_2d_int():
     sino, angles = create_test_sino(A=20, N=30)
     r = radontea.integrate(sino, angles)
 
-    np.savetxt('outfile.txt', np.array(r).flatten().view(float), fmt="%.8f")
+    # np.savetxt('outfile.txt', np.array(r).flatten().view(float), fmt="%.8f")
     reffile = pathlib.Path(__file__).parent / "data" / "2d_int.txt"
     ref = np.loadtxt(str(reffile))
     assert np.allclose(np.array(r).flatten().view(float), ref)

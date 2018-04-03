@@ -26,11 +26,11 @@ def create_test_sino(A, N):
     return resar, angles
 
 
-def test_2d_sart():
+def test_2d_fmp():
     sino, angles = create_test_sino(A=100, N=101)
     r = radontea.fourier_map(sino, angles)
 
-    np.savetxt('outfile.txt', np.array(r).flatten().view(float), fmt="%.8f")
+    # np.savetxt('outfile.txt', np.array(r).flatten().view(float), fmt="%.8f")
     reffile = pathlib.Path(__file__).parent / "data" / "2d_fmp.txt"
     ref = np.loadtxt(str(reffile))
     assert np.allclose(np.array(r).flatten().view(float), ref)

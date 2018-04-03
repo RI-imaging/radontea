@@ -176,7 +176,7 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     if count is not None:
         count.value += 1
 
-    return f
+    return f.real
 
 
 def fourier_map_3d(sinogram, angles, intp_method="cubic",
