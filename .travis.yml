@@ -24,11 +24,11 @@ install:
 script:
 - set -ev
 - if [ "${TEST}" == "PYTEST" ]; then
-       coverage run --source=drymass setup.py test;
+       coverage run --source=radontea setup.py test;
        coverage report -m;
        codecov;
   else
-       flake8 drymass;
+       flake8 radontea;
        flake8 examples;
        flake8 tests;
   fi;
