@@ -1,7 +1,7 @@
 """Comparison of parallel-beam reconstruction methods
 
 This example illustrates the performance of the
-different reconstruction techniques for a parralel-beam
+different reconstruction techniques for a parallel-beam
 geometry. The left column shows the reconstruction of
 the original image and the right column shows the reconstruction
 of the corresponding binary images. Note that the
@@ -23,14 +23,14 @@ ITB = 100  # number of iterations b
 angles = np.linspace(0, np.pi, A)
 
 im = get_original(N)
-sino = radontea.radon(im, angles)
+sino = radontea.radon_parallel(im, angles)
 fbp = radontea.backproject(sino, angles)
 fintp = radontea.fourier_map(sino, angles).real
 sarta = radontea.sart(sino, angles, iterations=ITA)
 sartb = radontea.sart(sino, angles, iterations=ITB)
 
 im2 = (im >= (im.max() / 5)) * 255
-sino2 = radontea.radon(im2, angles)
+sino2 = radontea.radon_parallel(im2, angles)
 fbp2 = radontea.backproject(sino2, angles)
 fintp2 = radontea.fourier_map(sino2, angles).real
 sarta2 = radontea.sart(sino2, angles, iterations=ITA)
