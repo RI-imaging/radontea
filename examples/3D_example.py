@@ -17,16 +17,6 @@ sys.path = [split(dirname(abspath(__file__)))[0]] + sys.path
 import radontea as rt
 
 
-try:
-    # use jobmanager if available
-    import jobmanager as jm
-    jm.decorators.decorate_module_ProgressBar(rt,
-                                              decorator=jm.decorators.ProgressBarOverrideCount,
-                                              interval=.1)
-except:
-    pass
-
-
 if __name__ == "__main__":
     A = 70    # number of angles
     N = 128   # detector size x

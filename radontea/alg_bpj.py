@@ -87,7 +87,7 @@ def backproject(sinogram, angles, filtering="ramp", weight_angles=True,
 
     ln = sinogram.shape[1]
     la = angles.shape[0]
-    # jobmanager init
+
     if max_count is not None:
         max_count.value += la + 1
 
@@ -137,7 +137,7 @@ def backproject(sinogram, angles, filtering="ramp", weight_angles=True,
         kx[1:] = 2 * np.pi
     else:
         raise ValueError("Unknown filter: %s" % filter)
-    # jobmanager
+
     if count is not None:
         count.value += 1
     # Resize f so we can multiply it with the sinogram.

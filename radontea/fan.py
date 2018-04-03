@@ -137,7 +137,7 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
         # lDS/2) to the axis alpha = 0?
         deltaD = np.tan(alpha) * lDS / 2
 
-        # Sheering:
+        # Shearing:
         # At larger angles, the object seems bigger on the screen.
         xnew = xk / np.cos(alpha) + deltaD
         lino[:, i] = scipy.interpolate.spline(xk, lino[:, i], xnew)
