@@ -11,6 +11,7 @@ env:
   - NUMPY="1.12"
   - NUMPY="1.13"
   - NUMPY="1.14"
+  - TEST="FLAKE8"
 install:
 # numpy (must be installed before pyfftw, unwrap)
 - travis_retry pip install "numpy==$NUMPY"
@@ -23,7 +24,7 @@ install:
 - pip freeze
 script:
 - set -ev
-- if [ "${TEST}" == "PYTEST" ]; then
+- if [ "${TEST}" != "FLAKE8" ]; then
        coverage run --source=radontea setup.py test;
        coverage report -m;
        codecov;
