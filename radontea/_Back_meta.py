@@ -34,21 +34,21 @@ def art(sinogram, angles, initial=None, iterations=1,
 
     Parameters
     ----------
-    sinogram : ndarray, shape (A,N) or (A,M,N)
+    sinogram: ndarray, shape (A,N) or (A,M,N)
         Two- or three-dimensional sinogram of line recordings. If the
         sinogram is three-dimensional, the dimension `M` iterates 
         through the slices. The rotation takes place through
         the second (y) axis.
-    angles : ndarray, length A
+    angles: ndarray, length A
         Angular positions of the `sinogram` in radians. The angles
         at which the sinogram slices were recorded do not have to be
         distributed equidistantly as in :func:`backproject`.
         The angles are internaly converted to modulo PI.
-    initial : ndarray, shape (N,N) or (N,M,N), optional
+    initial: ndarray, shape (N,N) or (N,M,N), optional
         The initial guess for the solution.
-    iterations : int
+    iterations: int
         Number of iterations to perform.
-    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
+    jmc, jmm: instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
         :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
@@ -57,13 +57,13 @@ def art(sinogram, angles, initial=None, iterations=1,
 
     Returns
     -------
-    out : ndarray, shape (N,N) or (N,M,N)
+    out: ndarray, shape (N,N) or (N,M,N)
         The reconstructed image.
 
 
     See Also
     --------
-    sart : simultaneous algebraic reconstruction technique
+    sart: simultaneous algebraic reconstruction technique
 
 
     Notes
@@ -101,15 +101,15 @@ def backproject(sinogram, angles, filtering="ramp",
 
     Parameters
     ----------
-    sinogram : ndarray, shape (A,N) or (A,M,N)
+    sinogram: ndarray, shape (A,N) or (A,M,N)
         Two- or three-dimensional sinogram of line recordings. If the
         sinogram is three-dimensional, the dimension `M` iterates 
         through the slices. The rotation takes place through
         the second (y) axis.
-    angles : (A,) ndarray
+    angles: (A,) ndarray
         Angular positions of the `sinogram` in radians equally
         distributed from zero to PI.
-    filtering : {'ramp', 'shepp-logan', 'cosine', 'hamming', \
+    filtering: {'ramp', 'shepp-logan', 'cosine', 'hamming', \
                  'hann'}, optional
         Specifies the Fourier filter. Either of
 
@@ -119,26 +119,26 @@ def backproject(sinogram, angles, filtering="ramp",
           - "hamming"
           - "hann"
 
-    padding : bool, optional
+    padding: bool, optional
         Pad the input data to the second next power of 2 before
         Fourier transforming. This reduces artifacts and speeds up
         the process for input image sizes that are not powers of 2.
-    padval : float
+    padval: float
         The value used for padding.
         If `padval` is `None`, then the edge values are used for
         padding (see documentation of `numpy.pad`).
-    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
+    jmc, jmm: instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
         :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
         beginning.
-    verbose : int
+    verbose: int
         Increment to increase verbosity.
 
 
     Returns
     -------
-    out : ndarray, shape (N,N) or (N,M,N)
+    out: ndarray, shape (N,N) or (N,M,N)
         The reconstructed image.
 
 
@@ -162,8 +162,8 @@ def backproject(sinogram, angles, filtering="ramp",
 
     See Also
     --------
-    fourier_map : implementation by Fourier interpolation
-    sum : implementation by summation in real space
+    fourier_map: implementation by Fourier interpolation
+    sum: implementation by summation in real space
     """
     # This is a convenience function that wraps 2d and 3d
     # collect all arguments
@@ -191,15 +191,15 @@ def fourier_map(sinogram, angles, intp_method="cubic",
 
     Parameters
     ----------
-    sinogram : ndarray, shape (A,N) or (A,N,M)
+    sinogram: ndarray, shape (A,N) or (A,N,M)
         Two- or three-dimensional sinogram of line recordings. If the
         sinogram is three-dimensional, the dimension `M` iterates 
         through the slices. The rotation takes place through
         the second (y) axis.
-    angles : (A,) ndarray
+    angles: (A,) ndarray
         Angular positions of the `sinogram` in radians equally
         distributed from zero to PI.
-    intp_method : {'cubic', 'nearest', 'linear'}, optional
+    intp_method: {'cubic', 'nearest', 'linear'}, optional
         Method of interpolation. For more information see
         `scipy.interpolate.griddata`. One of
 
@@ -209,7 +209,7 @@ def fourier_map(sinogram, angles, intp_method="cubic",
           - "cubic": interpolate using a two-dimensional poolynimial
             surface
 
-    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
+    jmc, jmm: instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
         :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
@@ -218,15 +218,15 @@ def fourier_map(sinogram, angles, intp_method="cubic",
 
     Returns
     -------
-    out : ndarray, shape (N,N) or (N,M,N)
+    out: ndarray, shape (N,N) or (N,M,N)
         The reconstructed image.
 
 
     See Also
     --------
-    backproject : implementation by backprojection
-    sum : implementation by summation in real space
-    scipy.interpolate.griddata : the used interpolation method
+    backproject: implementation by backprojection
+    sum: implementation by summation in real space
+    scipy.interpolate.griddata: the used interpolation method
     """
     # This is a convenience function that wraps 2d and 3d
     # collect all arguments
@@ -256,21 +256,21 @@ def sart(sinogram, angles, initial=None, iterations=1,
 
     Parameters
     ----------
-    sinogram : ndarray, shape (A,N) or (A,M,N)
+    sinogram: ndarray, shape (A,N) or (A,M,N)
         Two- or three-dimensional sinogram of line recordings. If the
         sinogram is three-dimensional, the dimension `M` iterates 
         through the slices. The rotation takes place through
         the second (y) axis.
-    angles : ndarray, length A
+    angles: ndarray, length A
         Angular positions of the `sinogram` in radians. The angles
         at which the sinogram slices were recorded do not have to be
         distributed equidistantly as in backprojection techniques.
         The angles are internaly converted to modulo PI.
-    initial : ndarray, shape (N,N) or (N,M,N), optional
+    initial: ndarray, shape (N,N) or (N,M,N), optional
         The initial guess for the solution.
-    iterations : integer
+    iterations: integer
         Number of iterations to perform.
-    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
+    jmc, jmm: instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
         :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
@@ -279,13 +279,13 @@ def sart(sinogram, angles, initial=None, iterations=1,
 
     Returns
     -------
-    out : ndarray, shape (N,N) or (N,M,N)
+    out: ndarray, shape (N,N) or (N,M,N)
         The reconstructed image.
 
 
     See Also
     --------
-    art : algebraic reconstruction technique
+    art: algebraic reconstruction technique
 
 
     Notes
@@ -342,15 +342,15 @@ def sum(sinogram, angles, jmc=None, jmm=None):  # @ReservedAssignment
     
     Parameters
     ----------
-    sinogram : ndarray, shape (A,N) or (A,M,N)
+    sinogram: ndarray, shape (A,N) or (A,M,N)
         Two- or three-dimensional sinogram of line recordings. If the
         sinogram is three-dimensional, the dimension `M` iterates 
         through the slices. The rotation takes place through
         the second (y) axis.
-    angles : (A,) ndarray
+    angles: (A,) ndarray
         Angular positions of the `sinogram` in radians equally 
         distributed from zero to PI.
-    jmc, jmm : instance of :func:`multiprocessing.Value` or `None`
+    jmc, jmm: instance of :func:`multiprocessing.Value` or `None`
         The progress of this function can be monitored with the 
         :mod:`jobmanager` package. The current step `jmc.value` is
         incremented `jmm.value` times. `jmm.value` is set at the 
@@ -360,14 +360,14 @@ def sum(sinogram, angles, jmc=None, jmm=None):  # @ReservedAssignment
 
     Returns
     -------
-    out : ndarray, shape (N,N) or (N,M,N)
+    out: ndarray, shape (N,N) or (N,M,N)
         The reconstructed image.
 
 
     See Also
     --------
-    backproject : implementation by backprojection
-    fourier_map : implementation by summation in real space
+    backproject: implementation by backprojection
+    fourier_map: implementation by summation in real space
     """
     # This is a convenience function that wraps 2d and 3d
     # collect all arguments

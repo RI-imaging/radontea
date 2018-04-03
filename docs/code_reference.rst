@@ -23,8 +23,13 @@ Radon transform
 
 Non-iterative reconstruction
 ----------------------------
-.. automodule:: radontea._Back
 .. currentmodule:: radontea
+Computes the inverse Radon transform with non-iterative techniques.
+The linear system of equations that describes the forward process can be
+inverted with several algorithms, most notably the backprojection
+algorithm :func:`radontea.backproject`. The reconstruction is based on
+the Fourier slice theorem. A Fourier-based interpolation algorithm is
+implemented in :func:`radontea.fourier_map`.
 
 Backprojection
 ~~~~~~~~~~~~~~
@@ -38,13 +43,16 @@ Fourier mapping
 
 Sum
 ~~~
-.. autofunction:: sum
+.. autofunction:: integrate
 
 
 Iterative reconstruction
 ------------------------
-.. automodule:: radontea._Back_iterative
 .. currentmodule:: radontea
+Inversion of Radon-based tomography methods using iterative algorithms.
+The convegence of these algorithms might be slow. The implementation
+is not optimized.
+
 
 ART
 ~~~
@@ -78,8 +86,9 @@ Coordinate transforms
 
 Non-iterative reconstruction
 ----------------------------
-.. automodule:: radontea._Back_Fan
 .. currentmodule:: radontea
+The inverse Radon transform with non-iterative techniques for
+a fan-beam geometry.
 
 Interpolation
 ~~~~~~~~~~~~~
