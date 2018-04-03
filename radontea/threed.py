@@ -3,7 +3,7 @@ import numpy as np
 
 def volume_recon(func2d, sinogram=None, angles=None,
                  count=None, max_count=None, ncpus=None, **kwargs):
-    u""" 3D inverse with the Fourier slice theorem
+    """3D inverse with the Fourier slice theorem
 
     Computes the slice-wise 3D inverse of the radon transform using
     multiprocessing.

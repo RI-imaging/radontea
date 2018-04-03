@@ -28,4 +28,5 @@ a = time.time()
 data2 = rt.backproject_3d(sino, angles, ncpus=cpu_count())
 print("time on {} cores: {:.2f} s".format(cpu_count(), time.time() - a))
 
+
 assert np.all(data1 == data2), "2D and 3D results don't match"
