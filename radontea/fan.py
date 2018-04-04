@@ -9,14 +9,14 @@ def fan_rec(linogram, lds, method, stepsize=1, det_spacing=1,
             numang=None, count=None, max_count=None, **kwargs):
     """2D synthetic aperture reconstruction
 
-    Computes the inverse of the fan-beam radon transform using
+    Computes the inverse of the fan-beam Radon transform using
     interpolation of the linogram and one of the inverse algorithms
     for tomography with the Fourier slice theorem.
 
     Parameters
     ----------
     linogram: 2d ndarray of shape (D, A)
-        Input linogram from the synthetic aprture measurement.
+        Input linogram from the synthetic aperture measurement.
     lds: float
         Distance in pixels between source and detector.
     method: callable

@@ -79,3 +79,20 @@ Coordinate transforms
 Reconstruction
 --------------
 .. autofunction:: radontea.fan.fan_rec
+
+
+Volumetric reconstruction
+:::::::::::::::::::::::::
+For a slice-wise 3D reconstruction, radontea can use multiprocessing
+to parallelize the reconstruction process.
+
+Convenience functions
+---------------------
+.. autofunction:: backproject_3d
+
+.. autofunction:: fourier_map_3d
+
+General 3D reconstruction
+-------------------------
+.. autofunction:: volume_recon
+

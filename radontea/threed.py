@@ -19,23 +19,24 @@ def do_work(in_queue, out_list, count, max_count):
 
 def volume_recon(func2d, sinogram=None, angles=None,
                  count=None, max_count=None, ncpus=None, **kwargs):
-    """3D inverse with the Fourier slice theorem
+    """Slice-wise 3D inversion of the Radon transform
 
-    Computes the slice-wise 3D inverse of the radon transform using
+    Computes the slice-wise 3D inverse of the Radon transform using
     multiprocessing.
 
 
     Parameters
     ----------
     func2d: callable
-        A method representing the 2D algorithm.
+        A method for the slice-wise reconstruction
+        (e.g. :func:`backproject`).
     sinogram: ndarray, shape (A,M,N)
-        Three-dimensional sinogram of line recordings. The dimension `M`
-        iterates through the slices. The rotation takes place through
-        the second (y) axis.
+        Three-dimensional sinogram of line recordings. The axis `1`
+        iterates through the `M` slices. The rotation takes place through
+        axis `1`.
     angles: (A,) ndarray
-        Angular positions of the `sinogram` in radians equally
-        distributed from zero to PI.
+        Angular positions of the `sinogram` in radians in the
+        interval [0, PI).
     count, max_count: multiprocessing.Value or `None`
         Can be used to monitor the progress of this function. The
         value of `max_count.value` is set initially and the value

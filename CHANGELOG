@@ -1,9 +1,13 @@
 0.3.0
- - Drop support for Python 2
+ - BREAKING CHANGES:
+   - Renamed several functions
+   - Dropped support for Python 2
  - Refactoring:
    - Moved each reconstruction algorithm to a separate file
    - Modified code to comply with PEP8
-   - Moved documentation from source to docs directory
+   - Moved long doc strings from source to docs directory
+   - Removed complicated and redundant 3D reconstruction methods
+   - Improved 3D algorithm (`threed.py`) to support progress-monitoring
 0.2.1
  - Do not include compiled docs in sdist
 0.2.0
