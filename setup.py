@@ -35,8 +35,7 @@ setup(
               "optical projection tomography"],
     classifiers= [
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3',
         'Topic :: Scientific/Engineering :: Visualization',
         'Intended Audience :: Science/Research'
                  ],
