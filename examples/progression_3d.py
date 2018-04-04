@@ -1,7 +1,8 @@
 """Progress monitoring with progression
 
 The progress of the reconstruction algorithms in radontea
-can be tracked with other packages such as progression.
+can be tracked with other packages such as
+`progression <https://cimatosa.github.io/progression/>`_.
 """
 from multiprocessing import cpu_count
 
