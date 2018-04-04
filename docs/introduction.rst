@@ -4,7 +4,7 @@ Introduction
 
 
 There are several methods to compute the inverse **Radon** transform.
-The module :py:mod:`radontea` implements some of them. I focussed on
+The module :py:mod:`radontea` implements some of them. I focused on
 code readability and thorough comments. The result is a collection of
 algorithms that are suitable for **tea**\ching the basics of
 computerized tomography.
