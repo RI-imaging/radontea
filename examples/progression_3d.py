@@ -17,10 +17,10 @@ N = 128   # detector size x
 M = 24    # detector size y (number of slices)
 
 # generate random data
-sino0 = np.random.random((A, N))     # for 2d example
-sino = np.random.random((A, M, N))    # for 3d example
+sino0 = np.random.random((A, N))
+sino = np.random.random((A, M, N))
 sino[:, 0, :] = sino0
-angles = np.linspace(0, np.pi, A)     # for both
+angles = np.linspace(0, np.pi, A)
 
 count = pr.UnsignedIntValue()
 max_count = pr.UnsignedIntValue()
