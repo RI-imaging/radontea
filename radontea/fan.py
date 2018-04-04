@@ -2,9 +2,10 @@ import numpy as np
 import scipy.interpolate
 
 from .rdn_fan import get_fan_coords
+from .rdn_fan import get_det_coords, radon_fan  # noqa F401
 
 
-def fan_rec(linogram, lDS, method, stepsize=1, det_spacing=1,
+def fan_rec(linogram, lds, method, stepsize=1, det_spacing=1,
             numang=None, count=None, max_count=None, **kwargs):
     """2D synthetic aperture reconstruction
 
@@ -16,7 +17,7 @@ def fan_rec(linogram, lDS, method, stepsize=1, det_spacing=1,
     ----------
     linogram: 2d ndarray of shape (D, A)
         Input linogram from the synthetic aprture measurement.
-    lDS: float
+    lds: float
         Distance in pixels between source and detector.
     method: callable
         Reconstruction method, e.g. `radontea.backproject`.
@@ -31,22 +32,14 @@ def fan_rec(linogram, lDS, method, stepsize=1, det_spacing=1,
         of `count.value` is incremented.
     **kwargs: dict
         Keyword arguments for `method`.
-
-
-    See Also
-    --------
-    radon_fan_translation
-        The forward process.
-    lino2sino
-        Linogram to sinogram conversion.
     """
-    sino, angles = lino2sino(linogram, lDS, numang=numang, retang=True,
+    sino, angles = lino2sino(linogram, lds, numang=numang, retang=True,
                              stepsize=stepsize, det_spacing=det_spacing,
                              count=count, max_count=max_count)
     return method(sino, angles, **kwargs)
 
 
-def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
+def lino2sino(linogram, lds, stepsize=1, det_spacing=1, numang=None,
               retang=False, count=None, max_count=None):
     """Convert linogram to sinogram for an equispaced detector.
 
@@ -54,7 +47,7 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
     ----------
     linogram: real 2d ndarray of shape (D, A*)
         Linogram from synthetic aperture measurements.
-    lDS: float
+    lds: float
         Distance from point source to detector in au.
     stepsize: float
         Translational increment of object in au (stepsize in D).
@@ -70,7 +63,6 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
         by the total number of steps. At each step, the value
         of `count.value` is incremented.
 
-
     Returns
     -------
     sinogram: 2d ndarray of shape (D, A)
@@ -78,20 +70,11 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
         If retang is True, then the equispaced angles are returned as
         well.
 
-
     Notes
     -----
     This function can be used to convert a linogram obtained with
     fan-beam tomography to a sinogram, which then can be reconstructed
     with the backprojection or fourier mapping algorithms.
-
-
-    See Also
-    --------
-    radon_fan_translation
-        The forward process.
-    sa_interpolate
-        Backprojection that uses this function.
     """
     if not np.isreal(linogram):
         raise ValueError("`linogram` must be a real-valued array!")
@@ -107,7 +90,7 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
         max_count.value += D + A
 
     # equispaced angles and corresponding lateral detector positions.
-    angles, xang = get_fan_coords(det_size, det_spacing, lDS, A)
+    angles, xang = get_fan_coords(det_size, det_spacing, lds, A)
 
     uorig = linogram
     lino = np.zeros((D, A))
@@ -135,7 +118,7 @@ def lino2sino(linogram, lDS, stepsize=1, det_spacing=1, numang=None,
         # depends on the current angle.
         # What is the distance b/w the center of the object (centered at
         # lDS/2) to the axis alpha = 0?
-        deltaD = np.tan(alpha) * lDS / 2
+        deltaD = np.tan(alpha) * lds / 2
 
         # Shearing:
         # At larger angles, the object seems bigger on the screen.

@@ -5,7 +5,7 @@ import scipy.ndimage
 
 
 def get_det_coords(size, spacing):
-    """Compute pixel-center positions for 2d detector
+    """Compute pixel-center positions for 2D detector
 
     The centers of the pixels of a detector are usually not aligned to
     a pixel grid. If we center the detector at the origin, odd images
@@ -51,12 +51,10 @@ def get_fan_coords(size, spacing, distance, numang):
     numang: int
         Number of angles.
 
-
     Returns
     -------
     angles, latpos: two 1D ndarrays
         Angles and pixel coordinates at the detector.
-
 
     Notes
     -----
@@ -108,7 +106,6 @@ def radon_fan(arr, det_size, det_spacing=1, shift_size=1,
     that its lower boundary starts at (det_size/2, 0) and its upper
     boundary ends at (-det_size/2, 0) at increments of `shift_size`.
 
-
     Parameters
     ----------
     arr: ndarray, shape (N,N)
@@ -134,20 +131,16 @@ def radon_fan(arr, det_size, det_spacing=1, shift_size=1,
         by the total number of steps. At each step, the value
         of `count.value` is incremented.
 
-
     Returns
     -------
     outarr: ndarray of floats, shape (N+det_size,det_size)
         Linogram of the input image. Where N+det_size determines the
         lateral position of the sample.
 
-
     See Also
     --------
     scipy.ndimage.interpolation.rotate :
         The interpolator used to rotate the image.
-    radon_prl
-        The original Radon transform.
     """
     N = arr.shape[0]
     if lD is None:

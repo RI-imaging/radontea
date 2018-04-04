@@ -4,10 +4,9 @@ from .alg_int import integrate  # noqa F401
 from .alg_art import art  # noqa F401
 from .alg_sart import sart  # noqa F401
 
-from .fan import fan_rec, lino2sino  # noqa F401
+from . import fan  # noqa F401
 
 from .rdn_prl import radon_parallel  # noqa F401
-from .rdn_fan import radon_fan  # noqa F401
 
 from .threed import volume_recon  # noqa F401
 

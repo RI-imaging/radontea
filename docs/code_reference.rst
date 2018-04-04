@@ -2,28 +2,24 @@
 Code reference
 ==============
 
-
-
 Parallel beam geometry
 ::::::::::::::::::::::
+.. currentmodule:: radontea
 .. autosummary:: 
-    art
+    radon_parallel
     backproject
     fourier_map
-    radon
+    integrate
+    art
     sart
-    sum
-
+    
 
 Radon transform
 ---------------
-.. automodule:: radontea._Radon
-.. currentmodule:: radontea
-.. autofunction:: radon
+.. autofunction:: radon_parallel
 
 Non-iterative reconstruction
 ----------------------------
-.. currentmodule:: radontea
 Computes the inverse Radon transform with non-iterative techniques.
 The linear system of equations that describes the forward process can be
 inverted with several algorithms, most notably the backprojection
@@ -41,18 +37,16 @@ Fourier mapping
 .. autofunction:: fourier_map
 
 
-Sum
-~~~
+Slow integration
+~~~~~~~~~~~~~~~~
 .. autofunction:: integrate
 
 
 Iterative reconstruction
 ------------------------
-.. currentmodule:: radontea
 Inversion of Radon-based tomography methods using iterative algorithms.
 The convegence of these algorithms might be slow. The implementation
 is not optimized.
-
 
 ART
 ~~~
@@ -65,32 +59,23 @@ SART
 
 Fan beam geometry
 :::::::::::::::::
-.. currentmodule:: radontea
-
 .. autosummary:: 
-    get_det_coords
-    get_fan_coords
-    lino2sino
-    radon_fan_translation
-    sa_interpolate
+    fan.radon_fan
+    fan.get_det_coords
+    fan.get_fan_coords
+    fan.lino2sino
+    fan.fan_rec
 
 
 Coordinate transforms
 ---------------------
 
-.. autofunction:: get_det_coords
-.. autofunction:: get_fan_coords
-.. autofunction:: lino2sino
-.. autofunction:: radon_fan_translation
+.. autofunction:: radontea.fan.get_det_coords
+.. autofunction:: radontea.fan.get_fan_coords
+.. autofunction:: radontea.fan.radon_fan
+.. autofunction:: radontea.fan.lino2sino
 
 
-Non-iterative reconstruction
-----------------------------
-.. currentmodule:: radontea
-The inverse Radon transform with non-iterative techniques for
-a fan-beam geometry.
-
-Interpolation
-~~~~~~~~~~~~~
-.. autofunction:: sa_interpolate
-
+Reconstruction
+--------------
+.. autofunction:: radontea.fan.fan_rec

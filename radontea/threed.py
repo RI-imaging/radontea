@@ -3,11 +3,6 @@ import numpy as np
 import time
 
 
-def run(method, kwargs, target, target_index):
-    res = method(**kwargs)
-    target[target_index] = res
-
-
 def do_work(in_queue, out_list, count, max_count):
     while True:
         item = in_queue.get()
@@ -46,7 +41,7 @@ def volume_recon(func2d, sinogram=None, angles=None,
         value of `max_count.value` is set initially and the value
         of `count.value` is incremented until it reaches the end
         of the algorithm (`max_count.value`).
-    *kwargs: dict
+    **kwargs: dict
         Additional keyword arguments to `func2d`.
 
     Returns

@@ -3,7 +3,7 @@ radontea
 
 |PyPI Version| |Tests Status| |Coverage Status| |Docs Status|
 
-Algorithms to compute the inverse Radon trannsform (e.g. SART, backprojection, Fourier interpolation).
+Algorithms to compute the inverse Radon transform (e.g. SART, backprojection, Fourier interpolation).
 
 
 Documentation
