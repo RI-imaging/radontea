@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.interpolate as intp
 
-from . import threed, util
+from . import _threed, util
 
 
 def backproject(sinogram, angles, filtering="ramp", weight_angles=True,
@@ -194,13 +194,13 @@ def backproject_3d(sinogram, angles, filtering="ramp", weight_angles=True,
     See :func:`backproject` for parameter definitions. The additional
     parameter `ncpus` sets the number of CPUs used.
     """
-    return threed.volume_recon(func2d=backproject,
-                               sinogram=sinogram,
-                               filtering=filtering,
-                               weight_angles=weight_angles,
-                               padding=padding,
-                               padval=padval,
-                               angles=angles,
-                               count=count,
-                               max_count=max_count,
-                               ncpus=ncpus)
+    return _threed.volume_recon(func2d=backproject,
+                                sinogram=sinogram,
+                                filtering=filtering,
+                                weight_angles=weight_angles,
+                                padding=padding,
+                                padval=padval,
+                                angles=angles,
+                                count=count,
+                                max_count=max_count,
+                                ncpus=ncpus)

@@ -1,8 +1,8 @@
 import numpy as np
 import scipy.interpolate
 
-from .rdn_fan import get_fan_coords
-from .rdn_fan import get_det_coords, radon_fan  # noqa F401
+from ._rdn_fan import get_fan_coords
+from ._rdn_fan import get_det_coords, radon_fan  # noqa F401
 
 
 def fan_rec(linogram, lds, method, stepsize=1, det_spacing=1,

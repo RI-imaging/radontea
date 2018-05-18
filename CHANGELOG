@@ -1,3 +1,5 @@
+0.3.1
+ - Convenience fix: Make algorithm source files private
 0.3.0
  - BREAKING CHANGES:
    - Renamed several functions
