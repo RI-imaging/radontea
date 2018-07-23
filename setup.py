@@ -41,4 +41,3 @@ setup(
                  ],
     platforms=['ALL'],
     )
-

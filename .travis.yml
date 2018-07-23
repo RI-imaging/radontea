@@ -24,7 +24,6 @@ install:
 - travis_retry pip install codecov coverage
 - pip freeze
 script:
-- set -ev
 - if [ "${TEST}" == "PYTEST" ]; then
        coverage run --source=radontea setup.py test;
        coverage report -m;
@@ -34,3 +33,14 @@ script:
        flake8 examples;
        flake8 tests;
   fi;
+deploy:
+  provider: pypi
+  user: "ci_qpi"
+  password:
+    secure: "gGXLQTjTVeO0cDDQ1CMdYdaTIiA1AXZkPnby7BLObsHZqtgJRH9S0o33LtLNtCC9XGYjdvaAk2m7BYn9JhKNCe3W48WwrE7KzX8T2ZO+Rfv5Eg7471b9Ncw1umgg6Ip+baw7tDN5Mik6zNGlncHDalnJPMgMvb1xyJMhegbBlT8="
+  on:
+    tags: true
+  distributions: "sdist bdist_wheel"
+  skip_cleanup: true
+  skip_existing: true
+

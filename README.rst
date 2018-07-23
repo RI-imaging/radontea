@@ -8,7 +8,7 @@ Algorithms to compute the inverse Radon transform (e.g. SART, backprojection, Fo
 
 Documentation
 -------------
-The documentation, including the reference and examples, is available on `readthedocs.io <https://radontea.readthedocs.io/en/stable/>`__.
+The documentation, including the reference and examples, is available at `radontea.readthedocs.io <https://radontea.readthedocs.io/en/stable/>`__.
 
 
 Installation
