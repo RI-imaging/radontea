@@ -48,8 +48,8 @@ def test_3d_backproject():
     r = radontea.backproject_3d(sino3d, angles, padding=True)
     reffile = pathlib.Path(__file__).parent / "data" / "2d_backproject.txt"
     ref = np.loadtxt(str(reffile))
-    assert np.allclose(np.array(r[0]).flatten().view(float), ref)
-    assert np.all(r[0] == r[1])
+    assert np.allclose(np.array(r[:, 0, :]).flatten().view(float), ref)
+    assert np.all(r[:, 0, :] == r[:, 1, :])
 
 
 if __name__ == "__main__":

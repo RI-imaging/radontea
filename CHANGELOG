@@ -1,3 +1,7 @@
+0.4.0
+ - BREAKING CHANGE: volumetric reconstruction is now done according to
+   the ODTbrain indexing convention. To get the original behavior,
+   transpose the output, i.e. ``volout.transpose(1, 0, 2)``.
 0.3.2
  - ci: automated deployment with travis-ci
 0.3.1

@@ -193,6 +193,16 @@ def backproject_3d(sinogram, angles, filtering="ramp", weight_angles=True,
 
     See :func:`backproject` for parameter definitions. The additional
     parameter `ncpus` sets the number of CPUs used.
+
+    Returns
+    -------
+    out: ndarray, shape (N,M,N)
+        The reconstructed volume.
+
+        .. versionchanged:: 0.4.0
+
+            Output indexing now follows the ODTbrain convention. For the
+            the old behavior, use ``out.transpose(1, 0, 2)``.
     """
     return _threed.volume_recon(func2d=backproject,
                                 sinogram=sinogram,

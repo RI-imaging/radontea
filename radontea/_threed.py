@@ -47,9 +47,13 @@ def volume_recon(func2d, sinogram=None, angles=None,
 
     Returns
     -------
-    out : ndarray
-        The reconstructed image.
+    out: ndarray, shape (N,M,N)
+        The reconstructed volume.
 
+        .. versionchanged:: 0.4.0
+
+            Output indexing now follows the ODTbrain convention. For the
+            the old behavior, use ``out.transpose(1, 0, 2)``.
     """
     if sinogram.shape[0] != angles.shape[0]:
         msg = "First dimension of `sinogram` must match size of `angles`"
@@ -114,9 +118,9 @@ def volume_recon(func2d, sinogram=None, angles=None,
         p.join()
 
     sh = sinogram.shape
-    out = np.zeros((sh[1], sh[2], sh[2]))
+    out = np.zeros((sh[2], sh[1], sh[2]))
     for ii in range(len(results)):
         idx, res = results[ii]
-        out[idx] = res
+        out[:, idx, :] = res
 
     return out
