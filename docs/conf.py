@@ -55,6 +55,7 @@ extensions = ['sphinx.ext.intersphinx',
               'sphinx.ext.mathjax',
               'sphinx.ext.napoleon',
               'fancy_include',
+              'github_changelog',
               ]
 
 

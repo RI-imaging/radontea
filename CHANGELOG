@@ -1,3 +1,5 @@
+0.4.1
+ - docs: add index link and include changelog
 0.4.0
  - BREAKING CHANGE: volumetric reconstruction is now done according to
    the ODTbrain indexing convention. To get the original behavior,

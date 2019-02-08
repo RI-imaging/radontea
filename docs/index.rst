@@ -1,17 +1,25 @@
-radontea documentation
-======================
+.. _index:
+
 Radontea is a Python 3 library for computerized tomographic
 image reconstruction. Radontea implements several iterative
 and non-iterative reconstruction algorithms.
 This is the documentaion of radontea version |release|.
 
+Documentation
+=============
+
+
 .. toctree::
    :maxdepth: 4
-   :caption: Contents:
 
-   introduction
-   code_reference
-   examples
+   sec_introduction
+   sec_code_reference
+   sec_examples
+
+.. toctree::
+   :maxdepth: 1
+
+   sec_changelog
 
 
 Indices and tables
