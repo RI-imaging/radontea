@@ -1,6 +1,6 @@
 .. _index:
 
-Radontea is a Python 3 library for computerized tomographic
+Radontea is a Python library for computerized tomographic
 image reconstruction. Radontea implements several iterative
 and non-iterative reconstruction algorithms.
 This is the documentaion of radontea version |release|.
