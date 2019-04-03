@@ -78,7 +78,7 @@ def get_fan_coords(size, spacing, distance, numang):
 def radon_fan(arr, det_size, det_spacing=1, shift_size=1,
               lS=1, lD=None, return_ang=False,
               count=None, max_count=None):
-    """Compute the Radon transform for a fan beam geometry
+    r"""Compute the Radon transform for a fan beam geometry
 
 
     In contrast to :func:`radon_parallel`, this function uses (1)

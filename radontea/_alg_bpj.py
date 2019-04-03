@@ -6,7 +6,7 @@ from . import _threed, util
 
 def backproject(sinogram, angles, filtering="ramp", weight_angles=True,
                 padding=True, padval=0, count=None, max_count=None, verbose=0):
-    """2D backprojection algorithm
+    r"""2D backprojection algorithm
 
     Computes the inverse of the Radon transform using filtered
     backprojection.
@@ -34,8 +34,8 @@ def backproject(sinogram, angles, filtering="ramp", weight_angles=True,
         projections.
 
         .. math::
-            \Delta \phi_0 \\longmapsto \Delta \phi_j =
-            \\frac{\phi_{j+1} - \phi_{j-1}}{2}
+            \Delta \phi_0 \longmapsto \Delta \phi_j =
+            \frac{\phi_{j+1} - \phi_{j-1}}{2}
 
         .. versionadded:: 0.1.9
 
