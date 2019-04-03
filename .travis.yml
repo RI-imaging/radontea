@@ -12,7 +12,6 @@ env:
   - NUMPY="==1.13"
   - NUMPY="==1.14"
   - NUMPY=">=1.14"
-  - NUMPY=">=1.14" TEST="FLAKE8"
 install:
 # numpy (must be installed before pyfftw, unwrap)
 - travis_retry pip install "numpy${NUMPY}"
