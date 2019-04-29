@@ -17,7 +17,7 @@ def backproject(sinogram, angles, filtering="ramp", weight_angles=True,
     sinogram: ndarray, shape (A,N)
         Two-dimensional sinogram of line recordings.
     angles: (A,) ndarray
-        Angular positions of the `sinogram` in radians from zero to PI.
+        Angular positions of the `sinogram` in radians.
     filtering: {'ramp', 'shepp-logan', 'cosine', 'hamming', \
                  'hann'}, optional
         Specifies the Fourier filter. Either of
@@ -152,12 +152,12 @@ def backproject(sinogram, angles, filtering="ramp", weight_angles=True,
     # Meshgrid for output array
     xv, yv = np.meshgrid(x, x)
 
-    for i in np.arange(len(angles)):
-        projinterp = intp.interp1d(x, sino[i], fill_value=0.0,
+    for ii in np.arange(len(angles)):
+        projinterp = intp.interp1d(x, sino[ii], fill_value=0.0,
                                    copy=False, bounds_error=False)
         # Call proj_interp with cos and sin of corresponding coordinate
         # and add it to the outarr.
-        phi = angles[i]
+        phi = angles[ii]
         # Smear projection onto 2d volume
         xp = xv * np.cos(phi) + yv * np.sin(phi)
         outarr += projinterp(xp)
