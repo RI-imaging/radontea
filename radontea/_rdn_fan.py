@@ -151,7 +151,8 @@ def radon_fan(arr, det_size, det_spacing=1, shift_size=1,
     numsteps = int(np.ceil((N + det_size) / shift_size))
 
     if max_count is not None:
-        max_count.value += numsteps + 2
+        with max_count.get_lock():
+            max_count.value += numsteps + 2
 
     # First, create a zero-padded version of the input image such that
     # its center is the source - this is necessary because we can
@@ -185,7 +186,8 @@ def radon_fan(arr, det_size, det_spacing=1, shift_size=1,
         even = False
 
     if count is not None:
-        count.value += 1
+        with count.get_lock():
+            count.value += 1
 
     lat = get_det_coords(det_size, det_spacing)
 
@@ -201,7 +203,8 @@ def radon_fan(arr, det_size, det_spacing=1, shift_size=1,
     lino = np.zeros((numsteps, A))
 
     if count is not None:
-        count.value += 1
+        with count.get_lock():
+            count.value += 1
 
     for i in range(numsteps):
         padset = np.roll(padset, shift_size, axis=0)
@@ -224,7 +227,8 @@ def radon_fan(arr, det_size, det_spacing=1, shift_size=1,
                 lino[i, j] = np.sum(rotated[centerid, :])
 
         if count is not None:
-            count.value += 1
+            with count.get_lock():
+                count.value += 1
 
     if return_ang:
         return lino, angles

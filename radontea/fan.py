@@ -87,7 +87,8 @@ def lino2sino(linogram, lds, stepsize=1, det_spacing=1, numang=None,
         A = numang
 
     if max_count is not None:
-        max_count.value += D + A
+        with max_count.get_lock():
+            max_count.value += D + A
 
     # equispaced angles and corresponding lateral detector positions.
     angles, xang = get_fan_coords(det_size, det_spacing, lds, A)
@@ -103,7 +104,8 @@ def lino2sino(linogram, lds, stepsize=1, det_spacing=1, numang=None,
         lino[i] = scipy.interpolate.spline(xk, uorig[i], xang)
 
         if count is not None:
-            count.value += 1
+            with count.get_lock():
+                count.value += 1
 
     # begin angular stretching
     for i in range(A):
@@ -126,7 +128,8 @@ def lino2sino(linogram, lds, stepsize=1, det_spacing=1, numang=None,
         lino[:, i] = scipy.interpolate.spline(xk, lino[:, i], xnew)
 
         if count is not None:
-            count.value += 1
+            with count.get_lock():
+                count.value += 1
 
     sino = np.transpose(lino)[:, ::-1]
     if retang:

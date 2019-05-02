@@ -53,7 +53,8 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     scipy.interpolate.griddata: interpolation method used
     """
     if max_count is not None:
-        max_count.value += 4
+        with max_count.get_lock():
+            max_count.value += 4
 
     if len(sinogram[0]) % 2 == 0:
         warnings.warn("Fourier interpolation with slices that have" +
@@ -66,7 +67,8 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     P_fx = np.fft.fft(np.fft.ifftshift(p_x, axes=-1), axis=-1)
 
     if count is not None:
-        count.value += 1
+        with count.get_lock():
+            count.value += 1
 
     # This paragraph could be useful for future version if the reconstruction
     # grid is to be changed. They directly affect *P_fx*.

@@ -28,7 +28,8 @@ def integrate(sinogram, angles, count=None, max_count=None):
         The reconstructed image.
     """
     if max_count is not None:
-        max_count.value += sinogram.shape[1]**2 + 1
+        with max_count.get_lock():
+            max_count.value += sinogram.shape[1]**2 + 1
     # In the script we used the unitary angular frequency (uaf) Fourier
     # Transform. The discrete Fourier transform is equivalent to the
     # unitary ordinary frequency (uof) Fourier transform.
@@ -95,7 +96,8 @@ def integrate(sinogram, angles, count=None, max_count=None):
     P = np.fft.fft(np.fft.ifftshift(sinogram, axes=-1)) / np.sqrt(2 * np.pi)
 
     if count is not None:
-        count.value += 1
+        with count.get_lock():
+            count.value += 1
 
     for j in range(lenf):
         # Get r (We compute f(r) in this for-loop)
@@ -125,6 +127,7 @@ def integrate(sinogram, angles, count=None, max_count=None):
 
         # Display how far we are
         if count is not None:
-            count.value += 1
+            with count.get_lock():
+                count.value += 1
 
     return f.reshape((N, N))

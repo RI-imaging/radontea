@@ -48,9 +48,11 @@ def radon_parallel(arr, angles, count=None, max_count=None,):
 
     # progress monitoring
     if max_count is not None:
-        max_count.value += A + 1
+        with max_count.get_lock():
+            max_count.value += A + 1
     if count is not None:
-        count.value += 1
+        with count.get_lock():
+            count.value += 1
 
     for i in np.arange(A):
         rotated = scipy.ndimage.rotate(arr,
@@ -62,5 +64,6 @@ def radon_parallel(arr, angles, count=None, max_count=None,):
         # sum along the axis.
         outarr[i] = rotated.sum(axis=0)
         if count is not None:
-            count.value += 1
+            with count.get_lock():
+                count.value += 1
     return outarr

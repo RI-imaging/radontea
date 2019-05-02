@@ -54,7 +54,8 @@ def art(sinogram, angles, initial=None, iterations=1,
     A = angles.shape[0]
 
     if max_count is not None:
-        max_count.value += A * iterations + 1
+        with max_count.get_lock():
+            max_count.value += A * iterations + 1
     # Meshgrid for weigths
     center = N / 2.0
     x = np.arange(N) - center + .5
@@ -132,7 +133,8 @@ def art(sinogram, angles, initial=None, iterations=1,
     f = f.flatten()
 
     if count is not None:
-        count.value += 1
+        with count.get_lock():
+            count.value += 1
 
     for iteration in np.arange(iterations):  # @UnusedVariable
         #
@@ -216,7 +218,8 @@ def art(sinogram, angles, initial=None, iterations=1,
                 valid = np.where(w_i)
                 f[valid] += (p[i] - np.sum(f[valid])) / np.sum(w_i)
             if count is not None:
-                count.value += 1
+                with count.get_lock():
+                    count.value += 1
     # By slicing in-place [::-1] we get rid of the inversion of the
     # image along the y-axis.
 

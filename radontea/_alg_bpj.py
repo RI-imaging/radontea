@@ -89,7 +89,8 @@ def backproject(sinogram, angles, filtering="ramp", weight_angles=True,
     la = angles.shape[0]
 
     if max_count is not None:
-        max_count.value += la + 1
+        with max_count.get_lock():
+            max_count.value += la + 1
 
     # We perform padding before performing the Fourier transform.
     # This gets rid of artifacts due to false periodicity and also
@@ -139,7 +140,8 @@ def backproject(sinogram, angles, filtering="ramp", weight_angles=True,
         raise ValueError("Unknown filter: %s" % filter)
 
     if count is not None:
-        count.value += 1
+        with count.get_lock():
+            count.value += 1
     # Resize f so we can multiply it with the sinogram.
     kx = kx.reshape(1, -1)
     projection = np.fft.fft(sino, axis=-1) * kx
@@ -174,7 +176,8 @@ def backproject(sinogram, angles, filtering="ramp", weight_angles=True,
         #        projval = projinterp(xp)
         #        outarr[j][k] += projval
         if count is not None:
-            count.value += 1
+            with count.get_lock():
+                count.value += 1
 
     # Normalize output (we assume that the projections are equidistant)
     # We measure angles in radians

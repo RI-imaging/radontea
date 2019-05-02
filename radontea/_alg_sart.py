@@ -73,7 +73,8 @@ def sart(sinogram, angles, initial=None, iterations=1,
     A = angles.shape[0]
 
     if max_count is not None:
-        max_count.value += A * iterations + 1
+        with max_count.get_lock():
+            max_count.value += A * iterations + 1
     # Meshgrid for weigths
     center = N / 2.0
     x = np.arange(N) - center + .5
@@ -105,7 +106,8 @@ def sart(sinogram, angles, initial=None, iterations=1,
     g = g.flatten()
 
     if count is not None:
-        count.value += 1
+        with count.get_lock():
+            count.value += 1
 
     for k in np.arange(iterations):  # @UnusedVariable
         #
@@ -264,7 +266,8 @@ def sart(sinogram, angles, initial=None, iterations=1,
             dg[np.where(ai_sum != 0)] /= ai_sum[np.where(ai_sum != 0)]
             del ai_sum
             if count is not None:
-                count.value += 1
+                with count.get_lock():
+                    count.value += 1
 
         # Only apply the average from all differences dgall
         # ->leads to slower convergence then ART, but is more accurate

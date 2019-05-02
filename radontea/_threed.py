@@ -75,40 +75,28 @@ def volume_recon(func2d, sinogram=None, angles=None,
 
     # kick-off working processes
     pool = []
-    counts = [mp.Value("i") for _ii in range(ncpus)]
     max_counts = [mp.Value("i") for _ii in range(ncpus)]
     for ii in range(ncpus):
         p = mp.Process(target=do_work, args=(work, results,
-                                             counts[ii], max_counts[ii]))
+                                             count, max_counts[ii]))
         p.start()
         pool.append(p)
 
-    # initial run
-    # first run func2d to get an idea of how large max_count is
-    fkw0 = fkw.copy()
-    fkw0["sinogram"] = sinogram[:, 0, :]
-    work.put((func2d, fkw0, 0))
-
-    # determine max_count for a single slice and set it globally
-    if max_count is not None:
-        for _ii in range(50):  # wait max 5s
-            time.sleep(.1)
-            initial_max_count = np.max([c.value for c in max_counts])
-            if initial_max_count != 0:
-                break
-        max_count.value = sinogram.shape[1] * initial_max_count
-
-    # add other slices' jobs
-    for jj in range(1, sinogram.shape[1]):
+    # add slice jobs
+    for jj in range(sinogram.shape[1]):
         fkwj = fkw.copy()
         fkwj["sinogram"] = sinogram[:, jj, :]
         work.put((func2d, fkwj, jj))
 
-    # globally track progress
-    if count is not None and max_count is not None:
-        while count.value < max_count.value:
-            count.value = np.sum([c.value for c in counts])
-            time.sleep(.01)
+    # determine max_count for a single slice and set it globally
+    if max_count is not None:
+        for _ii in range(600):  # wait max 60s
+            time.sleep(.1)
+            initial_max_count = np.max([c.value for c in max_counts])
+            if initial_max_count != 0:
+                break
+        with max_count.get_lock():
+            max_count.value = sinogram.shape[1] * initial_max_count
 
     # send stop signal to workers
     for _kk in range(ncpus):

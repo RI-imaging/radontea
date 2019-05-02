@@ -1,3 +1,6 @@
+0.4.2
+ - fix: use `Value.get_lock()` when tracking progress
+ - docs: minor improvements
 0.4.1
  - docs: add index link and include changelog
 0.4.0
