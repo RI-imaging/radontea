@@ -87,6 +87,7 @@ def backproject(sinogram, angles, filtering="ramp", weight_angles=True,
 
     ln = sinogram.shape[1]
     la = angles.shape[0]
+    assert sinogram.shape[0] == la
 
     if max_count is not None:
         with max_count.get_lock():

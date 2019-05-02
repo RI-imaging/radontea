@@ -75,30 +75,35 @@ def volume_recon(func2d, sinogram=None, angles=None,
 
     # kick-off working processes
     pool = []
-    max_counts = [mp.Value("i") for _ii in range(ncpus)]
+    max_counts = [mp.Value("I", 0, lock=True) for _ii in range(ncpus)]
     for ii in range(ncpus):
         p = mp.Process(target=do_work, args=(work, results,
                                              count, max_counts[ii]))
         p.start()
         pool.append(p)
 
-    # add slice jobs
-    for jj in range(sinogram.shape[1]):
-        fkwj = fkw.copy()
-        fkwj["sinogram"] = sinogram[:, jj, :]
-        work.put((func2d, fkwj, jj))
+    # add first slice job (we need to do this to get an estimate of max_count)
+    fkwj = fkw.copy()
+    fkwj["sinogram"] = sinogram[:, 0, :]
+    work.put((func2d, fkwj, 0))
 
     # determine max_count for a single slice and set it globally
     if max_count is not None:
-        for _ii in range(600):  # wait max 60s
-            time.sleep(.1)
+        for _ii in range(60):  # wait max 6s
+            time.sleep(.01)
             initial_max_count = np.max([c.value for c in max_counts])
             if initial_max_count != 0:
                 break
         with max_count.get_lock():
             max_count.value = sinogram.shape[1] * initial_max_count
 
-    # send stop signal to workers
+    # add other slice jobs
+    for jj in range(1, sinogram.shape[1]):
+        fkwj = fkw.copy()
+        fkwj["sinogram"] = sinogram[:, jj, :]
+        work.put((func2d, fkwj, jj))
+
+    # put stop signal at end of queue to let workers know they may stop
     for _kk in range(ncpus):
         work.put("STOP")
 

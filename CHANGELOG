@@ -1,3 +1,5 @@
+0.4.3
+ - fix: correctly compute `max_count` for 3D wrapper
 0.4.2
  - fix: use `Value.get_lock()` when tracking progress
  - docs: minor improvements
