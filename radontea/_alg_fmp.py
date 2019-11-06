@@ -138,7 +138,8 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     rintp = np.fft.fftshift(fx.reshape(-1))
 
     if count is not None:
-        count.value += 1
+        with count.get_lock():
+            count.value += 1
 
     # The code block yields the same result as griddata (below)
     # interpolation coordinates
@@ -168,7 +169,8 @@ def fourier_map(sinogram, angles, intp_method="cubic",
                           method=intp_method)
 
     if count is not None:
-        count.value += 1
+        with count.get_lock():
+            count.value += 1
 
     # remove nans
     Fcomp[np.where(np.isnan(Fcomp))] = 0
@@ -176,7 +178,8 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     f = np.fft.fftshift(np.fft.ifft2(np.fft.ifftshift(Fcomp)))
 
     if count is not None:
-        count.value += 1
+        with count.get_lock():
+            count.value += 1
 
     return f.real
 
