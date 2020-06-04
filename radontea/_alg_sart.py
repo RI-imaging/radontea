@@ -109,26 +109,26 @@ def sart(sinogram, angles, initial=None, iterations=1,
         with count.get_lock():
             count.value += 1
 
-    for k in np.arange(iterations):  # @UnusedVariable
+    for kk in np.arange(iterations):  # @UnusedVariable
         #
-        # k iterates the iterations
-        # i iterates the rays
-        # j iterates the flattened outarr
-        # l iterates the angles
-        # m iterates the points from which each projection p[i]
+        # kk iterates the iterations
+        # ii iterates the rays
+        # jj iterates the flattened outarr
+        # ll iterates the angles
+        # mm iterates the points from which each projection p[i]
         #   is computed
         #
         # initiate array
         dgall = np.zeros((A, N, N))
-        for l in np.arange(A):
+        for ll in np.arange(A):
             # Differences accumulated over one angle
-            dg = dgall[l]
+            dg = dgall[ll]
             ai_sum = np.zeros((N, N))
 
             # From now on we work in radians
-            angle_l = angles[l]
+            angle_l = angles[ll]
             # p[i] is consistent with Kak, Slaney
-            p = sinogram[l]
+            p = sinogram[ll]
             # Calculate the weights for each p[i] at the current angle
             # p[i] = sum(g[j]*A[i,j])
             # A[i,j] = sum(d[i,j,m]*ds)
@@ -139,7 +139,7 @@ def sart(sinogram, angles, initial=None, iterations=1,
             # d[i,j,m]'s and A[i,j]'s.
             # print "angle %d" % l
 
-            for i in np.arange(N):
+            for ii in np.arange(N):
                 # Get the coordinates m at which we want to get the
                 # interpolations.
                 # The resolution is equal to the input resolution
@@ -148,7 +148,7 @@ def sart(sinogram, angles, initial=None, iterations=1,
                 # Image radius
                 ir = center
                 # x is centered
-                dist = np.sqrt(ir**2 - x[i]**2)
+                dist = np.sqrt(ir**2 - x[ii]**2)
                 # Delta s: distance between sample points
                 # Setting it to half the pixel spacing:
                 length = 2. * dist
@@ -161,11 +161,11 @@ def sart(sinogram, angles, initial=None, iterations=1,
                 # system:
                 xline = np.linspace(-dist, dist, num_points, endpoint=True)
                 # y-values are constant in the non-rotated system
-                yline = x[i] * np.ones(len(xline))
+                yline = x[ii] * np.ones(len(xline))
 
                 # Rotate the coordinate system of the line
                 # These are the actual coordinates in the reconstructed
-                # image that where used to sum up p[i]
+                # image that where used to sum up p[ii]
                 xrot = xline * np.cos(angle_l) - yline * np.sin(angle_l)
                 yrot = xline * np.sin(angle_l) + yline * np.cos(angle_l)
 
@@ -254,7 +254,7 @@ def sart(sinogram, angles, initial=None, iterations=1,
 
                 # So for each pixel that had just contributed, we will
                 # add a value to the difference array dg.
-                dg += ai * (p[i] - np.sum(ai.flatten() * g)) / ai_dot
+                dg += ai * (p[ii] - np.sum(ai.flatten() * g)) / ai_dot
 
                 ai_sum += ai
 
