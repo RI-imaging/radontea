@@ -152,7 +152,7 @@ def sart(sinogram, angles, initial=None, iterations=1,
                 # Delta s: distance between sample points
                 # Setting it to half the pixel spacing:
                 length = 2. * dist
-                num_points = 2 * np.ceil(2 * dist) + 1
+                num_points = 2 * int(np.ceil(2 * dist)) + 1
                 # endpoints are on the reconstruction circle.
                 # Therefore "-1"
                 ds = length / (num_points - 1)
