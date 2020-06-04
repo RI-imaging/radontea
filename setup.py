@@ -27,7 +27,9 @@ setup(
     include_package_data=True,
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
-    install_requires=[ "numpy >= 1.5.1", "scipy >= 0.8.0"],
+    install_requires=["numpy>=1.5.1",
+                      "scipy>=1.4.0",  # Updated QHull in griddata
+                      ],
     setup_requires=['pytest-runner'],
     tests_require=["pytest"],
     python_requires='>=3.4, <4',
