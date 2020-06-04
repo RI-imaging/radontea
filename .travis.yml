@@ -7,9 +7,10 @@ notifications:
   email: false
 env:
   matrix:
-  - NUMPY="==1.13"
-  - NUMPY="==1.15"
-  - NUMPY="==1.16"
+  - NUMPY="<1.15"
+  - NUMPY="<1.16"
+  - NUMPY="<1.17"
+  - NUMPY="<1.18"
   - NUMPY=">=1.18"
 install:
 # numpy (must be installed before pyfftw, unwrap)
