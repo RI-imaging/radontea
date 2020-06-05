@@ -32,7 +32,7 @@ setup(
                       ],
     setup_requires=['pytest-runner'],
     tests_require=["pytest"],
-    python_requires='>=3.4, <4',
+    python_requires='>=3.5, <4',
     keywords=["tomography", "ct", "radon", "computerized tomography",
               "optical projection tomography"],
     classifiers= [
