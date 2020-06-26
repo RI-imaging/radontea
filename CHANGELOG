@@ -1,3 +1,5 @@
+0.4.6
+ - maintenance release
 0.4.5
  - setup: bump scipy to 1.4.0 (updated QHull in griddata)
 0.4.4
