@@ -1,8 +1,8 @@
 import numpy as np
 
 
-def sart(sinogram, angles, initial=None, iterations=1,
-         count=None, max_count=None):
+def sart(sinogram: np.ndarray, angles: np.ndarray, initial: np.ndarray = None,
+         iterations: int = 1, count=None, max_count=None):
     """Simultaneous Algebraic Reconstruction Technique
 
 

@@ -4,7 +4,7 @@ import numpy as np
 from radontea import radon_parallel
 
 
-def logo(x, y, N):
+def logo(x, y, N) -> np.ndarray:
     """Vector representation of radontea logo.
 
     Parameters
@@ -36,7 +36,7 @@ def logo(x, y, N):
     return z
 
 
-def get_original(N=64):
+def get_original(N: int = 64) -> np.ndarray:
     """radontea logo base image"""
     x = np.linspace(-N / 2, N / 2, N, endpoint=False)
     X = x.reshape(1, -1)
@@ -46,7 +46,7 @@ def get_original(N=64):
     return np.array((z) * 255, dtype=np.uint16)
 
 
-def get_logo(N=64):
+def get_logo(N: int = 64):
     """Return the radontea logo as a 2D NxN array
 
     This function discretizes the vector image representation of the

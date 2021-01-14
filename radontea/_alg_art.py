@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def art(sinogram, angles, initial=None, iterations=1,
+def art(sinogram: np.ndarray, angles: np.ndarray, initial: np.ndarray = None, iterations: int = 1,
         count=None, max_count=None):
     """Algebraic Reconstruction Technique
 

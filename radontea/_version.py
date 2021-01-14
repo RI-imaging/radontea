@@ -57,7 +57,7 @@ if True:  # pragma: no cover
     import traceback
     import warnings
 
-    def git_describe():
+    def git_describe() -> str:
         """
         Return a string describing the version returned by the
         command `git describe --tags HEAD`.
@@ -115,7 +115,7 @@ if True:  # pragma: no cover
 
         return git_revision
 
-    def load_version(versionfile):
+    def load_version(versionfile: str):
         """load version from version_save.py"""
         longversion = ""
         try:
@@ -135,7 +135,7 @@ if True:  # pragma: no cover
 
         return longversion
 
-    def write_version(version, versionfile):
+    def write_version(version: str, versionfile: str) -> None:
         """save version to version_save.py"""
         data = "#!/usr/bin/env python\n" \
             + "# This file was created automatically\n" \

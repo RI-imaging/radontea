@@ -4,9 +4,11 @@ import scipy.interpolate
 from ._rdn_fan import get_fan_coords
 from ._rdn_fan import get_det_coords, radon_fan  # noqa F401
 
+from typing import Callable
 
-def fan_rec(linogram, lds, method, stepsize=1, det_spacing=1,
-            numang=None, count=None, max_count=None, **kwargs):
+
+def fan_rec(linogram: np.ndarray, lds: float, method: Callable, stepsize=1, det_spacing: float = 1,
+            numang: int = None, count=None, max_count=None, **kwargs):
     """2D synthetic aperture reconstruction
 
     Computes the inverse of the fan-beam Radon transform using
@@ -39,8 +41,8 @@ def fan_rec(linogram, lds, method, stepsize=1, det_spacing=1,
     return method(sino, angles, **kwargs)
 
 
-def lino2sino(linogram, lds, stepsize=1, det_spacing=1, numang=None,
-              retang=False, count=None, max_count=None):
+def lino2sino(linogram: np.ndarray, lds: float, stepsize: float = 1, det_spacing: float = 1, numang: int = None,
+              retang: bool = False, count=None, max_count=None):
     """Convert linogram to sinogram for an equispaced detector.
 
     Parameters
