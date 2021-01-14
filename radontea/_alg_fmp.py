@@ -6,7 +6,8 @@ import scipy.interpolate as intp
 from . import _threed
 
 
-def fourier_map(sinogram: np.ndarray, angles: np.ndarray, intp_method: str = "cubic",
+def fourier_map(sinogram: np.ndarray, angles: np.ndarray,
+                intp_method: str = "cubic",
                 count=None, max_count=None) -> np.ndarray:
     """2D Fourier mapping with the Fourier slice theorem
 
@@ -184,7 +185,8 @@ def fourier_map(sinogram: np.ndarray, angles: np.ndarray, intp_method: str = "cu
     return f.real
 
 
-def fourier_map_3d(sinogram: np.ndarray, angles: np.ndarray, intp_method: str = "cubic",
+def fourier_map_3d(sinogram: np.ndarray, angles: np.ndarray,
+                   intp_method: str = "cubic",
                    count=None, max_count=None, ncpus=None) -> np.ndarray:
     """Convenience wrapper for 3D Fourier mapping reconstruction
 

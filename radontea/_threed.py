@@ -2,7 +2,7 @@ import multiprocessing as mp
 import numpy as np
 import time
 
-from typing import Callable, Optional
+from typing import Callable
 
 
 def do_work(in_queue, out_list, count, max_count):

@@ -29,7 +29,8 @@ def get_det_coords(size: int, spacing: float) -> np.ndarray:
     return lat
 
 
-def get_fan_coords(size: int, spacing: float, distance: float, numang: int) -> np.ndarray:
+def get_fan_coords(size: int, spacing: float, distance: float,
+                   numang: int) -> np.ndarray:
     """ Compute equispaced angular coordinates for 2d detector
 
     The centers of the pixels of a detector are usually not aligned to

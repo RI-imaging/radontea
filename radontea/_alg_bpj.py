@@ -4,8 +4,10 @@ import scipy.interpolate as intp
 from . import _threed, util
 
 
-def backproject(sinogram: np.ndarray, angles: np.ndarray, filtering: str = "ramp", weight_angles: bool = True,
-                padding: bool = True, padval: float = 0, count=None, max_count=None, verbose: int = 0) -> np.ndarray:
+def backproject(sinogram: np.ndarray, angles: np.ndarray,
+                filtering: str = "ramp", weight_angles: bool = True,
+                padding: bool = True, padval: float = 0, count=None,
+                max_count=None, verbose: int = 0) -> np.ndarray:
     r"""2D backprojection algorithm
 
     Computes the inverse of the Radon transform using filtered
@@ -190,9 +192,10 @@ def backproject(sinogram: np.ndarray, angles: np.ndarray, filtering: str = "ramp
     return outarr
 
 
-def backproject_3d(sinogram: np.ndarray, angles: np.ndarray, filtering: str = "ramp", weight_angles: bool = True,
-                   padding: bool = True, padval: float = 0, count=None, max_count=None,
-                   ncpus=None) -> np.ndarray:
+def backproject_3d(sinogram: np.ndarray, angles: np.ndarray,
+                   filtering: str = "ramp", weight_angles: bool = True,
+                   padding: bool = True, padval: float = 0, count=None,
+                   max_count=None, ncpus=None) -> np.ndarray:
     """Convenience wrapper for 3D backprojection reconstruction
 
     See :func:`backproject` for parameter definitions. The additional
