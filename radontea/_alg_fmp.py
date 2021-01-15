@@ -6,8 +6,9 @@ import scipy.interpolate as intp
 from . import _threed
 
 
-def fourier_map(sinogram, angles, intp_method="cubic",
-                count=None, max_count=None):
+def fourier_map(sinogram: np.ndarray, angles: np.ndarray,
+                intp_method: str = "cubic",
+                count=None, max_count=None) -> np.ndarray:
     """2D Fourier mapping with the Fourier slice theorem
 
     Computes the inverse of the Radon transform using Fourier
@@ -184,8 +185,9 @@ def fourier_map(sinogram, angles, intp_method="cubic",
     return f.real
 
 
-def fourier_map_3d(sinogram, angles, intp_method="cubic",
-                   count=None, max_count=None, ncpus=None):
+def fourier_map_3d(sinogram: np.ndarray, angles: np.ndarray,
+                   intp_method: str = "cubic",
+                   count=None, max_count=None, ncpus=None) -> np.ndarray:
     """Convenience wrapper for 3D Fourier mapping reconstruction
 
     See :func:`fourier_map` for parameter definitions. The additional

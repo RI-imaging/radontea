@@ -2,6 +2,8 @@ import multiprocessing as mp
 import numpy as np
 import time
 
+from typing import Callable
+
 
 def do_work(in_queue, out_list, count, max_count):
     while True:
@@ -17,7 +19,8 @@ def do_work(in_queue, out_list, count, max_count):
         time.sleep(.01)
 
 
-def volume_recon(func2d, sinogram=None, angles=None,
+def volume_recon(func2d: Callable, sinogram: np.ndarray = None,
+                 angles: np.ndarray = None,
                  count=None, max_count=None, ncpus=None, **kwargs):
     """Slice-wise 3D inversion of the Radon transform
 

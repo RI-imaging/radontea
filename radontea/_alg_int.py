@@ -1,7 +1,8 @@
 import numpy as np
 
 
-def integrate(sinogram, angles, count=None, max_count=None):
+def integrate(sinogram: np.ndarray, angles: np.ndarray, count=None,
+              max_count=None) -> np.ndarray:
     """2D sum-reconstruction with the Fourier slice theorem
 
     Computes the inverse of the Radon transform by computing the
