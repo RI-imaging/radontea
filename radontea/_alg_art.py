@@ -2,7 +2,7 @@ import numpy as np
 
 
 def art(sinogram: np.ndarray, angles: np.ndarray, initial: np.ndarray = None,
-        iterations: int = 1, count=None, max_count=None) -> None:
+        iterations: int = 1, count=None, max_count=None) -> np.ndarray:
     """Algebraic Reconstruction Technique
 
     The Algebraic Reconstruction Technique (ART) iteratively

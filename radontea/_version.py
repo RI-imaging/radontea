@@ -57,7 +57,7 @@ if True:  # pragma: no cover
     import traceback
     import warnings
 
-    def git_describe() -> str:
+    def git_describe():
         """
         Return a string describing the version returned by the
         command `git describe --tags HEAD`.
