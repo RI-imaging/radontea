@@ -115,7 +115,7 @@ if True:  # pragma: no cover
 
         return git_revision
 
-    def load_version(versionfile: str):
+    def load_version(versionfile):
         """load version from version_save.py"""
         longversion = ""
         try:
@@ -135,7 +135,7 @@ if True:  # pragma: no cover
 
         return longversion
 
-    def write_version(version: str, versionfile: str) -> None:
+    def write_version(version, versionfile):
         """save version to version_save.py"""
         data = "#!/usr/bin/env python\n" \
             + "# This file was created automatically\n" \
