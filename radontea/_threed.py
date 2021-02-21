@@ -21,7 +21,8 @@ def do_work(in_queue, out_list, count, max_count):
 
 def volume_recon(func2d: Callable, sinogram: np.ndarray = None,
                  angles: np.ndarray = None,
-                 count=None, max_count=None, ncpus=None, **kwargs):
+                 count=None, max_count=None, ncpus=None,
+                 **kwargs) -> np.ndarray:
     """Slice-wise 3D inversion of the Radon transform
 
     Computes the slice-wise 3D inverse of the Radon transform using
