@@ -2,7 +2,8 @@ import numpy as np
 import scipy.ndimage
 
 
-def radon_parallel(arr, angles, count=None, max_count=None,):
+def radon_parallel(arr: np.ndarray, angles: np.ndarray,
+                   count=None, max_count=None,) -> np.ndarray:
     """Compute the Radon transform (sinogram) of a circular image.
 
     The :mod:`scipy` Radon transform performs this operation on the
