@@ -4,7 +4,7 @@ import numpy as np
 import scipy.ndimage
 
 
-def get_det_coords(size, spacing):
+def get_det_coords(size: int, spacing: float) -> np.ndarray:
     """Compute pixel-center positions for 2D detector
 
     The centers of the pixels of a detector are usually not aligned to
@@ -29,7 +29,8 @@ def get_det_coords(size, spacing):
     return lat
 
 
-def get_fan_coords(size, spacing, distance, numang):
+def get_fan_coords(size: int, spacing: float, distance: float,
+                   numang: int) -> np.ndarray:
     """ Compute equispaced angular coordinates for 2d detector
 
     The centers of the pixels of a detector are usually not aligned to
@@ -75,9 +76,9 @@ def get_fan_coords(size, spacing, distance, numang):
     return angles, latang
 
 
-def radon_fan(arr, det_size, det_spacing=1, shift_size=1,
-              lS=1, lD=None, return_ang=False,
-              count=None, max_count=None):
+def radon_fan(arr, det_size: int, det_spacing: float = 1, shift_size: int = 1,
+              lS=1, lD=None, return_ang: bool = False,
+              count=None, max_count=None) -> np.ndarray:
     r"""Compute the Radon transform for a fan beam geometry
 
 

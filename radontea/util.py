@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def compute_angle_weights_1d(angles):
+def compute_angle_weights_1d(angles: np.ndarray) -> np.ndarray:
     """
     Compute the weight for each angle according to the distance between its
     neighbors.
