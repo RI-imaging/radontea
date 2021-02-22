@@ -107,8 +107,8 @@ def backproject(sinogram: np.ndarray, angles: np.ndarray,
         pad = 0
         order = ln
 
-    padl = np.int32(np.ceil(pad / 2))
-    padr = np.int32(pad - padl)
+    padl = int(np.ceil(pad / 2))
+    padr = int(pad - padl)
 
     if padval is None:
         if verbose > 0:
