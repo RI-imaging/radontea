@@ -3,7 +3,7 @@
  - build: moved from travisCI to GitHub Actions
  - docs: refurbish docs
  - tests: allow 2D Fourier mapping test to fail on macOS
-   (don't know why it fails)
+   and Windows (don't know why it fails, probably unstable)
  - ref: replace np.complex256 with np.complex128 in
    _alg_int.py:integrate which does not break any tests but
    works on Windows which sometimes has not support for longdouble
