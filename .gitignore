@@ -64,3 +64,4 @@ _version_save.py
 docs/_build
 .eggs
 .pytest_cache
+.idea
