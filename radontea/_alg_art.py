@@ -149,7 +149,7 @@ def art(sinogram: np.ndarray, angles: np.ndarray, initial: np.ndarray = None,
             p = sinogram[k]
             # # We do not store the binary weights for each ray:
             # # For large images this thing could get big:
-            # w = np.zeros((len(p),N*N), dtype=np.bool)
+            # w = np.zeros((len(p),N*N), dtype=bool)
             # # w[i][j]
             line1, line2 = GetLambdaLines(angle_k)
             # CASES for all 2 quadrants. Angles are modulo PI
@@ -187,7 +187,7 @@ def art(sinogram: np.ndarray, angles: np.ndarray, initial: np.ndarray = None,
                 # If the angle is zero, then we are looking at the
                 # projections onto the right side. The indices are
                 # enumerated from bottom to top.
-                w_i = np.zeros((N, N), dtype=np.bool)
+                w_i = np.zeros((N, N), dtype=bool)
                 # # where does the ray cut w_i?
                 # xpi1 = x_p1[i]
                 # ypi1 = y_p1[i]

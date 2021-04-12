@@ -4,6 +4,10 @@
  - docs: refurbish docs
  - tests: allow 2D Fourier mapping test to fail on macOS
    (don't know why it fails)
+ - ref: replace np.complex256 with np.complex128 in
+   _alg_int.py:integrate which does not break any tests but
+   works on Windows which sometimes has not support for longdouble
+ - ref: replace np.bool with bool due to numpy deprecation warnings
 0.4.8
  - ref: move sinogram generation in tests to separate file, thanks @SZanko
  - ref: deprecation warning int for numpy 1.20.0, thanks @SZanko

@@ -89,7 +89,7 @@ def integrate(sinogram: np.ndarray, angles: np.ndarray, count=None,
     lenf = len(f)
 
     # Initiate vector r that corresponds to calculating a value of f.
-    r = np.zeros((2, 1, 1), dtype=np.complex256)
+    r = np.zeros((2, 1, 1), dtype=np.complex128)
 
     # Compute the Fourier transform of uB.
     # This is true: np.fft.fft(UB)[0] == np.fft.fft(UB[0])
