@@ -7,7 +7,7 @@
 0.4.8
  - ref: move sinogram generation in tests to separate file, thanks @SZanko
  - ref: deprecation warning int for numpy 1.20.0, thanks @SZanko
- - ref: mor type hints, thanks @SZanko
+ - ref: more type hints, thanks @SZanko
 0.4.7
  - ref: added PEP 484 type hints, thanks @SZanko (#3)
 0.4.6
