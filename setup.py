@@ -12,7 +12,7 @@ name = 'radontea'
 year = "2014"
 
 sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
-from _version import version
+from _version import version  # noqa: E402
 
 
 setup(
@@ -30,12 +30,10 @@ setup(
     install_requires=["numpy>=1.5.1",
                       "scipy>=1.4.0",  # Updated QHull in griddata
                       ],
-    setup_requires=['pytest-runner'],
-    tests_require=["pytest"],
     python_requires='>=3.5, <4',
     keywords=["tomography", "ct", "radon", "computerized tomography",
               "optical projection tomography"],
-    classifiers= [
+    classifiers=[
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         'Topic :: Scientific/Engineering :: Visualization',

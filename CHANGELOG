@@ -1,3 +1,7 @@
+0.4.9
+ - build: setup.py test is deprecated
+ - build: moved from travisCI to GitHub Actions
+ - docs: refurbish docs
 0.4.8
  - ref: move sinogram generation in tests to separate file, thanks @SZanko
  - ref: deprecation warning int for numpy 1.20.0, thanks @SZanko
