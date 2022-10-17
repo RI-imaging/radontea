@@ -14,7 +14,7 @@ def compute_angle_weights_1d(angles: np.ndarray) -> np.ndarray:
     Returns
     -------
     weights: 1d ndarray of length A
-        The weights for each angle
+        Weights for each angle
 
     Notes
     -----
@@ -24,12 +24,12 @@ def compute_angle_weights_1d(angles: np.ndarray) -> np.ndarray:
     """
     # copy and modulo np.pi
     # This is an array with values in [0, np.pi)
-    angles = (angles.flatten() - angles.min()) % (np.pi)
+    angles = (angles.flatten() - np.min(angles)) % np.pi
     # sort the array
     sortargs = np.argsort(angles)
     sortangl = angles[sortargs]
     # compute weights for sorted angles
-    da = (np.roll(sortangl, -1) - np.roll(sortangl, 1)) % (np.pi)
+    da = (np.roll(sortangl, -1) - np.roll(sortangl, 1)) % np.pi
     weights = da/np.sum(da)*da.shape[0]
 
     unsortweights = np.zeros_like(weights)
