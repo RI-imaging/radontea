@@ -1,3 +1,5 @@
+0.4.10
+ - ref: make `util` submodule available upon import
 0.4.9
  - build: setup.py test is deprecated
  - build: moved from travisCI to GitHub Actions
