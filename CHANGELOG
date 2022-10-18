@@ -1,4 +1,6 @@
 0.4.10
+ - fix: handle more special cases when computing weights for
+   projections (#7)
  - ref: make `util` submodule available upon import
 0.4.9
  - build: setup.py test is deprecated
