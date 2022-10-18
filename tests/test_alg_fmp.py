@@ -1,15 +1,11 @@
 import pathlib
-import sys
 
 import numpy as np
-import pytest
 import radontea
 
 import sinogram
 
 
-# fails on Windows and macOS
-@pytest.mark.xfail(sys.platform != "linux", reason="don't know why")
 def test_2d_fmp():
     sino, angles = sinogram.create_test_sino(A=100, N=101)
     r = radontea.fourier_map(sino, angles)
