@@ -18,7 +18,7 @@ def compute_angle_weights_1d(angles: np.ndarray) -> np.ndarray:
     Parameters
     ----------
     angles: 1d ndarray of length A
-        Angles corresponding to the projections [rad]]
+        Angles corresponding to the projections [rad]
 
     Returns
     -------
@@ -28,7 +28,7 @@ def compute_angle_weights_1d(angles: np.ndarray) -> np.ndarray:
     Notes
     -----
     If one angle is passed multiple times `N` (e.g. `N=2`, 0° and 180°
-    via `np.linspace(0, 180, 10, endpoint=True)`), then this angle will
+    via `np.linspace(0, np.pi, 10, endpoint=True)`), then this angle will
     have a weight smaller than the other angles by a factor of `1/N`.
     """
     # copy and modulo np.pi
