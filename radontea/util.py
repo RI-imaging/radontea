@@ -57,6 +57,5 @@ def compute_angle_weights_1d(angles: np.ndarray) -> np.ndarray:
     unq_weights[srt_idx] = srt_weights
 
     # Set the weights for each item in the original angles
-    weights = np.zeros_like(angles)
     weights = unq_weights[unq_reverse]
     return weights
