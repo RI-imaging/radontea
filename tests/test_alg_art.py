@@ -9,12 +9,9 @@ import sinogram
 def test_2d_art():
     sino, angles = sinogram.create_test_sino(A=100, N=100)
     r = radontea.art(sino, angles)
-
     # np.savetxt('outfile.txt', np.array(r).flatten().view(float), fmt="%.8f")
     reffile = pathlib.Path(__file__).parent / "data" / "2d_art.txt"
     ref = np.loadtxt(str(reffile))
-    diff = np.array(r).flatten().view(float) - ref
-    print("DEBUG", np.ptp(diff), np.min(diff), np.max(diff))
     assert np.allclose(np.array(r).flatten().view(float), ref)
 
 

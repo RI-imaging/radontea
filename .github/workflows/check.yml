@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ['3.9', '3.10.6']
+        python-version: ['3.9', '3.10']
         os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
@@ -27,7 +27,6 @@ jobs:
         # install dependencies
         pip install -e .
         pip install -r tests/requirements.txt
-        pip install "numpy<1.23"
         # show installed packages
         pip freeze
     - name: Test with pytest
