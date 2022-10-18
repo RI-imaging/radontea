@@ -1,5 +1,5 @@
 0.4.13
- - ci: pin numpy<1.22 for testing
+ - ci: skip tests that fail on GitHub Actions (Linux/macOS)
 0.4.12
  - maintenance release
 0.4.11

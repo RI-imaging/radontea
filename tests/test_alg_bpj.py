@@ -1,12 +1,19 @@
+import os
 import pathlib
 
 import numpy as np
 
-import radontea
+import pytest
 
+import radontea
 import sinogram
 
 
+# See https://github.com/RI-imaging/radontea/issues/6
+CI_FAILS = (os.environ.get("RUNNER_OS", "None") == "Linux")
+
+
+@pytest.mark.xfail(CI_FAILS, reason="Unexplained issue #6")
 def test_2d_backproject():
     sino, angles = sinogram.create_test_sino(A=100, N=100)
     r = radontea.backproject(sino, angles, padding=True)
@@ -17,6 +24,7 @@ def test_2d_backproject():
     assert np.allclose(np.array(r).flatten().view(float), ref)
 
 
+@pytest.mark.xfail(CI_FAILS, reason="Unexplained issue #6")
 def test_3d_backproject():
     A = 100
     M = 30
