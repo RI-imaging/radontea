@@ -1,3 +1,3 @@
 pytest
 # https://github.com/RI-imaging/radontea/issues/6
-numpy<1.22
+numpy==1.22
