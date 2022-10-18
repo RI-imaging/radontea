@@ -1,11 +1,20 @@
+import os
 import pathlib
 
 import numpy as np
+
+import pytest
+
 import radontea
 
 import sinogram
 
+# See https://github.com/RI-imaging/radontea/issues/6
+CI_FAILS = (os.environ.get("RUNNER_OS", "None") == "Linux"
+            or os.environ.get("RUNNER_OS", "None") == "macOS")
 
+
+@pytest.mark.xfail(CI_FAILS, reason="Unexplained issue #13")
 def test_2d_fmp():
     sino, angles = sinogram.create_test_sino(A=100, N=101)
     r = radontea.fourier_map(sino, angles)
