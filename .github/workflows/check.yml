@@ -27,7 +27,7 @@ jobs:
         # install dependencies
         pip install -e .
         pip install -r tests/requirements.txt
-        pip install "numpy<1.22"
+        pip install "numpy<1.23"
         # show installed packages
         pip freeze
     - name: Test with pytest
