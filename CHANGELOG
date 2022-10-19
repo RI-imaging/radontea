@@ -1,3 +1,5 @@
+0.4.14
+ - maintenance release
 0.4.13
  - ci: skip tests that fail on GitHub Actions (Linux/macOS)
 0.4.12
