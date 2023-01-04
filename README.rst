@@ -31,7 +31,7 @@ Some functionalities of the module are tested with::
 
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/radontea.svg
    :target: https://pypi.python.org/pypi/radontea
-.. |Tests Status| image:: https://img.shields.io/github/workflow/status/RI-Imaging/radontea/Checks
+.. |Tests Status| image:: https://img.shields.io/github/actions/workflow/status/RI-Imaging/radontea/check.yml
    :target: https://github.com/RI-Imaging/radontea/actions?query=workflow%3AChecks
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/RI-imaging/radontea/master.svg
    :target: https://codecov.io/gh/RI-imaging/radontea
