@@ -99,6 +99,7 @@ def backproject(sinogram: np.ndarray, angles: np.ndarray,
     # This gets rid of artifacts due to false periodicity and also
     # speeds up Fourier transforms of the input image size is not
     # a power of 2.
+    # These artifacts are for example bad contrast.
 
     if padding:
         order = max(64., 2**np.ceil(np.log(ln * 2.1) / np.log(2)))
@@ -124,7 +125,6 @@ def backproject(sinogram: np.ndarray, angles: np.ndarray,
                       end_values=(padval,))
         sino = np.roll(sino, -padl, 1)
 
-    # These artifacts are for example bad contrast.
     kx = 2 * np.pi * np.abs(np.fft.fftfreq(int(order)))
     # Ask for the filter. Do not include zero (first element).
     if filtering == "ramp":
@@ -138,6 +138,7 @@ def backproject(sinogram: np.ndarray, angles: np.ndarray,
     elif filtering == "hann":
         kx[1:] = kx[1:] * (1 + np.cos(kx[1:])) / 2
     elif filtering is None:
+        # This is for educational purposes only.
         kx[1:] = 2 * np.pi
     else:
         raise ValueError("Unknown filter: %s" % filter)
