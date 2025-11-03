@@ -130,9 +130,9 @@ def backproject(sinogram: np.ndarray, angles: np.ndarray,
     if filtering == "ramp":
         pass
     elif filtering == "shepp-logan":
-        kx[1:] = kx[1:] * np.sin(kx[1:]) / (kx[1:])
+        kx[1:] = kx[1:] * np.sin(kx[1:] / 2) / (kx[1:] / 2)
     elif filtering == "cosine":
-        kx[1:] = kx[1:] * np.cos(kx[1:])
+        kx[1:] = kx[1:] * np.cos(kx[1:] / 2)
     elif filtering == "hamming":
         kx[1:] = kx[1:] * (0.54 + 0.46 * np.cos(kx[1:]))
     elif filtering == "hann":
