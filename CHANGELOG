@@ -1,5 +1,5 @@
 0.5.0
- - fix: cosine and shepp-logan filters off by factor of two (#2, Tim Hetkämper)
+ - fix: cosine and shepp-logan filters off by factor of two (#8, Tim Hetkämper)
  - setup: migrate to pyproject.toml
 0.4.14
  - maintenance release
