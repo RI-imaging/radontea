@@ -59,7 +59,7 @@ docs/_build/
 *.yml~
 *.rst~
 
-_version_save.py
+_version.py
 .env
 docs/_build
 .eggs

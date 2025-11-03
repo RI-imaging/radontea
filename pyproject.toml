@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "radontea"
+description = "collection of algorithms to compute the inverse Radon transform"
+readme = "README.rst"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Paul Müller", email = "dev@craban.de" },
+    { name = "Tim Hetkämper" },
+]
+requires-python = ">=3.8, <4"
+dependencies = [
+    "numpy>=1.5.1",
+    "scipy>=1.4.0",  # Updated QHull in griddata
+]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research"
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/RI-imaging/radontea"
+
+[tool.setuptools_scm]
+write_to = "radontea/_version.py"
+version_scheme = "post-release"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["radontea"]
