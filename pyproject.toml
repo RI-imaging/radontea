@@ -24,7 +24,10 @@ classifiers = [
 dynamic = ["version"]
 
 [project.urls]
-Homepage = "https://github.com/RI-imaging/radontea"
+source = "https://github.com/RI-imaging/radontea"
+tracker = "https://github.com/RI-imaging/radontea/issues"
+documentation = "https://radontea.readthedocs.io/en/stable/"
+changelog = "https://radontea.readthedocs.io/en/stable/sec_changelog.html"
 
 [tool.setuptools_scm]
 write_to = "radontea/_version.py"
